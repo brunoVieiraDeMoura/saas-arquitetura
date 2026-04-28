@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Roteiro — Vídeo de Apresentação | Arquitetura Organizada</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f9f9f9;
+    color: #171717;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 40px;
+    background: white;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 2px solid #171717;
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+
+  .header-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #737373;
+    margin-bottom: 8px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #171717;
+    margin-bottom: 6px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+  }
+
+  .header-meta span {
+    font-size: 12px;
+    color: #737373;
+  }
+
+  .header-meta strong {
+    color: #171717;
+  }
+
+  /* TOC */
+  .toc {
+    background: #f5f5f5;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+
+  .toc h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #737373;
+    margin-bottom: 12px;
+  }
+
+  .toc ol {
+    padding-left: 18px;
+  }
+
+  .toc li {
+    font-size: 13px;
+    color: #404040;
+    margin-bottom: 4px;
+  }
+
+  .toc li span {
+    color: #a3a3a3;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 40px;
+    page-break-inside: avoid;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .section-number {
+    width: 28px;
+    height: 28px;
+    background: #171717;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #171717;
+  }
+
+  .section-timing {
+    margin-left: auto;
+    font-size: 11px;
+    color: #a3a3a3;
+    background: #f5f5f5;
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  /* Script blocks */
+  .block {
+    margin-bottom: 14px;
+  }
+
+  .block-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .label-fala     { color: #171717; }
+  .label-tela     { color: #2563eb; }
+  .label-acao     { color: #d97706; }
+  .label-pausa    { color: #7c3aed; }
+  .label-dica     { color: #059669; }
+
+  .block-label::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .label-fala::before  { background: #171717; }
+  .label-tela::before  { background: #2563eb; }
+  .label-acao::before  { background: #d97706; }
+  .label-pausa::before { background: #7c3aed; }
+  .label-dica::before  { background: #059669; }
+
+  .block-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #262626;
+    padding-left: 12px;
+    border-left: 2px solid #e5e5e5;
+  }
+
+  .fala-text {
+    font-style: italic;
+    color: #171717;
+  }
+
+  .tela-text {
+    color: #1d4ed8;
+    font-size: 13px;
+  }
+
+  .acao-text {
+    color: #92400e;
+    font-size: 13px;
+  }
+
+  .dica-text {
+    color: #065f46;
+    font-size: 13px;
+  }
+
+  /* Highlight box */
+  .highlight {
+    background: #171717;
+    color: white;
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 20px 0;
+  }
+
+  .highlight p {
+    font-size: 14px;
+    line-height: 1.7;
+    font-style: italic;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .highlight .highlight-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 8px;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 36px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #525252;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Tips sidebar */
+  .tip-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 12px 0;
+  }
+
+  .tip-box p {
+    font-size: 12px;
+    color: #14532d;
+    line-height: 1.6;
+  }
+
+  .tip-box strong {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #166534;
+    margin-bottom: 4px;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer p {
+    font-size: 11px;
+    color: #a3a3a3;
+  }
+
+  .total-time {
+    background: #171717;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+  }
+
+  @media print {
+    body { background: white; }
+    .page { padding: 24px 32px; }
+    .section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-tag">Roteiro de Vídeo</div>
+    <h1>Arquitetura Organizada</h1>
+    <p style="color:#737373; font-size:13px;">Apresentação completa do produto — do cadastro às funcionalidades avançadas</p>
+    <div class="header-meta">
+      <span><strong>Duração estimada:</strong> 8–10 minutos</span>
+      <span><strong>Formato:</strong> Screencast + narração</span>
+      <span><strong>Tom:</strong> Direto, profissional, próximo</span>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#171717"></div> Fala (narração)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div> Tela (o que mostrar)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div> Ação (o que fazer)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#059669"></div> Dica de gravação</div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Índice</h3>
+    <ol>
+      <li>Abertura e problema <span>0:00 – 0:45</span></li>
+      <li>Apresentação da solução <span>0:45 – 1:15</span></li>
+      <li>Criando a conta <span>1:15 – 2:00</span></li>
+      <li>Identidade visual (logo) <span>2:00 – 2:45</span></li>
+      <li>Categorias e projetos <span>2:45 – 4:30</span></li>
+      <li>Depoimentos e FAQs <span>4:30 – 5:15</span></li>
+      <li>Contato (WhatsApp, Instagram, e-mail) <span>5:15 – 6:00</span></li>
+      <li>Configurações e domínio próprio <span>6:00 – 6:45</span></li>
+      <li>Analytics e Equipe (Agency) <span>6:45 – 7:45</span></li>
+      <li>Planos e preços + CTA <span>7:45 – 8:30</span></li>
+    </ol>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">Abertura e problema</div>
+      <div class="section-timing">0:00 – 0:45</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-tela">Tela</div>
+      <div class="block-content tela-text">Tela preta com o logo "Arquitetura Organizada" aparecendo. Sem música alta — apenas instrumental suave de fundo.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Você tem um portfólio incrível de projetos. Casas, apartamentos, escritórios — anos de trabalho e talento acumulados. Mas quando um cliente novo te pede o link do seu site... você manda um PDF, um perfil no Instagram, ou simplesmente não tem nada para mostrar."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Contratar uma agência para criar um site custa caro, demora meses e ainda depende de você toda vez que precisa atualizar uma foto ou adicionar um projeto novo. Isso não faz sentido."
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <strong>Dica de gravação</strong>
+      <p>Grave este trecho olhando direto para a câmera, sem tela aparecendo. Humaniza o início e cria conexão antes de mostrar o produto.</p>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 2 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">Apresentação da solução</div>
+      <div class="section-timing">0:45 – 1:15</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-tela">Tela</div>
+      <div class="block-content tela-text">Corte para a página inicial do arquiteturaorganizada.com.br. Scroll suave pela landing page.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "O Arquitetura Organizada é a plataforma criada especificamente para arquitetos e designers de interiores que querem ter um portfólio profissional no ar — sem precisar de agência, sem código, em menos de 10 minutos."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Você cadastra seus projetos, configura seu logo, adiciona seu WhatsApp — e seu site já está publicado. Atualiza quando quiser, de qualquer lugar, pelo celular ou computador."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Mostrar brevemente o site de exemplo de um cliente (brunomoura). Destacar o visual profissional.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 3 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">Criando a conta</div>
+      <div class="section-timing">1:15 – 2:00</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Vou mostrar agora como é simples. Acesse arquiteturaorganizada.com.br e clique em Começar grátis."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-tela">Tela</div>
+      <div class="block-content tela-text">Página de cadastro. Preencher nome do escritório, e-mail e senha.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Nome do escritório, e-mail, senha — e pronto. Nenhum cartão de crédito necessário para começar."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-tela">Tela</div>
+      <div class="block-content tela-text">Dashboard aparece após login. Mostrar o menu lateral.</div>
+    </div>
+
+    <div class="highlight">
+      <div class="highlight-label">Momento-chave</div>
+      <p>"Olha que incrível — assim que você cria a conta, o sistema já populou tudo automaticamente. Já tem categorias, projetos de exemplo, depoimentos e FAQs prontos. Clica em Ver site aqui no menu — o seu site já está publicado, agora mesmo."</p>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-tela">Tela</div>
+      <div class="block-content tela-text">Abrir o site público. Scroll mostrando Hero, seção de projetos, depoimentos, FAQ e rodapé.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 4 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">Identidade visual — logo e tipografia</div>
+      <div class="section-timing">2:00 – 2:45</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "A primeira coisa que você vai querer personalizar é a identidade. Clica em Identidade no menu."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Navegar para /dashboard/identidade. Trocar o nome, escolher uma fonte diferente. Mostrar o preview em tempo real atualizando.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Você escolhe o nome que aparece no topo do site, a tipografia, e vê uma prévia em tempo real — tanto no modo claro quanto escuro — antes de salvar qualquer coisa."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Prefere usar a sua própria logo em imagem? É só selecionar Imagem aqui e fazer o upload. PNG ou SVG com fundo transparente."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Salvar. Voltar ao site público e mostrar o logo atualizado no topo.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 5 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">Categorias e projetos</div>
+      <div class="section-timing">2:45 – 4:30</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Agora o coração da plataforma: seus projetos. Mas antes, você organiza tudo em categorias — Residencial, Comercial, Interiores, o que fizer sentido para o seu escritório."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Ir em Categorias. Mostrar a lista existente. Clicar em Nova categoria, criar "Interiores" rapidamente.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Cada categoria vira uma seção no seu portfólio. Você pode reordenar arrastando — a ordem aqui define a ordem no menu do site."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Agora vamos adicionar um projeto. Clica em Projetos, Novo projeto."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Abrir formulário de novo projeto. Mostrar: selecionar categoria, preencher título, upload da imagem principal, escrever descrição no editor rich text.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "O editor de texto permite formatação — negrito, listas, tudo. Quanto mais você contar sobre o projeto, mais o cliente se envolve antes mesmo de entrar em contato."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Rolar para baixo até a galeria. Fazer upload de 2–3 fotos. Mostrar o indicador "2/6 fotos".</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Cada projeto tem uma galeria de fotos. No plano gratuito são até 2 fotos, no Pro até 6, e no Agency ilimitadas. Tudo direto no painel, sem FTP, sem programação."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Marque o projeto como destaque para ele aparecer em evidência na página inicial do site."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Salvar projeto. Abrir o site público e navegar até o projeto recém-criado. Mostrar a galeria com lightbox funcionando.</div>
+    </div>
+
+    <div class="tip-box">
+      <strong>Dica de gravação</strong>
+      <p>Este é o trecho mais importante — use fotos de projetos reais seus para tornar a demonstração mais convincente. O cliente precisa se ver usando a ferramenta.</p>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 6 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div class="section-title">Depoimentos e FAQs</div>
+      <div class="section-timing">4:30 – 5:15</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Prova social e credibilidade são essenciais para converter visitantes em clientes. Na seção Depoimentos, você adiciona o que seus clientes disseram sobre você."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Ir em Depoimentos. Mostrar a lista. Abrir um depoimento para mostrar os campos: nome, cargo, texto, foto.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "E nas FAQs, você responde as perguntas que os clientes mais fazem — prazo, processo, valores. Isso economiza o seu tempo e passa profissionalismo logo de cara."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Mostrar rápido a seção FAQs. Depois voltar ao site e mostrar como fica a seção de depoimentos e FAQ no site público.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 7 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div class="section-title">Contato — WhatsApp, Instagram e e-mail</div>
+      <div class="section-timing">5:15 – 6:00</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "De nada adianta um portfólio bonito se o cliente não consegue te contatar. Clica em Contato no menu."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Abrir /dashboard/contact. Mostrar as seções: WhatsApp, Instagram, e-mail.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Você coloca o número do WhatsApp, personaliza a mensagem padrão que vai aparecer quando o cliente clicar — e ativa o botão flutuante. Olha: ele aparece fixo no canto da tela em todas as páginas do site."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Ativar o toggle do botão flutuante. Abrir o site público e mostrar o botão verde no canto inferior direito. Clicar nele para mostrar que abre o WhatsApp.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Também tem o Instagram — um ícone aparece no menu e no rodapé. E o e-mail de contato para receber mensagens enviadas pelo formulário do site, diretamente na sua caixa de entrada."
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 8 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div class="section-title">Configurações e domínio próprio</div>
+      <div class="section-timing">6:00 – 6:45</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Por padrão, seu site fica em arquiteturaorganizada.com.br barra o-nome-do-seu-escritório. Mas se você quiser um endereço completamente seu — tipo meuescritorio.com.br — isso é possível no plano Pro."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Abrir /dashboard/settings. Mostrar o campo de domínio customizado e o aviso informativo sobre registradoras.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Você compra o domínio em qualquer registradora — Registro.br, GoDaddy, Hostinger — aponta o DNS aqui, e em até 48 horas seu site responde pelo domínio próprio. O certificado SSL é automático."
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 9 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <div class="section-title">Analytics e Equipe — plano Agency</div>
+      <div class="section-timing">6:45 – 7:45</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "Para quem quer escalar de verdade, o plano Agency traz dois recursos extras muito poderosos."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Abrir /dashboard/analytics.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "O primeiro é o Analytics. Você vê quantas pessoas visitaram seu site nos últimos 7 e 30 dias, o gráfico de visitas por dia — e o mais útil: quais projetos estão atraindo mais visitantes. Isso te ajuda a saber o que mostrar mais, o que funciona melhor com seus clientes."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-acao">Ação</div>
+      <div class="block-content acao-text">Abrir /dashboard/team.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "O segundo é o gerenciamento de equipe. Se você tem sócios ou colaboradores que também precisam atualizar o portfólio, você gera um link de convite e eles criam a conta deles. Até 3 usuários por conta, cada um com acesso completo ao painel."
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- SECTION 10 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <div class="section-title">Planos e preços + CTA final</div>
+      <div class="section-timing">7:45 – 8:30</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-tela">Tela</div>
+      <div class="block-content tela-text">Navegar para arquiteturaorganizada.com.br/pricing. Mostrar os 3 cards de plano lado a lado.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "O plano Starter é gratuito — 2 categorias, até 6 projetos, até 2 fotos por projeto. Perfeito para começar e ver como funciona sem gastar nada."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "O plano Pro, por R$ 99 por mês, é categorias e projetos ilimitados, até 6 fotos por projeto e domínio personalizado. Para quem quer apresentar o portfólio completo com o seu endereço na URL."
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-fala">Fala</div>
+      <div class="block-content fala-text">
+        "E o Agency, por R$ 167 por mês, traz tudo isso mais fotos ilimitadas, analytics, equipe com até 3 usuários, suporte ativo pelo WhatsApp e uma call de onboarding comigo para configurar tudo juntos."
+      </div>
+    </div>
+
+    <div class="highlight">
+      <div class="highlight-label">CTA Final — olhar para câmera</div>
+      <p>"O link está na descrição. Cria a sua conta agora, é gratuito, não precisa de cartão. Em menos de 10 minutos você tem um portfólio profissional no ar — e quando quiser crescer, o upgrade é com um clique."</p>
+    </div>
+
+    <div class="block">
+      <div class="block-label label-tela">Tela</div>
+      <div class="block-content tela-text">Mostrar a tela de cadastro com o botão "Começar grátis" em destaque. Fade out.</div>
+    </div>
+
+    <div class="tip-box">
+      <strong>Dica de encerramento</strong>
+      <p>Termine com um corte limpo após o CTA. Não prolongue. A última imagem que o espectador vê deve ser a tela de cadastro — remove fricção mental e facilita a conversão.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Arquitetura Organizada &nbsp;·&nbsp; contato@arquiteturaorganizada.com.br</p>
+    <div class="total-time">⏱ Total estimado: 8–10 min</div>
+  </div>
+
+</div>
+</body>
+</html>

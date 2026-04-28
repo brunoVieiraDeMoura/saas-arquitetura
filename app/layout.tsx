@@ -1,0 +1,50 @@
+import type { Metadata } from "next";
+import {
+  Geist,
+  Playfair_Display,
+  Cormorant_Garamond,
+  Montserrat,
+  Josefin_Sans,
+  Libre_Baskerville,
+} from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin"] });
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["300", "400", "600"],
+});
+const montserrat = Montserrat({ variable: "--font-montserrat", subsets: ["latin"] });
+const josefin = Josefin_Sans({ variable: "--font-josefin", subsets: ["latin"] });
+const baskerville = Libre_Baskerville({
+  variable: "--font-baskerville",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+export const metadata: Metadata = {
+  title: {
+    default: "Arquitetura Organizada",
+    template: "%s | Arquitetura Organizada",
+  },
+  description: "O CMS completo para estúdios de arquitetura e design de interiores.",
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const fontVars = [
+    geistSans.variable,
+    playfair.variable,
+    cormorant.variable,
+    montserrat.variable,
+    josefin.variable,
+    baskerville.variable,
+  ].join(" ");
+
+  return (
+    <html lang="pt-BR" className={`${fontVars} antialiased`}>
+      <body className="min-h-full">{children}</body>
+    </html>
+  );
+}

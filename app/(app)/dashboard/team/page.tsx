@@ -1,0 +1,109 @@
+import { requireTenant } from '@/lib/tenant/guard'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { redirect } from 'next/navigation'
+import { removeMember } from './actions'
+import InviteForm from './_components/InviteForm'
+
+export default async function TeamPage() {
+  const { tenantId, userId } = await requireTenant()
+  const admin = createAdminClient()
+
+  const { data: tenant } = await admin.from('tenants').select('plan').eq('id', tenantId).single()
+  if (tenant?.plan !== 'agency') redirect('/dashboard/billing')
+
+  const { data: profiles } = await admin
+    .from('profiles')
+    .select('id, role')
+    .eq('tenant_id', tenantId)
+
+  const members = await Promise.all(
+    (profiles ?? []).map(async (p) => {
+      const { data: { user } } = await admin.auth.admin.getUserById(p.id)
+      return { id: p.id, role: p.role as string, email: user?.email ?? p.id }
+    })
+  )
+
+  const { data: invites } = await admin
+    .from('tenant_invites')
+    .select('id, email, expires_at')
+    .eq('tenant_id', tenantId)
+    .is('accepted_at', null)
+    .gt('expires_at', new Date().toISOString())
+    .order('created_at', { ascending: false })
+
+  const canInvite = members.length < 3
+
+  return (
+    <div className="max-w-2xl">
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-neutral-900">Equipe</h1>
+        <p className="text-sm text-neutral-500 mt-1">Gerencie os membros da sua equipe. Máximo 3 usuários.</p>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-neutral-200 p-6 mb-5">
+        <h2 className="text-sm font-semibold text-neutral-900 mb-4">
+          Membros ativos <span className="text-neutral-400 font-normal">({members.length}/3)</span>
+        </h2>
+        <div className="divide-y divide-neutral-100">
+          {members.map((m) => (
+            <div key={m.id} className="flex items-center justify-between py-3">
+              <div>
+                <p className="text-sm text-neutral-900">{m.email}</p>
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  {m.role === 'owner' ? 'Proprietário' : 'Membro'}
+                </p>
+              </div>
+              {m.role !== 'owner' && m.id !== userId && (
+                <form action={removeMember.bind(null, m.id)}>
+                  <button
+                    type="submit"
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    Remover
+                  </button>
+                </form>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {(invites ?? []).length > 0 && (
+        <div className="bg-white rounded-2xl border border-neutral-200 p-6 mb-5">
+          <h2 className="text-sm font-semibold text-neutral-900 mb-4">Convites pendentes</h2>
+          <div className="divide-y divide-neutral-100">
+            {invites!.map((inv) => (
+              <div key={inv.id} className="flex items-center justify-between py-3">
+                <div>
+                  <p className="text-sm text-neutral-900">{inv.email}</p>
+                  <p className="text-xs text-neutral-400 mt-0.5">
+                    Expira em {new Date(inv.expires_at).toLocaleDateString('pt-BR')}
+                  </p>
+                </div>
+                <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full font-medium">
+                  Pendente
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white rounded-2xl border border-neutral-200 p-6">
+        <h2 className="text-sm font-semibold text-neutral-900 mb-1">Convidar membro</h2>
+        {canInvite ? (
+          <>
+            <p className="text-xs text-neutral-400 mb-4">
+              Gere um link de convite e compartilhe com o colaborador.
+            </p>
+            <InviteForm />
+          </>
+        ) : (
+          <p className="text-sm text-neutral-500 mt-2">
+            Limite de 3 membros atingido.
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
