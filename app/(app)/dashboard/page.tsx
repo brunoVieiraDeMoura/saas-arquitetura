@@ -1,17 +1,20 @@
-import { createClient } from '@/lib/supabase/server'
+import { requireTenant } from '@/lib/tenant/guard'
+import { createAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
+  const { tenantId } = await requireTenant()
+  const admin = createAdminClient()
 
   const [{ count: categoriesCount }, { count: projectsCount }] = await Promise.all([
-    supabase.from('categories').select('*', { count: 'exact', head: true }),
-    supabase.from('projects').select('*', { count: 'exact', head: true }),
+    admin.from('categories').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId),
+    admin.from('projects').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId),
   ])
 
-  const { data: recentProjects } = await supabase
+  const { data: recentProjects } = await admin
     .from('projects')
     .select('id, title, date, categories(name)')
+    .eq('tenant_id', tenantId)
     .order('created_at', { ascending: false })
     .limit(5)
 

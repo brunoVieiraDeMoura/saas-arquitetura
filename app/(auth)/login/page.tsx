@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -35,6 +36,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-neutral-200 p-8">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-900 transition-colors mb-6">
+          <ArrowLeft className="w-4 h-4" />
+          Voltar para home
+        </Link>
+
         <div className="mb-8 text-center">
           <h1 className="text-xl font-semibold text-neutral-900">Entrar</h1>
           <p className="text-sm text-neutral-500 mt-1">Acesse seu painel</p>
@@ -49,7 +55,12 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-1">Senha</label>
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-neutral-700">Senha</label>
+              <Link href="/forgot-password" className="text-xs text-neutral-500 hover:text-neutral-900 transition-colors">
+                Esqueceu a senha?
+              </Link>
+            </div>
             <input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
               placeholder="••••••••" />

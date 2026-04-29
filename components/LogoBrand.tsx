@@ -26,7 +26,7 @@ export default function LogoBrand({
     subnameAlign === 'start' ? 'flex-start' : subnameAlign === 'center' ? 'center' : 'flex-end'
 
   return (
-    <div className="flex flex-col leading-tight gap-[2px]" style={logoFont ? { fontFamily: logoFont } : undefined}>
+    <div className="inline-flex flex-col leading-tight gap-[2px]" style={logoFont ? { fontFamily: logoFont } : undefined}>
       <span className="self-end text-sm font-bold tracking-widest uppercase whitespace-nowrap">{name}</span>
       <span
         className="text-[9px] font-medium tracking-[0.25em] uppercase opacity-60 whitespace-nowrap"

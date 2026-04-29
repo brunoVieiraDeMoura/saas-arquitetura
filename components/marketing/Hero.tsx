@@ -7,7 +7,7 @@ export default function MarketingHero() {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
 
         {/* Left — copy */}
-        <div className="md:pt-8">
+        <div className="md:pt-8 text-center md:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 text-neutral-600 text-xs font-medium mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
             Já usado por escritórios de arquitetura no Brasil
@@ -16,11 +16,11 @@ export default function MarketingHero() {
             Seu portfólio de arquitetura,{' '}
             <span className="text-neutral-400">sem complicação</span>
           </h1>
-          <p className="text-lg text-neutral-500 mb-10 leading-relaxed max-w-md">
+          <p className="text-lg text-neutral-500 mb-10 leading-relaxed max-w-md mx-auto md:mx-0">
             Crie um site profissional para seu escritório em minutos. Gerencie projetos,
             depoimentos e muito mais — tudo em um painel simples.
           </p>
-          <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-center md:items-start gap-4">
             <Link href="/signup"
               className="px-8 py-3.5 rounded-xl bg-neutral-900 text-white font-medium hover:bg-neutral-800 transition-colors">
               Criar meu site grátis

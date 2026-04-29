@@ -36,7 +36,7 @@ export const PLANS = {
     features: [
       'Tudo do Pro',
       'Fotos ilimitadas por projeto',
-      'Analytics de visitas',
+      'Analytics',
       'Convide até 3 usuários para sua conta',
       'Suporte ativo pelo WhatsApp',
       'Chamada privada para configurar tudo com você',

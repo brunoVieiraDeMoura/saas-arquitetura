@@ -8,7 +8,7 @@ export default async function BillingPage() {
 
   const { data: tenant } = await admin
     .from('tenants')
-    .select('plan, stripe_subscription_id')
+    .select('plan, stripe_subscription_id, name')
     .eq('id', tenantId)
     .single()
 
@@ -21,6 +21,7 @@ export default async function BillingPage() {
       <BillingPanel
         currentPlan={(tenant?.plan ?? 'starter') as 'starter' | 'pro' | 'agency'}
         hasSubscription={Boolean(tenant?.stripe_subscription_id)}
+        companyName={tenant?.name ?? ''}
       />
     </div>
   )

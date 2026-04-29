@@ -1,12 +1,15 @@
-import { createClient } from '@/lib/supabase/server'
+import { requireTenant } from '@/lib/tenant/guard'
+import { createAdminClient } from '@/lib/supabase/admin'
 import LogoSettingsPanel from '@/components/admin/LogoSettingsPanel'
 
 export default async function IdentidadePage() {
-  const supabase = await createClient()
+  const { tenantId } = await requireTenant()
+  const admin = createAdminClient()
 
-  const { data: rows } = await supabase
+  const { data: rows } = await admin
     .from('settings')
     .select('key, value')
+    .eq('tenant_id', tenantId)
     .in('key', ['company_name', 'logo_type', 'logo_name', 'logo_subname', 'logo_image_url', 'logo_font', 'logo_subname_align'])
 
   const get = (key: string, fallback = '') => rows?.find((r) => r.key === key)?.value ?? fallback

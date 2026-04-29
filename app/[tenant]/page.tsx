@@ -90,8 +90,12 @@ export default async function TenantHomePage({
       <Hero projects={(featuredProjects as any) ?? []} tenantSlug={slug} />
       <div data-reveal><Features categories={(categories as any) ?? []} tenantSlug={slug} /></div>
       <div data-reveal><CTA companyName={companyName} tenantSlug={slug} /></div>
-      <div data-reveal><Testimonials testimonials={testimonials ?? []} /></div>
-      <div data-reveal><FAQ faqs={faqs ?? []} /></div>
+      {testimonials && testimonials.length > 0 && (
+        <div data-reveal><Testimonials testimonials={testimonials} /></div>
+      )}
+      {faqs && faqs.length > 0 && (
+        <div data-reveal><FAQ faqs={faqs} /></div>
+      )}
       <div data-reveal>
         <Contact
           whatsappNumber={get('whatsapp_number', '5511999999999')}

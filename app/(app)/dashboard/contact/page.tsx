@@ -1,12 +1,15 @@
-import { createClient } from '@/lib/supabase/server'
+import { requireTenant } from '@/lib/tenant/guard'
+import { createAdminClient } from '@/lib/supabase/admin'
 import ContactSettingsForm from '@/components/admin/ContactSettingsForm'
 
 export default async function ContactSettingsPage() {
-  const supabase = await createClient()
+  const { tenantId } = await requireTenant()
+  const admin = createAdminClient()
 
-  const { data: rows } = await supabase
+  const { data: rows } = await admin
     .from('settings')
     .select('key, value')
+    .eq('tenant_id', tenantId)
     .in('key', ['whatsapp_number', 'whatsapp_message', 'whatsapp_floating', 'instagram_path', 'contact_email', 'gmail_user', 'gmail_app_password'])
 
   const get = (key: string, fallback = '') =>
