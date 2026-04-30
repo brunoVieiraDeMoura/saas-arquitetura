@@ -20,11 +20,12 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
 
   const plan = (tenant?.plan ?? 'starter') as Plan
   const galleryLimit = PLANS[plan].galleryLimit
+  const maxFileSizeMB = plan === 'agency' ? 15 : plan === 'pro' ? 10 : 5
 
   return (
     <div>
       <h1 className="text-2xl font-semibold text-neutral-900 mb-6">Editar Projeto</h1>
-      <ProjectForm categories={categories ?? []} initial={project} galleryLimit={galleryLimit} />
+      <ProjectForm categories={categories ?? []} initial={project} galleryLimit={galleryLimit} maxFileSizeMB={maxFileSizeMB} />
     </div>
   )
 }

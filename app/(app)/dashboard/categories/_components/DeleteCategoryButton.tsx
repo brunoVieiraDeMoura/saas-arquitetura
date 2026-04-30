@@ -10,6 +10,7 @@ export default function DeleteCategoryButton({ id, name }: { id: string; name: s
 
   async function handleDelete() {
     if (!confirm(`Deletar a categoria "${name}"? Todos os projetos vinculados serão removidos.`)) return
+    await supabase.from('projects').delete().eq('category_id', id)
     await supabase.from('categories').delete().eq('id', id)
     router.refresh()
   }

@@ -35,9 +35,9 @@ function InfoTooltip({ text }: { text: string }) {
   )
 }
 
-type Props = { categories: Category[]; initial?: Project; defaultCategoryId?: string; galleryLimit?: number }
+type Props = { categories: Category[]; initial?: Project; defaultCategoryId?: string; galleryLimit?: number; maxFileSizeMB?: number }
 
-export default function ProjectForm({ categories, initial, defaultCategoryId, galleryLimit }: Props) {
+export default function ProjectForm({ categories, initial, defaultCategoryId, galleryLimit, maxFileSizeMB = 5 }: Props) {
   const router = useRouter()
   const supabase = createClient()
   const [title, setTitle] = useState(initial?.title ?? '')
@@ -133,10 +133,10 @@ export default function ProjectForm({ categories, initial, defaultCategoryId, ga
           <div className="space-y-1">
             <div className="flex items-center gap-1.5">
               <span className="text-sm font-medium text-neutral-700">Imagens</span>
-              <InfoTooltip text="Tamanho máximo por imagem: 5MB. Formatos aceitos: JPG, PNG, WebP, GIF." />
+              <InfoTooltip text={`Tamanho máximo por imagem: ${maxFileSizeMB}MB. Formatos aceitos: JPG, PNG, WebP, GIF.`} />
             </div>
-            <ImageUpload value={mainImage} onChange={setMainImage} />
-            <div className="pt-2"><GalleryUpload value={gallery} onChange={setGallery} limit={galleryLimit} /></div>
+            <ImageUpload value={mainImage} onChange={setMainImage} maxSizeMB={maxFileSizeMB} />
+            <div className="pt-2"><GalleryUpload value={gallery} onChange={setGallery} limit={galleryLimit} maxSizeMB={maxFileSizeMB} /></div>
           </div>
 
           <div className="border border-neutral-200 rounded-xl p-4 space-y-3">

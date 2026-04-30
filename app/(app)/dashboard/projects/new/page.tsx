@@ -23,6 +23,7 @@ export default async function NewProjectPage({
   const plan = (tenant?.plan ?? 'starter') as Plan
   const planData = PLANS[plan]
   const galleryLimit = planData.galleryLimit
+  const maxFileSizeMB = plan === 'agency' ? 15 : plan === 'pro' ? 10 : 5
 
   // Compute per-category project limit and current counts
   const perCatLimit = planData.limits.projects === Infinity
@@ -105,6 +106,7 @@ export default async function NewProjectPage({
             }))}
             defaultCategoryId={categoryId}
             galleryLimit={galleryLimit}
+            maxFileSizeMB={maxFileSizeMB}
           />
         </>
       )}

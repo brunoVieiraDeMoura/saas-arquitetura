@@ -40,7 +40,7 @@ export default async function TenantProjetosPage({
     .eq('tenant_id', tenant.id)
     .order('order_index', { ascending: true })
 
-  const cats = (categories as any[]) ?? []
+  const cats = ((categories as any[]) ?? []).filter((c: any) => c.projects?.length > 0)
   const companyName = tenant.settings.find((r) => r.key === 'company_name')?.value ?? tenant.name
 
   return (

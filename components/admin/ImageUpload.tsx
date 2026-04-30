@@ -8,14 +8,16 @@ type Props = {
   onChange: (url: string) => void
   bucket?: string
   label?: string
+  maxSizeMB?: number
 }
 type Mode = 'upload' | 'url'
 
-export default function ImageUpload({ value, onChange, bucket = 'projects', label = 'Imagem Principal' }: Props) {
+export default function ImageUpload({ value, onChange, bucket = 'projects', label = 'Imagem Principal', maxSizeMB = 5 }: Props) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [mode, setMode] = useState<Mode>('upload')
   const [urlInput, setUrlInput] = useState('')
+  const maxSizeBytes = maxSizeMB * 1024 * 1024
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
@@ -41,10 +43,10 @@ export default function ImageUpload({ value, onChange, bucket = 'projects', labe
     onDrop,
     accept: { 'image/*': [] },
     maxFiles: 1,
-    maxSize: 5 * 1024 * 1024,
+    maxSize: maxSizeBytes,
     onDropRejected: (r) => {
       const err = r[0]?.errors[0]
-      setError(err?.code === 'file-too-large' ? 'Imagem deve ter no máximo 5MB' : 'Arquivo inválido')
+      setError(err?.code === 'file-too-large' ? `Imagem deve ter no máximo ${maxSizeMB}MB` : 'Arquivo inválido')
     },
   })
 
@@ -91,7 +93,7 @@ export default function ImageUpload({ value, onChange, bucket = 'projects', labe
           className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${isDragActive ? 'border-neutral-900 bg-neutral-50' : 'border-neutral-300 hover:border-neutral-400'} ${uploading ? 'opacity-60 pointer-events-none' : ''}`}>
           <input {...getInputProps()} />
           <p className="text-sm text-neutral-500">
-            {uploading ? 'Enviando...' : isDragActive ? 'Solte aqui' : 'Arraste uma imagem ou clique para selecionar (máx. 5MB)'}
+            {uploading ? 'Enviando...' : isDragActive ? 'Solte aqui' : `Arraste uma imagem ou clique para selecionar (máx. ${maxSizeMB}MB)`}
           </p>
         </div>
       ) : (

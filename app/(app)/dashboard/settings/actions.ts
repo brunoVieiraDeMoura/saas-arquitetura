@@ -13,10 +13,8 @@ export async function updateTenantSettings(formData: FormData) {
   const { tenantId } = await requireTenant()
   const admin = createAdminClient()
 
-  const name = (formData.get('name') as string).trim()
   const slug = (formData.get('slug') as string).trim().toLowerCase()
 
-  if (!name || name.length < 2) return { error: 'Nome deve ter ao menos 2 caracteres.' }
   if (!isValidSlug(slug)) return { error: 'Slug inválido. Use apenas letras minúsculas, números e hífens (3–50 caracteres).' }
 
   const { data: existing } = await admin
@@ -30,7 +28,7 @@ export async function updateTenantSettings(formData: FormData) {
 
   const { error } = await admin
     .from('tenants')
-    .update({ name, slug })
+    .update({ slug })
     .eq('id', tenantId)
 
   if (error) return { error: 'Erro ao salvar. Tente novamente.' }

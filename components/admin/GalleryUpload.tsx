@@ -5,9 +5,9 @@ import { useDropzone } from 'react-dropzone'
 import Link from 'next/link'
 import { Lock } from 'lucide-react'
 
-type Props = { value: string[]; onChange: (urls: string[]) => void; limit?: number }
+type Props = { value: string[]; onChange: (urls: string[]) => void; limit?: number; maxSizeMB?: number }
 
-export default function GalleryUpload({ value, onChange, limit }: Props) {
+export default function GalleryUpload({ value, onChange, limit, maxSizeMB = 5 }: Props) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
 
@@ -40,11 +40,11 @@ export default function GalleryUpload({ value, onChange, limit }: Props) {
     onDrop,
     accept: { 'image/*': [] },
     multiple: true,
-    maxSize: 5 * 1024 * 1024,
+    maxSize: maxSizeMB * 1024 * 1024,
     disabled: atLimit,
     onDropRejected: (r) => {
       setError(r.some((x) => x.errors.some((e) => e.code === 'file-too-large'))
-        ? 'Cada imagem deve ter no máximo 5MB' : 'Arquivo inválido')
+        ? `Cada imagem deve ter no máximo ${maxSizeMB}MB` : 'Arquivo inválido')
     },
   })
 

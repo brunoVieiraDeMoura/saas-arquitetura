@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS categories (
 CREATE TABLE IF NOT EXISTS projects (
   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id        UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-  category_id      UUID REFERENCES categories(id) ON DELETE SET NULL,
+  category_id      UUID REFERENCES categories(id) ON DELETE CASCADE,
   title            TEXT NOT NULL,
   slug             TEXT NOT NULL,
   date             DATE NOT NULL,

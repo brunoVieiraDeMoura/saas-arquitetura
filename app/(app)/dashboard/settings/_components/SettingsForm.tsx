@@ -4,13 +4,11 @@ import { useState, useTransition } from 'react'
 import { updateTenantSettings } from '../actions'
 
 interface Props {
-  initialName: string
   initialSlug: string
   rootDomain: string
 }
 
-export default function SettingsForm({ initialName, initialSlug, rootDomain }: Props) {
-  const [name, setName] = useState(initialName)
+export default function SettingsForm({ initialSlug, rootDomain }: Props) {
   const [slug, setSlug] = useState(initialSlug)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -30,7 +28,6 @@ export default function SettingsForm({ initialName, initialSlug, rootDomain }: P
     setSuccess(false)
 
     const fd = new FormData()
-    fd.append('name', name)
     fd.append('slug', slug)
 
     startTransition(async () => {
@@ -43,23 +40,10 @@ export default function SettingsForm({ initialName, initialSlug, rootDomain }: P
     })
   }
 
-  const dirty = name !== initialName || slug !== initialSlug
+  const dirty = slug !== initialSlug
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <div>
-        <label className="block text-xs text-neutral-400 mb-1.5">Nome do escritório</label>
-        <input
-          type="text"
-          value={name}
-          onChange={e => { setName(e.target.value); setError(null); setSuccess(false) }}
-          className="w-full text-sm font-medium text-neutral-800 border border-neutral-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition"
-          placeholder="Nome do escritório"
-          required
-          minLength={2}
-        />
-      </div>
-
       <div>
         <label className="block text-xs text-neutral-400 mb-1.5">Slug / URL</label>
         <div className="flex items-center border border-neutral-200 rounded-xl px-3.5 py-2.5 focus-within:ring-2 focus-within:ring-neutral-900 focus-within:border-transparent transition">

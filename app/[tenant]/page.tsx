@@ -88,7 +88,7 @@ export default async function TenantHomePage({
       <TrackPageView tenantId={tenant.id} />
       <ScrollReveal />
       <Hero projects={(featuredProjects as any) ?? []} tenantSlug={slug} />
-      <div data-reveal><Features categories={(categories as any) ?? []} tenantSlug={slug} /></div>
+      <div data-reveal><Features categories={((categories as any) ?? []).filter((c: any) => c.projects?.length > 0)} tenantSlug={slug} /></div>
       <div data-reveal><CTA companyName={companyName} tenantSlug={slug} /></div>
       {testimonials && testimonials.length > 0 && (
         <div data-reveal><Testimonials testimonials={testimonials} /></div>

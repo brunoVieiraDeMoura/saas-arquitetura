@@ -77,7 +77,6 @@ export default async function SettingsPage() {
       <div className="bg-white rounded-2xl border border-neutral-200 p-6 mb-5">
         <h2 className="text-sm font-semibold text-neutral-900 mb-5">Conta</h2>
         <SettingsForm
-          initialName={tenant?.name ?? ''}
           initialSlug={tenantSlug}
           rootDomain={rootDomain}
         />
