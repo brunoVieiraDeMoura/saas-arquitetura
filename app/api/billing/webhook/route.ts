@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { handleMPWebhook } from '@/lib/mercadopago/webhooks'
 
+export async function GET() {
+  return NextResponse.json({ ok: true })
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.text()
   const xSignature = req.headers.get('x-signature') ?? ''

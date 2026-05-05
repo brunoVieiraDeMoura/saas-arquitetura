@@ -29,7 +29,7 @@ export async function handleMPWebhook(
   }
 
   const notification = JSON.parse(body)
-  if (notification.type !== 'subscription_preapproval') return
+  if (!['subscription_preapproval', 'payment'].includes(notification.type)) return
 
   const preApproval = new PreApproval(mp)
   const sub = await preApproval.get({ id: dataId })
