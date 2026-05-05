@@ -43,22 +43,21 @@ export async function POST(req: Request) {
   const preApproval = new PreApproval(mp)
   let sub
   try {
-    sub = await preApproval.create({
-      body: {
-        reason: `Arquitetura Organizada — Plano ${planData.name} (${billingLabel})`,
-        payer_email: user.email!,
-        auto_recurring: {
-          frequency,
-          frequency_type: 'months',
-          transaction_amount: transactionAmount,
-          currency_id: 'BRL',
-        },
-        back_url: backUrl,
-        notification_url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/billing/webhook`,
-        external_reference: `${profile.tenant_id}:${plan}`,
-        status: 'pending',
+    const body: any = {
+      reason: `Arquitetura Organizada — Plano ${planData.name} (${billingLabel})`,
+      payer_email: user.email!,
+      auto_recurring: {
+        frequency,
+        frequency_type: 'months',
+        transaction_amount: transactionAmount,
+        currency_id: 'BRL',
       },
-    })
+      back_url: backUrl,
+      notification_url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/billing/webhook`,
+      external_reference: `${profile.tenant_id}:${plan}`,
+      status: 'pending',
+    }
+    sub = await preApproval.create({ body })
   } catch (err: any) {
     const detail = err?.cause ?? err
     console.error('[MP checkout error]', JSON.stringify(detail, null, 2))
