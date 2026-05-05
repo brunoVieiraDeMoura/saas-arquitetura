@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
-export default function SignupPage() {
+function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -115,4 +115,8 @@ export default function SignupPage() {
       </div>
     </div>
   )
+}
+
+export default function Page() {
+  return <Suspense><SignupPage /></Suspense>
 }

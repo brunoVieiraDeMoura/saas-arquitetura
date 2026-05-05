@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
@@ -13,7 +13,7 @@ function slugify(str: string) {
     .replace(/^-|-$/g, '')
 }
 
-export default function OnboardingPage() {
+function OnboardingPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [officeName, setOfficeName] = useState('')
@@ -95,4 +95,8 @@ export default function OnboardingPage() {
       </div>
     </div>
   )
+}
+
+export default function Page() {
+  return <Suspense><OnboardingPage /></Suspense>
 }

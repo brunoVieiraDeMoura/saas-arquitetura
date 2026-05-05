@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 
-export default function ResetPasswordPage() {
+function ResetPasswordPage() {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
@@ -117,4 +117,8 @@ export default function ResetPasswordPage() {
       </div>
     </div>
   )
+}
+
+export default function Page() {
+  return <Suspense><ResetPasswordPage /></Suspense>
 }

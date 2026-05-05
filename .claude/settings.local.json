@@ -19,7 +19,8 @@
       "Bash(node -e \"import\\('./src/data/municipios.json', {assert:{type:'json'}}\\).then\\(m=>{const k=Object.keys\\(m.default\\);console.log\\(k.slice\\(0,5\\)\\);console.log\\(m.default['SP'].slice\\(0,5\\)\\)}\\)\")",
       "Bash(node *)",
       "Bash(git checkout *)",
-      "Bash(dir \"C:\\\\Users\\\\Bruno\\\\desktop\\\\sass-arquitetura-organizada\\\\app\")"
+      "Bash(dir \"C:\\\\Users\\\\Bruno\\\\desktop\\\\sass-arquitetura-organizada\\\\app\")",
+      "Bash(Remove-Item *)"
     ]
   }
 }

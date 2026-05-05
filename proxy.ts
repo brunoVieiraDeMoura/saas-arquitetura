@@ -8,7 +8,7 @@ const RESERVED_SLUGS = new Set([
   'api', 'pricing', 'www', 'app', '_next', 'favicon.ico', 'invite',
 ])
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const hostname = req.headers.get('host') || ''
   const url = req.nextUrl.clone()
   const pathname = url.pathname
