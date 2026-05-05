@@ -36,12 +36,15 @@ export default async function TenantProjetosPage({
   const admin = createAdminClient()
   const { data: categories } = await admin
     .from('categories')
-    .select('id, name, slug, description, projects(id, title, slug, main_image, date, content)')
+    .select('id, name, slug, description, projects(id, title, slug, main_image, date, content, created_at)')
     .eq('tenant_id', tenant.id)
     .order('order_index', { ascending: true })
 
-  const cats = ((categories as any[]) ?? []).filter((c: any) => c.projects?.length > 0)
+  const allCats = ((categories as any[]) ?? []).filter((c: any) => c.projects?.length > 0)
   const companyName = tenant.settings.find((r) => r.key === 'company_name')?.value ?? tenant.name
+
+  const isFree = tenant.plan === 'starter'
+  const cats = isFree ? allCats.slice(0, 2) : allCats
 
   return (
     <>
@@ -75,7 +78,9 @@ export default async function TenantProjetosPage({
           </p>
 
           {cats.map((cat: any) => {
-            const projects: any[] = cat.projects ?? []
+            const projects: any[] = [...(cat.projects ?? [])].sort((a: any, b: any) =>
+              new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime()
+            )
             const preview = projects.slice(0, 2)
             return (
               <section key={cat.id} id={`cat-${cat.slug}`} className="mb-20">

@@ -2,13 +2,13 @@ import Link from 'next/link'
 import { formatDate, extractTiptapText, truncate } from '@/lib/utils'
 
 type Project = {
-  id: string; title: string; slug: string; main_image: string; date: string; content?: unknown
+  id: string; title: string; slug: string; main_image: string; date: string; content?: unknown; created_at?: string
 }
 type Category = {
   id: string; name: string; slug: string; description: string; projects: Project[]
 }
 
-export default function Features({ categories, tenantSlug }: { categories: Category[]; tenantSlug: string }) {
+export default function Features({ categories, tenantSlug, plan }: { categories: Category[]; tenantSlug: string; plan?: string }) {
   const visible = categories.slice(0, 2)
 
   return (
@@ -16,8 +16,11 @@ export default function Features({ categories, tenantSlug }: { categories: Categ
       <div className="max-w-[1000px] mx-auto">
         <h2 className="text-3xl font-bold text-neutral-900 mb-16 text-center">Nossos Projetos</h2>
         {visible.map((cat) => {
-          const cover = cat.projects[0]
-          const projects = cat.projects.slice(0, 3)
+          const sorted = [...cat.projects].sort((a, b) =>
+            new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime()
+          )
+          const cover = sorted[0]
+          const projects = sorted.slice(0, 3)
           return (
             <div key={cat.id} className="mb-20">
               <div className="mb-8 flex items-center gap-4">

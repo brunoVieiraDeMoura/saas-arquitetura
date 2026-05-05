@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
+import { requireTenant } from '@/lib/tenant/guard'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import CategoryForm from '@/components/admin/CategoryForm'
@@ -6,15 +7,18 @@ import DeleteProjectButton from '@/app/(app)/dashboard/projects/_components/Dele
 
 export default async function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const supabase = await createClient()
+  const { tenantId } = await requireTenant()
+  const admin = createAdminClient()
 
-  const [{ data: category }, { data: projects }] = await Promise.all([
-    supabase.from('categories').select('*').eq('id', id).single(),
-    supabase
+  const [{ data: category }, { data: projects }, { data: allCategories }] = await Promise.all([
+    admin.from('categories').select('*').eq('id', id).eq('tenant_id', tenantId).single(),
+    admin
       .from('projects')
       .select('id, title, date, is_featured, slug')
       .eq('category_id', id)
+      .eq('tenant_id', tenantId)
       .order('created_at', { ascending: false }),
+    admin.from('categories').select('id, name, order_index').eq('tenant_id', tenantId).order('order_index', { ascending: true }),
   ])
 
   if (!category) notFound()
@@ -30,7 +34,7 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
             <h1 className="text-2xl font-semibold text-neutral-900">{category.name}</h1>
           </div>
         </div>
-        <CategoryForm initial={category} />
+        <CategoryForm initial={category} allCategories={allCategories ?? []} />
       </div>
 
       <div>

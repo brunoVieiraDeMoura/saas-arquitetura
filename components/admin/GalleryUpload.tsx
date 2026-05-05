@@ -60,16 +60,26 @@ export default function GalleryUpload({ value, onChange, limit, maxSizeMB = 5 }:
       </div>
       {value.length > 0 && (
         <div className="grid grid-cols-4 gap-2 mb-3">
-          {value.map((url) => (
-            <div key={url} className="relative aspect-square max-h-24">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={url} alt="" className="w-full h-full object-cover rounded-lg border border-neutral-200" />
-              <button type="button" onClick={() => onChange(value.filter((u) => u !== url))}
-                className="absolute top-1 right-1 bg-white border border-neutral-200 rounded-full w-6 h-6 flex items-center justify-center text-xs text-neutral-500 hover:bg-neutral-50">
-                ✕
-              </button>
-            </div>
-          ))}
+          {value.map((url, idx) => {
+            const isOverLimit = limit !== undefined && limit !== Infinity && idx >= limit
+            return (
+              <div key={url} className="relative aspect-square max-h-24">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className={`w-full h-full object-cover rounded-lg border border-neutral-200 ${isOverLimit ? 'opacity-40' : ''}`} />
+                {isOverLimit ? (
+                  <div className="absolute inset-0 rounded-lg bg-amber-50/90 flex flex-col items-center justify-center gap-0.5 border border-amber-200">
+                    <Lock size={11} className="text-amber-600" />
+                    <span className="text-[9px] text-amber-700 font-medium leading-tight text-center px-1">Oculta no site</span>
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => onChange(value.filter((u) => u !== url))}
+                    className="absolute top-1 right-1 bg-white border border-neutral-200 rounded-full w-6 h-6 flex items-center justify-center text-xs text-neutral-500 hover:bg-neutral-50">
+                    ✕
+                  </button>
+                )}
+              </div>
+            )
+          })}
         </div>
       )}
       {atLimit ? (

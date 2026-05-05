@@ -176,4 +176,3 @@ Acesse `/admin` com o e-mail listado em `SUPERADMIN_EMAILS`. Disponível:
 - `/admin/tenants` — lista de clientes, reembolso
 - `/admin/billing` — visão geral de receita por plano
 - `/admin/stats` — métricas de uso e indicador de consumo do Supabase free tier (storage, DB, auth)
-# saas-arquitetura

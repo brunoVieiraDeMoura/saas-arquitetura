@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { mp } from '@/lib/mercadopago/client'
-import { PLANS } from '@/lib/mercadopago/plans'
+import { PLANS, type BillingCycle } from '@/lib/mercadopago/plans'
+import { getPlanPrices } from '@/lib/mercadopago/getPlanPrices'
 import { PreApproval } from 'mercadopago'
 import { NextResponse } from 'next/server'
 
@@ -10,7 +11,7 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
-  const { plan } = await req.json()
+  const { plan, billing = 'monthly' } = await req.json()
   if (!plan || !(plan in PLANS) || plan === 'starter') {
     return NextResponse.json({ error: 'Plano inválido' }, { status: 400 })
   }
@@ -18,23 +19,38 @@ export async function POST(req: Request) {
   const planData = PLANS[plan as keyof typeof PLANS]
   if (planData.price === 0) return NextResponse.json({ error: 'Plano sem cobrança' }, { status: 400 })
 
+  const priceOverrides = await getPlanPrices()
+  const override = priceOverrides[plan as keyof typeof priceOverrides]
+  const effectiveMonthly = override?.price ?? planData.price
+  const effectiveAnnual = override?.priceAnnual ?? planData.priceAnnual
+
+  const billingCycle: BillingCycle = billing === 'annual' ? 'annual' : 'monthly'
+  const monthlyPrice = billingCycle === 'annual' ? effectiveAnnual : effectiveMonthly
+
+  // Annual: charge full year upfront (12 months). Monthly: charge each month.
+  const frequency = billingCycle === 'annual' ? 12 : 1
+  const transactionAmount = billingCycle === 'annual'
+    ? (monthlyPrice / 100) * 12
+    : monthlyPrice / 100
+
   const { data: profile } = await supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
   if (!profile?.tenant_id) return NextResponse.json({ error: 'Tenant não encontrado' }, { status: 404 })
 
   // back_url must be a publicly accessible HTTPS URL — MP rejects localhost
   const backUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/billing?success=1`
 
+  const billingLabel = billingCycle === 'annual' ? 'Anual' : 'Mensal'
   const preApproval = new PreApproval(mp)
   let sub
   try {
     sub = await preApproval.create({
       body: {
-        reason: `Arquitetura Organizada — Plano ${planData.name}`,
+        reason: `Arquitetura Organizada — Plano ${planData.name} (${billingLabel})`,
         payer_email: user.email!,
         auto_recurring: {
-          frequency: 1,
+          frequency,
           frequency_type: 'months',
-          transaction_amount: planData.price / 100,
+          transaction_amount: transactionAmount,
           currency_id: 'BRL',
         },
         back_url: backUrl,

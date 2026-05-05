@@ -48,7 +48,7 @@ export default async function TenantCategoryPage({
   const [{ data: category }, { data: allCategories }] = await Promise.all([
     admin
       .from('categories')
-      .select('id, name, slug, description, projects(id, title, slug, main_image, date)')
+      .select('id, name, slug, description, projects(id, title, slug, main_image, date, created_at)')
       .eq('slug', categorySlug)
       .eq('tenant_id', tenant.id)
       .single(),
@@ -61,11 +61,24 @@ export default async function TenantCategoryPage({
 
   if (!category) notFound()
 
-  const allProjects = (category as any).projects ?? []
+  const isFree = tenant.plan === 'starter'
+  const CAT_LIMIT = 2
+  const PROJECT_LIMIT = 6
+
+  const orderedCats = allCategories ?? []
+  const catIndex = orderedCats.findIndex((c) => c.slug === categorySlug)
+  // Free plan shows the FIRST CAT_LIMIT categories (oldest by order_index)
+  if (isFree && catIndex >= CAT_LIMIT) notFound()
+
+  const allProjects: any[] = [...((category as any).projects ?? [])].sort((a, b) =>
+    new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime()
+  )
+  const visibleProjects = isFree ? allProjects.slice(0, PROJECT_LIMIT) : allProjects
   const projects = q
-    ? allProjects.filter((p: any) => p.title.toLowerCase().includes(q.toLowerCase()))
-    : allProjects
-  const otherCategories = (allCategories ?? []).filter((c) => c.slug !== categorySlug)
+    ? visibleProjects.filter((p: any) => p.title.toLowerCase().includes(q.toLowerCase()))
+    : visibleProjects
+  const otherCategories = orderedCats
+    .filter((c, i) => c.slug !== categorySlug && (!isFree || i < CAT_LIMIT))
   const companyName = tenant.settings.find((r) => r.key === 'company_name')?.value ?? tenant.name
 
   return (
@@ -104,7 +117,7 @@ export default async function TenantCategoryPage({
         )}
         <p className="text-sm text-neutral-400 mt-2">
           {projects.length} projeto{projects.length !== 1 ? 's' : ''}
-          {q && allProjects.length !== projects.length && ` de ${allProjects.length}`}
+          {q && visibleProjects.length !== projects.length && ` de ${visibleProjects.length}`}
         </p>
         <div className="mt-6 max-w-sm">
           <CategorySearch defaultValue={q ?? ''} />

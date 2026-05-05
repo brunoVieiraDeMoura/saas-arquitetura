@@ -407,25 +407,71 @@ function MobilePage() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   DRAG-SCROLL HOOK
+   DRAG-SCROLL HOOK  (com momentum/inércia estilo mobile)
 ══════════════════════════════════════════════════════════════════════════ */
 function useDragScroll(onFirstDrag: () => void) {
-  const ref = useRef<HTMLDivElement>(null)
-  const dragging = useRef(false)
-  const startY = useRef(0)
+  const ref       = useRef<HTMLDivElement>(null)
+  const dragging  = useRef(false)
+  const startY    = useRef(0)
   const startScroll = useRef(0)
-  const hasFired = useRef(false)
+  const hasFired  = useRef(false)
+  const lastY     = useRef(0)
+  const lastTime  = useRef(0)
+  const velocity  = useRef(0)
+  const rafId     = useRef<number | null>(null)
+
+  const cancelInertia = () => {
+    if (rafId.current !== null) { cancelAnimationFrame(rafId.current); rafId.current = null }
+  }
+
+  const launchInertia = useCallback(() => {
+    const el = ref.current
+    if (!el) return
+    let vel = velocity.current
+    const tick = () => {
+      if (Math.abs(vel) < 0.4) { rafId.current = null; return }
+      el.scrollTop += vel
+      vel *= 0.93          // friction ~iOS
+      rafId.current = requestAnimationFrame(tick)
+    }
+    rafId.current = requestAnimationFrame(tick)
+  }, [])
+
+  const stopDrag = useCallback(() => {
+    if (!dragging.current) return
+    dragging.current = false
+    launchInertia()
+  }, [launchInertia])
+
+  // captura mouseup fora do elemento também
+  useEffect(() => {
+    window.addEventListener('mouseup', stopDrag)
+    return () => window.removeEventListener('mouseup', stopDrag)
+  }, [stopDrag])
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     if (!ref.current) return
-    dragging.current = true
-    startY.current = e.clientY
+    cancelInertia()
+    dragging.current  = true
+    startY.current    = e.clientY
+    lastY.current     = e.clientY
     startScroll.current = ref.current.scrollTop
+    lastTime.current  = performance.now()
+    velocity.current  = 0
     e.preventDefault()
   }, [])
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
     if (!dragging.current || !ref.current) return
+    const now = performance.now()
+    const dt  = now - lastTime.current
+    if (dt > 0) {
+      // EMA de velocidade → suaviza jitter
+      const rawVel = ((lastY.current - e.clientY) / dt) * 16
+      velocity.current = velocity.current * 0.25 + rawVel * 0.75
+    }
+    lastY.current    = e.clientY
+    lastTime.current = now
     const delta = e.clientY - startY.current
     ref.current.scrollTop = startScroll.current - delta
     if (!hasFired.current && Math.abs(delta) > 4) {
@@ -434,8 +480,8 @@ function useDragScroll(onFirstDrag: () => void) {
     }
   }, [onFirstDrag])
 
-  const onMouseUp = useCallback(() => { dragging.current = false }, [])
-  const onMouseLeave = useCallback(() => { dragging.current = false }, [])
+  const onMouseUp    = useCallback(() => stopDrag(), [stopDrag])
+  const onMouseLeave = useCallback(() => stopDrag(), [stopDrag])
 
   return { ref, onMouseDown, onMouseMove, onMouseUp, onMouseLeave }
 }
@@ -476,15 +522,15 @@ function TouchCursor({ x, y, visible, active }: { x: number; y: number; visible:
     <div style={{
       position: 'fixed', left: x, top: y,
       transform: 'translate(-50%, -50%)',
-      width: active ? 44 : 36,
-      height: active ? 44 : 36,
+      width: active ? 48 : 38,
+      height: active ? 48 : 38,
       borderRadius: '50%',
-      background: active ? 'rgba(0,0,0,0.18)' : 'rgba(0,0,0,0.1)',
-      border: `2px solid rgba(0,0,0,${active ? 0.35 : 0.22})`,
+      background: active ? 'rgba(0,0,0,0.15)' : 'rgba(0,0,0,0.08)',
+      border: `2px solid rgba(0,0,0,${active ? 0.3 : 0.18})`,
       pointerEvents: 'none',
       zIndex: 9999,
       opacity: visible ? 1 : 0,
-      transition: 'opacity 0.15s, width 0.1s, height 0.1s, background 0.1s',
+      transition: 'opacity 0.2s, width 0.15s ease-out, height 0.15s ease-out, background 0.15s',
     }} />
   )
 }

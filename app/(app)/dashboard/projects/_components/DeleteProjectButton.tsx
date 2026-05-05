@@ -1,16 +1,14 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { Trash2 } from 'lucide-react'
 
 export default function DeleteProjectButton({ id, title }: { id: string; title: string }) {
   const router = useRouter()
-  const supabase = createClient()
 
   async function handleDelete() {
     if (!confirm(`Deletar o projeto "${title}"?`)) return
-    await supabase.from('projects').delete().eq('id', id)
+    await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' })
     router.refresh()
   }
 

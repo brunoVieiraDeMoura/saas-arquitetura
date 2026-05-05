@@ -87,33 +87,49 @@ export default async function ProjectsPage({
       <div className="bg-white rounded-xl border border-neutral-200 mt-4">
         {projects?.length ? (
           <ul className="divide-y divide-neutral-100">
-            {projects.map((p) => (
-              <li key={p.id} className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-neutral-800">{p.title}</p>
-                    {p.is_featured && (
-                      <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Destaque</span>
-                    )}
+            {projects.map((p, index) => {
+              const isOverLimit = totalLimit !== Infinity && index >= totalLimit
+              return (
+                <li key={p.id} className={isOverLimit ? 'opacity-60' : ''}>
+                  {isOverLimit && (
+                    <div className="flex items-center justify-between px-4 sm:px-6 py-2 bg-amber-50 border-b border-amber-100">
+                      <p className="text-xs text-amber-700 flex items-center gap-1.5">
+                        <Lock className="w-3 h-3 shrink-0" />
+                        Oculto no site — limite de {totalLimit} projetos do plano Starter
+                      </p>
+                      <Link href="/dashboard/billing" className="text-xs font-semibold text-amber-800 underline shrink-0">
+                        Fazer upgrade
+                      </Link>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-neutral-800">{p.title}</p>
+                        {p.is_featured && (
+                          <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Destaque</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-neutral-400">
+                        {/* @ts-ignore */}
+                        {p.categories?.name} · {p.date}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 sm:gap-3">
+                      <Link
+                        href={`/dashboard/projects/${p.id}/edit`}
+                        className="p-1.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors"
+                        title="Editar"
+                      >
+                        <Pencil className="w-4 h-4 sm:hidden" />
+                        <span className="hidden sm:inline text-xs hover:underline">Editar</span>
+                      </Link>
+                      <DeleteProjectButton id={p.id} title={p.title} />
+                    </div>
                   </div>
-                  <p className="text-xs text-neutral-400">
-                    {/* @ts-ignore */}
-                    {p.categories?.name} · {p.date}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 sm:gap-3">
-                  <Link
-                    href={`/dashboard/projects/${p.id}/edit`}
-                    className="p-1.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors"
-                    title="Editar"
-                  >
-                    <Pencil className="w-4 h-4 sm:hidden" />
-                    <span className="hidden sm:inline text-xs hover:underline">Editar</span>
-                  </Link>
-                  <DeleteProjectButton id={p.id} title={p.title} />
-                </div>
-              </li>
-            ))}
+                </li>
+              )
+            })}
           </ul>
         ) : (
           <div className="px-6 py-12 text-center text-sm text-neutral-400">

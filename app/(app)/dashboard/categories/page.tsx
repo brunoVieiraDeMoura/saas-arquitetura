@@ -17,8 +17,11 @@ export default async function CategoriesPage() {
 
   const plan = (tenant?.plan ?? 'starter') as Plan
   const catLimit = PLANS[plan].limits.categories
+  const projectLimit = PLANS[plan].limits.projects
   const count = categories?.length ?? 0
   const atCatLimit = catLimit !== Infinity && count >= catLimit
+  const totalProjects = categories?.reduce((sum, c) => sum + (Array.isArray(c.projects) ? c.projects.length : 0), 0) ?? 0
+  const atGlobalProjectLimit = projectLimit !== Infinity && totalProjects >= projectLimit
 
   return (
     <div>
@@ -54,7 +57,9 @@ export default async function CategoriesPage() {
       <div className="bg-white rounded-xl border border-neutral-200">
         {categories?.length ? (
           <ul className="divide-y divide-neutral-100">
-            {categories.map((cat) => {
+            {categories.map((cat, index) => {
+              // Free plan shows the FIRST catLimit categories (oldest). index >= catLimit are hidden.
+              const isOverLimit = catLimit !== Infinity && index >= catLimit
               const projCount = Array.isArray(cat.projects) ? cat.projects.length : 0
               const projLimit = PLANS[plan].limits.projects === Infinity
                 ? Infinity
@@ -62,41 +67,54 @@ export default async function CategoriesPage() {
               const atProjLimit = projLimit !== Infinity && projCount >= projLimit
 
               return (
-                <li key={cat.id} className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
-                  <div>
-                    <p className="text-sm font-medium text-neutral-800">{cat.name}</p>
-                    <p className="text-xs text-neutral-400 flex items-center gap-1.5">
-                      /{cat.slug} ·{' '}
-                      <span className={atProjLimit ? 'text-red-500 font-medium' : ''}>
-                        {projCount}{projLimit !== Infinity ? `/${projLimit}` : ''} projeto{projCount !== 1 ? 's' : ''}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    {atProjLimit ? (
-                      <span className="p-1.5 sm:p-0 text-neutral-300 cursor-not-allowed" title="Limite de projetos atingido">
-                        <Lock className="w-4 h-4 sm:hidden" />
-                        <span className="hidden sm:inline text-xs text-neutral-400">Limite atingido</span>
-                      </span>
-                    ) : (
-                      <Link
-                        href={`/dashboard/projects/new?categoryId=${cat.id}`}
-                        className="p-1.5 sm:p-0 rounded-md text-blue-600 hover:text-blue-700 hover:bg-blue-50 sm:hover:bg-transparent transition-colors"
-                        title="Adicionar projeto"
-                      >
-                        <FolderPlus className="w-4 h-4 sm:hidden" />
-                        <span className="hidden sm:inline text-xs hover:underline">+ Projeto</span>
+                <li key={cat.id} className={isOverLimit ? 'opacity-60' : ''}>
+                  {isOverLimit && (
+                    <div className="flex items-center justify-between px-4 sm:px-6 py-2 bg-amber-50 border-b border-amber-100">
+                      <p className="text-xs text-amber-700 flex items-center gap-1.5">
+                        <Lock className="w-3 h-3 shrink-0" />
+                        Oculta no site — limite de {catLimit} categorias do plano Starter
+                      </p>
+                      <Link href="/dashboard/billing" className="text-xs font-semibold text-amber-800 underline shrink-0">
+                        Fazer upgrade
                       </Link>
-                    )}
-                    <Link
-                      href={`/dashboard/categories/${cat.id}`}
-                      className="p-1.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors"
-                      title="Gerenciar"
-                    >
-                      <Settings className="w-4 h-4 sm:hidden" />
-                      <span className="hidden sm:inline text-xs hover:underline">Gerenciar</span>
-                    </Link>
-                    <DeleteCategoryButton id={cat.id} name={cat.name} />
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-800">{cat.name}</p>
+                      <p className="text-xs text-neutral-400 flex items-center gap-1.5">
+                        /{cat.slug} ·{' '}
+                        <span className={atProjLimit ? 'text-red-500 font-medium' : ''}>
+                          {projCount}{projLimit !== Infinity ? `/${projLimit}` : ''} projeto{projCount !== 1 ? 's' : ''}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      {!isOverLimit && !atGlobalProjectLimit && (atProjLimit ? (
+                        <span className="p-1.5 sm:p-0 text-neutral-300 cursor-not-allowed" title="Limite de projetos atingido">
+                          <Lock className="w-4 h-4 sm:hidden" />
+                          <span className="hidden sm:inline text-xs text-neutral-400">Limite atingido</span>
+                        </span>
+                      ) : (
+                        <Link
+                          href={`/dashboard/projects/new?categoryId=${cat.id}`}
+                          className="p-1.5 sm:p-0 rounded-md text-blue-600 hover:text-blue-700 hover:bg-blue-50 sm:hover:bg-transparent transition-colors"
+                          title="Adicionar projeto"
+                        >
+                          <FolderPlus className="w-4 h-4 sm:hidden" />
+                          <span className="hidden sm:inline text-xs hover:underline">+ Projeto</span>
+                        </Link>
+                      ))}
+                      <Link
+                        href={`/dashboard/categories/${cat.id}`}
+                        className="p-1.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors"
+                        title="Gerenciar"
+                      >
+                        <Settings className="w-4 h-4 sm:hidden" />
+                        <span className="hidden sm:inline text-xs hover:underline">Gerenciar</span>
+                      </Link>
+                      <DeleteCategoryButton id={cat.id} name={cat.name} />
+                    </div>
                   </div>
                 </li>
               )

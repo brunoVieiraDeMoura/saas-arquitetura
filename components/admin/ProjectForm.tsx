@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { slugify, extractTiptapText } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import TiptapEditor from './TiptapEditor'
@@ -39,7 +38,6 @@ type Props = { categories: Category[]; initial?: Project; defaultCategoryId?: st
 
 export default function ProjectForm({ categories, initial, defaultCategoryId, galleryLimit, maxFileSizeMB = 5 }: Props) {
   const router = useRouter()
-  const supabase = createClient()
   const [title, setTitle] = useState(initial?.title ?? '')
   const [slug, setSlug] = useState(initial?.slug ?? '')
   const [categoryId, setCategoryId] = useState(initial?.category_id ?? defaultCategoryId ?? '')
@@ -70,8 +68,13 @@ export default function ProjectForm({ categories, initial, defaultCategoryId, ga
       updated_at: new Date().toISOString(),
     }
     if (initial) {
-      const { error } = await supabase.from('projects').update(payload).eq('id', initial.id)
-      if (error) { setError(error.message); setSaving(false); return }
+      const res = await fetch(`/api/admin/projects/${initial.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const json = await res.json()
+      if (!res.ok) { setError(json.error ?? 'Erro ao salvar projeto.'); setSaving(false); return }
     } else {
       const res = await fetch('/api/admin/projects', {
         method: 'POST',

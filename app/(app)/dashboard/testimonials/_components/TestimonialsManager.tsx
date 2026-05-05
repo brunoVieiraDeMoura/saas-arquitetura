@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import ImageUpload from '@/components/admin/ImageUpload'
 import { Pencil, Trash2 } from 'lucide-react'
@@ -11,7 +10,6 @@ type Testimonial = { id: string; author: string; role: string; content: string; 
 
 export default function TestimonialsManager({ initial }: { initial: Testimonial[] }) {
   const router = useRouter()
-  const supabase = createClient()
   const [items, setItems] = useState(initial)
   const [author, setAuthor] = useState('')
   const [role, setRole] = useState('')
@@ -36,13 +34,13 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
 
   async function handleEditSave(id: string) {
     setEditSaving(true)
-    const { data } = await supabase
-      .from('testimonials')
-      .update({ author: editAuthor, role: editRole, content: editContent, avatar: editAvatar || null })
-      .eq('id', id)
-      .select()
-      .single()
-    if (data) setItems(items.map((i) => i.id === id ? data : i))
+    const res = await fetch(`/api/admin/testimonials/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ author: editAuthor, role: editRole, content: editContent, avatar: editAvatar || null }),
+    })
+    const data = await res.json()
+    if (res.ok) setItems(items.map((i) => i.id === id ? data : i))
     setEditingId(null)
     setEditSaving(false)
     router.refresh()
@@ -51,12 +49,13 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
-    const { data } = await supabase
-      .from('testimonials')
-      .insert({ author, role, content, avatar: avatar || null })
-      .select()
-      .single()
-    if (data) {
+    const res = await fetch('/api/admin/testimonials', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ author, role, content, avatar: avatar || null }),
+    })
+    const data = await res.json()
+    if (res.ok) {
       setItems([data, ...items])
       setAuthor(''); setRole(''); setContent(''); setAvatar('')
     }
@@ -65,7 +64,7 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
 
   async function handleDelete(id: string) {
     if (!confirm('Deletar depoimento?')) return
-    await supabase.from('testimonials').delete().eq('id', id)
+    await fetch(`/api/admin/testimonials/${id}`, { method: 'DELETE' })
     setItems(items.filter((i) => i.id !== id))
     router.refresh()
   }

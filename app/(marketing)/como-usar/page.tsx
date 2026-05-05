@@ -133,17 +133,13 @@ export default function ComoUsarPage() {
           <p className="text-center text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-6">
             Vídeo explicativo
           </p>
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-neutral-900 shadow-xl">
-            {/* Substitua pelo iframe quando tiver o vídeo: */}
-            {/* <iframe src="https://www.youtube.com/embed/SEU_ID" className="w-full h-full" allowFullScreen /> */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-              <p className="text-white/50 text-sm">Vídeo em breve</p>
-            </div>
+          <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl">
+            <iframe
+              src="https://www.youtube.com/embed/--TTnKPEjlc?vq=hd1080"
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
           <p className="text-center text-xs text-neutral-400 mt-4">
             Assista ao tutorial completo e veja como é simples montar seu portfólio.

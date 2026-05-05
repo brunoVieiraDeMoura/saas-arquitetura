@@ -1,5 +1,7 @@
 import { getTenantBySlug } from '@/lib/tenant/resolver'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { PLANS } from '@/lib/mercadopago/plans'
+import type { Plan } from '@/lib/mercadopago/plans'
 import { notFound } from 'next/navigation'
 import Hero from '@/components/site/Hero'
 import Features from '@/components/site/Features'
@@ -42,22 +44,35 @@ export default async function TenantHomePage({
   const get = (key: string, fallback = '') =>
     tenant.settings.find((r) => r.key === key)?.value ?? fallback
 
+  const plan = (tenant.plan ?? 'starter') as Plan
+  const isFree = plan === 'starter'
+  const projectLimit = PLANS[plan].limits.projects
+
+  const featuredQuery = isFree
+    ? admin
+        .from('projects')
+        .select('id, title, slug, main_image, date, is_featured, categories(name, slug)')
+        .eq('tenant_id', tenant.id)
+        .order('created_at', { ascending: true })
+        .limit(projectLimit)
+    : admin
+        .from('projects')
+        .select('id, title, slug, main_image, date, categories(name, slug)')
+        .eq('tenant_id', tenant.id)
+        .eq('is_featured', true)
+        .order('created_at', { ascending: false })
+        .limit(6)
+
   const [
-    { data: featuredProjects },
+    { data: featuredRaw },
     { data: categories },
     { data: testimonials },
     { data: faqs },
   ] = await Promise.all([
-    admin
-      .from('projects')
-      .select('id, title, slug, main_image, date, categories(name, slug)')
-      .eq('tenant_id', tenant.id)
-      .eq('is_featured', true)
-      .order('created_at', { ascending: false })
-      .limit(6),
+    featuredQuery,
     admin
       .from('categories')
-      .select('id, name, slug, description, projects(id, title, slug, main_image, date, content)')
+      .select('id, name, slug, description, projects(id, title, slug, main_image, date, content, created_at)')
       .eq('tenant_id', tenant.id)
       .order('order_index', { ascending: true }),
     admin
@@ -71,6 +86,10 @@ export default async function TenantHomePage({
       .eq('tenant_id', tenant.id)
       .order('order_index', { ascending: true }),
   ])
+
+  const featuredProjects = isFree
+    ? (featuredRaw ?? []).filter((p: any) => p.is_featured)
+    : (featuredRaw ?? [])
 
   const companyName = get('company_name', tenant.name)
 
@@ -87,8 +106,8 @@ export default async function TenantHomePage({
     <>
       <TrackPageView tenantId={tenant.id} />
       <ScrollReveal />
-      <Hero projects={(featuredProjects as any) ?? []} tenantSlug={slug} />
-      <div data-reveal><Features categories={((categories as any) ?? []).filter((c: any) => c.projects?.length > 0)} tenantSlug={slug} /></div>
+      <Hero projects={featuredProjects as any} tenantSlug={slug} />
+      <div data-reveal><Features categories={((categories as any) ?? []).filter((c: any) => c.projects?.length > 0)} tenantSlug={slug} plan={tenant.plan} /></div>
       <div data-reveal><CTA companyName={companyName} tenantSlug={slug} /></div>
       {testimonials && testimonials.length > 0 && (
         <div data-reveal><Testimonials testimonials={testimonials} /></div>

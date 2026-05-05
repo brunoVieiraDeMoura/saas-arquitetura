@@ -138,24 +138,13 @@ export default function DocsPage() {
           <p className="text-sm font-semibold text-neutral-900 mb-1">Vídeo explicativo</p>
           <p className="text-xs text-neutral-500">Assista ao tutorial completo antes de começar — leva menos de 10 minutos.</p>
         </div>
-        <div className="relative aspect-video bg-neutral-950 mx-6 mb-6 rounded-xl overflow-hidden">
-          {/*
-            Quando tiver o vídeo, substitua o conteúdo abaixo pelo iframe:
-            <iframe
-              src="https://www.youtube.com/embed/SEU_VIDEO_ID"
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-            <div className="w-14 h-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-            <p className="text-white/40 text-xs">Vídeo em breve</p>
-          </div>
+        <div className="relative aspect-video mx-6 mb-6 rounded-xl overflow-hidden">
+          <iframe
+            src="https://www.youtube.com/embed/--TTnKPEjlc?vq=hd1080"
+            className="w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         </div>
       </div>
 

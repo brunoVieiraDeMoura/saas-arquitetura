@@ -2,21 +2,33 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { slugify } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
 type Category = { id?: string; name: string; slug: string; description: string; cover_image: string; order_index: number }
+type SlimCategory = { id?: string; name: string; order_index: number }
 
-export default function CategoryForm({ initial }: { initial?: Category }) {
+export default function CategoryForm({
+  initial,
+  defaultOrderIndex = 0,
+  allCategories = [],
+}: {
+  initial?: Category
+  defaultOrderIndex?: number
+  allCategories?: SlimCategory[]
+}) {
   const router = useRouter()
-  const supabase = createClient()
   const [name, setName] = useState(initial?.name ?? '')
   const [slug, setSlug] = useState(initial?.slug ?? '')
   const [description, setDescription] = useState(initial?.description ?? '')
-  const [orderIndex, setOrderIndex] = useState(initial?.order_index ?? 0)
+  const [orderIndex, setOrderIndex] = useState(initial?.order_index ?? defaultOrderIndex)
+  const [orderEdited, setOrderEdited] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+
+  const collision = orderEdited
+    ? allCategories.find((c) => c.order_index === orderIndex && c.id !== initial?.id)
+    : null
 
   function handleNameChange(value: string) {
     setName(value)
@@ -30,8 +42,13 @@ export default function CategoryForm({ initial }: { initial?: Category }) {
     const payload = { name, slug, description, order_index: orderIndex }
 
     if (initial) {
-      const { error } = await supabase.from('categories').update(payload).eq('id', initial.id)
-      if (error) { setError(error.message); setSaving(false); return }
+      const res = await fetch(`/api/admin/categories/${initial.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const json = await res.json()
+      if (!res.ok) { setError(json.error ?? 'Erro ao salvar categoria.'); setSaving(false); return }
     } else {
       const res = await fetch('/api/admin/categories', {
         method: 'POST',
@@ -68,8 +85,19 @@ export default function CategoryForm({ initial }: { initial?: Category }) {
       </div>
       <div>
         <label className="block text-sm font-medium text-neutral-700 mb-1">Ordem</label>
-        <input type="number" value={orderIndex} onChange={(e) => setOrderIndex(Number(e.target.value))}
-          className="w-24 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900" min={0} />
+        <input
+          type="number"
+          value={orderIndex}
+          onChange={(e) => { setOrderIndex(Number(e.target.value)); setOrderEdited(true) }}
+          className="w-24 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+          min={0}
+        />
+        {collision && (
+          <p className="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            A posição {orderIndex} já está sendo usada por <strong>&ldquo;{collision.name}&rdquo;</strong>.
+            Ao salvar, &ldquo;{collision.name}&rdquo; será movida para a posição {orderIndex + 1}.
+          </p>
+        )}
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex gap-3">

@@ -9,10 +9,13 @@ export default async function NewCategoryPage() {
   const { tenantId } = await requireTenant()
   const admin = createAdminClient()
 
-  const [{ data: tenant }, { count }] = await Promise.all([
+  const [{ data: tenant }, { data: existingCategories }] = await Promise.all([
     admin.from('tenants').select('plan').eq('id', tenantId).single(),
-    admin.from('categories').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId),
+    admin.from('categories').select('id, name, order_index').eq('tenant_id', tenantId).order('order_index', { ascending: true }),
   ])
+  const count = existingCategories?.length ?? 0
+  const maxOrderIndex = existingCategories?.reduce((m, c) => Math.max(m, c.order_index ?? 0), -1) ?? -1
+  const nextOrderIndex = maxOrderIndex + 1
 
   const plan = (tenant?.plan ?? 'starter') as Plan
   const limit = PLANS[plan].limits.categories
@@ -37,7 +40,7 @@ export default async function NewCategoryPage() {
           </Link>
         </div>
       ) : (
-        <CategoryForm />
+        <CategoryForm defaultOrderIndex={nextOrderIndex} allCategories={existingCategories ?? []} />
       )}
     </div>
   )

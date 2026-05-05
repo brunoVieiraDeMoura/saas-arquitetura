@@ -52,7 +52,9 @@ export default function OnboardingPage() {
     }
 
     const plan = searchParams.get('plan')
-    router.push(plan ? `/dashboard/billing?checkout=${plan}` : '/dashboard')
+    const billingParam = searchParams.get('billing')
+    const billingQuery = billingParam === 'annual' ? '&billing=annual' : ''
+    router.push(plan ? `/dashboard/billing?checkout=${plan}${billingQuery}` : '/dashboard')
   }
 
   return (

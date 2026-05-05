@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { PLANS, formatPrice, type Plan } from '@/lib/mercadopago/plans'
+import { PLANS, formatPrice, type Plan, type BillingCycle } from '@/lib/mercadopago/plans'
+import type { PriceOverrides } from '@/lib/mercadopago/getPlanPrices'
 import PlanBadge from './PlanBadge'
 import { Globe } from 'lucide-react'
 import CopyEmailButton from '@/components/CopyEmailButton'
@@ -42,32 +43,36 @@ type Props = {
   currentPlan: string
   hasSubscription: boolean
   companyName: string
+  priceOverrides?: PriceOverrides
 }
 
-export default function BillingPanel({ currentPlan, hasSubscription, companyName }: Props) {
+export default function BillingPanel({ currentPlan, hasSubscription, companyName, priceOverrides }: Props) {
   const [loading, setLoading] = useState<string | null>(null)
   const [cancelConfirm, setCancelConfirm] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [billing, setBilling] = useState<BillingCycle>('annual')
   const router = useRouter()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const success = searchParams.get('success')
     const checkout = searchParams.get('checkout')
+    const billingParam = searchParams.get('billing') as BillingCycle | null
     if (success === '1') {
       setShowSuccess(true)
       router.replace('/dashboard/billing')
     } else if (checkout && checkout in PLANS && checkout !== 'starter' && checkout !== currentPlan) {
-      handleUpgrade(checkout)
+      if (billingParam === 'annual') setBilling('annual')
+      handleUpgrade(checkout, billingParam === 'annual' ? 'annual' : 'monthly')
     }
   }, [])
 
-  async function handleUpgrade(planId: string) {
+  async function handleUpgrade(planId: string, billingCycle: BillingCycle = billing) {
     setLoading(planId)
     const res = await fetch('/api/billing/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan: planId }),
+      body: JSON.stringify({ plan: planId, billing: billingCycle }),
     })
     const { url } = await res.json()
     if (url) window.location.href = url
@@ -139,18 +144,74 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
         <WhatsAppButton companyName={companyName} />
       )}
 
+      {/* Billing toggle */}
+      <div className="flex items-center gap-3">
+        <span className={`text-sm font-medium ${billing === 'monthly' ? 'text-neutral-900' : 'text-neutral-400'}`}>
+          Mensal
+        </span>
+        <button
+          onClick={() => setBilling(b => b === 'monthly' ? 'annual' : 'monthly')}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+            billing === 'annual' ? 'bg-neutral-900' : 'bg-neutral-200'
+          }`}
+          aria-label="Alternar ciclo de cobrança"
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+              billing === 'annual' ? 'translate-x-6' : 'translate-x-1'
+            }`}
+          />
+        </button>
+        <span className={`text-sm font-medium ${billing === 'annual' ? 'text-neutral-900' : 'text-neutral-400'}`}>
+          Anual
+        </span>
+        {billing === 'annual' && (
+          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+            Economize até 32%
+          </span>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {(Object.values(PLANS) as typeof PLANS[Plan][]).map((plan) => {
+        {(Object.values(PLANS) as typeof PLANS[Plan][]).map((basePlan) => {
+          const o = priceOverrides?.[basePlan.id as Plan]
+          const plan = o ? { ...basePlan, price: o.price, priceAnnual: o.priceAnnual, annualDiscount: o.annualDiscount } : basePlan
           const isCurrent = plan.id === currentPlan
           const isDowngrade = PLAN_ORDER[plan.id] < PLAN_ORDER[currentPlan]
+          const price = billing === 'annual' ? plan.priceAnnual : plan.price
+          const originalPrice = plan.price
+
           return (
             <div key={plan.id} className={`bg-white rounded-xl border p-6 flex flex-col gap-4 ${isCurrent ? 'border-neutral-900' : isDowngrade ? 'border-neutral-100 opacity-70' : 'border-neutral-200'}`}>
               <div>
-                <p className={`font-semibold ${isDowngrade ? 'text-neutral-400' : 'text-neutral-900'}`}>{plan.name}</p>
-                <p className={`text-2xl font-bold mt-1 ${isDowngrade ? 'text-neutral-400' : 'text-neutral-900'}`}>
-                  {plan.price === 0 ? 'Grátis' : formatPrice(plan.price)}
-                  {plan.price > 0 && <span className="text-sm font-normal text-neutral-300">/mês</span>}
-                </p>
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <p className={`font-semibold ${isDowngrade ? 'text-neutral-400' : 'text-neutral-900'}`}>{plan.name}</p>
+                  {billing === 'annual' && plan.annualDiscount > 0 && (
+                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 shrink-0">
+                      -{plan.annualDiscount}%
+                    </span>
+                  )}
+                </div>
+                {price === 0 ? (
+                  <p className={`text-2xl font-bold ${isDowngrade ? 'text-neutral-400' : 'text-neutral-900'}`}>Grátis</p>
+                ) : (
+                  <>
+                    {billing === 'annual' && (
+                      <p className={`text-xs line-through ${isDowngrade ? 'text-neutral-300' : 'text-neutral-400'}`}>
+                        {formatPrice(originalPrice)}/mês
+                      </p>
+                    )}
+                    <p className={`text-2xl font-bold ${isDowngrade ? 'text-neutral-400' : 'text-neutral-900'}`}>
+                      {formatPrice(price)}
+                      <span className="text-sm font-normal text-neutral-300">/mês</span>
+                    </p>
+                    {billing === 'annual' && (
+                      <p className="text-xs text-neutral-400 mt-0.5">
+                        cobrado {formatPrice(price * 12)}/ano
+                      </p>
+                    )}
+                  </>
+                )}
               </div>
               <ul className="space-y-2 flex-1">
                 {plan.features.map((f) => (

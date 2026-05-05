@@ -1,10 +1,13 @@
 export type Plan = 'starter' | 'pro' | 'agency'
+export type BillingCycle = 'monthly' | 'annual'
 
 export const PLANS = {
   starter: {
     id: 'starter',
     name: 'Starter',
     price: 0,
+    priceAnnual: 0,
+    annualDiscount: 0,
     limits: { categories: 2, projects: 6 },
     galleryLimit: 2,
     features: [
@@ -17,7 +20,9 @@ export const PLANS = {
   pro: {
     id: 'pro',
     name: 'Pro',
-    price: 9900,
+    price: 13000,      // R$130/mês (mensal)
+    priceAnnual: 9900, // R$99/mês (anual — cobrado R$1.188/ano)
+    annualDiscount: 24,
     limits: { categories: Infinity, projects: Infinity },
     galleryLimit: 6,
     features: [
@@ -30,7 +35,9 @@ export const PLANS = {
   agency: {
     id: 'agency',
     name: 'Agency',
-    price: 16700,
+    price: 25000,        // R$250/mês (mensal)
+    priceAnnual: 17000,  // R$170/mês (anual — cobrado R$2.040/ano)
+    annualDiscount: 32,
     limits: { categories: Infinity, projects: Infinity },
     galleryLimit: Infinity,
     features: [
@@ -46,6 +53,8 @@ export const PLANS = {
   id: string
   name: string
   price: number
+  priceAnnual: number
+  annualDiscount: number
   limits: { categories: number; projects: number }
   galleryLimit: number
   features: string[]
@@ -56,4 +65,8 @@ export function formatPrice(cents: number): string {
     style: 'currency',
     currency: 'BRL',
   }).format(cents / 100)
+}
+
+export function getPrice(plan: typeof PLANS[Plan], billing: BillingCycle): number {
+  return billing === 'annual' ? plan.priceAnnual : plan.price
 }

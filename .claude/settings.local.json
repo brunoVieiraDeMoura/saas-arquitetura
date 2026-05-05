@@ -11,7 +11,15 @@
       "Bash(node -e \"const d=require\\('./package.json'\\); console.log\\('next:',d.dependencies.next,'supabase:',d.dependencies['@supabase/supabase-js'],'mp:',d.dependencies.mercadopago,'ts:',d.devDependencies.typescript\\)\")",
       "Skill(claude-api)",
       "WebFetch(domain:supabase.com)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(grep -E \"\\\\.\\(sql|ts|js\\)$\")",
+      "Bash(node scripts/patch-tournaments.mjs)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const m = require\\('./src/data/municipios.json'\\); const keys = Object.keys\\(m\\); console.log\\('estados:', keys.slice\\(0,5\\)\\); console.log\\('example cities SP:', m['SP'].slice\\(0,5\\)\\)\")",
+      "Bash(node -e \"import\\('./src/data/municipios.json', {assert:{type:'json'}}\\).then\\(m=>{const k=Object.keys\\(m.default\\);console.log\\(k.slice\\(0,5\\)\\);console.log\\(m.default['SP'].slice\\(0,5\\)\\)}\\)\")",
+      "Bash(node *)",
+      "Bash(git checkout *)",
+      "Bash(dir \"C:\\\\Users\\\\Bruno\\\\desktop\\\\sass-arquitetura-organizada\\\\app\")"
     ]
   }
 }

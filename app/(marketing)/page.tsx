@@ -4,13 +4,15 @@ import MarketingTestimonials from '@/components/marketing/Testimonials'
 import MarketingFAQ from '@/components/marketing/FAQ'
 import MarketingPricing from '@/components/marketing/Pricing'
 import MarketingContact from '@/components/marketing/Contact'
+import { getPlanPrices } from '@/lib/mercadopago/getPlanPrices'
 
-export default function MarketingHomePage() {
+export default async function MarketingHomePage() {
+  const priceOverrides = await getPlanPrices()
   return (
     <>
       <MarketingHero />
       <MarketingFeatures />
-      <MarketingPricing />
+      <MarketingPricing priceOverrides={priceOverrides} />
       <MarketingTestimonials />
       <MarketingFAQ />
       <MarketingContact />

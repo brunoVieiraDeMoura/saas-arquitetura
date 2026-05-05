@@ -11,8 +11,8 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
   const admin = createAdminClient()
 
   const [{ data: project }, { data: categories }, { data: tenant }] = await Promise.all([
-    admin.from('projects').select('*').eq('id', id).single(),
-    admin.from('categories').select('id, name').order('order_index'),
+    admin.from('projects').select('*').eq('id', id).eq('tenant_id', tenantId).single(),
+    admin.from('categories').select('id, name').eq('tenant_id', tenantId).order('order_index'),
     admin.from('tenants').select('plan').eq('id', tenantId).single(),
   ])
 

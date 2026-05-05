@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Pencil, Trash2 } from 'lucide-react'
 
@@ -10,7 +9,6 @@ type FAQ = { id: string; question: string; answer: string; order_index: number }
 
 export default function FAQsManager({ initial }: { initial: FAQ[] }) {
   const router = useRouter()
-  const supabase = createClient()
   const [items, setItems] = useState(initial)
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
@@ -23,12 +21,13 @@ export default function FAQsManager({ initial }: { initial: FAQ[] }) {
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
-    const { data } = await supabase
-      .from('faqs')
-      .insert({ question, answer, order_index: items.length })
-      .select()
-      .single()
-    if (data) {
+    const res = await fetch('/api/admin/faqs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, answer, order_index: items.length }),
+    })
+    const data = await res.json()
+    if (res.ok) {
       setItems([...items, data])
       setQuestion(''); setAnswer('')
     }
@@ -37,7 +36,7 @@ export default function FAQsManager({ initial }: { initial: FAQ[] }) {
 
   async function handleDelete(id: string) {
     if (!confirm('Deletar esta FAQ?')) return
-    await supabase.from('faqs').delete().eq('id', id)
+    await fetch(`/api/admin/faqs/${id}`, { method: 'DELETE' })
     setItems(items.filter((i) => i.id !== id))
     router.refresh()
   }
@@ -50,13 +49,12 @@ export default function FAQsManager({ initial }: { initial: FAQ[] }) {
 
   async function handleEditSave(id: string) {
     setEditSaving(true)
-    const { data } = await supabase
-      .from('faqs')
-      .update({ question: editQuestion, answer: editAnswer })
-      .eq('id', id)
-      .select()
-      .single()
-    if (data) {
+    const res = await fetch(`/api/admin/faqs/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: editQuestion, answer: editAnswer }),
+    })
+    if (res.ok) {
       setItems(items.map((i) => i.id === id ? { ...i, question: editQuestion, answer: editAnswer } : i))
       setEditingId(null)
     }

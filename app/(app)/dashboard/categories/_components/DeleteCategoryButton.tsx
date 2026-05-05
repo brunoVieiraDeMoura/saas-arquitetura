@@ -1,17 +1,14 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { Trash2 } from 'lucide-react'
 
 export default function DeleteCategoryButton({ id, name }: { id: string; name: string }) {
   const router = useRouter()
-  const supabase = createClient()
 
   async function handleDelete() {
     if (!confirm(`Deletar a categoria "${name}"? Todos os projetos vinculados serão removidos.`)) return
-    await supabase.from('projects').delete().eq('category_id', id)
-    await supabase.from('categories').delete().eq('id', id)
+    await fetch(`/api/admin/categories/${id}`, { method: 'DELETE' })
     router.refresh()
   }
 
