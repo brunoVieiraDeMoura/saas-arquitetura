@@ -74,7 +74,8 @@ export async function updateCustomDomain(formData: FormData) {
   if (conflict) return { error: 'Esse domínio já está em uso.' }
 
   const result = await addVercelDomain(domain)
-  if (result.error && result.error.code !== 'domain_already_in_project') {
+  const IGNORABLE = ['domain_already_in_project', 'domain_taken', 'forbidden']
+  if (result.error && !IGNORABLE.includes(result.error.code)) {
     return { error: result.error.message ?? 'Erro ao adicionar domínio na Vercel.' }
   }
 

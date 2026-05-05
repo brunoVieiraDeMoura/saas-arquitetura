@@ -2,17 +2,74 @@
 
 import { useState, useTransition } from 'react'
 import { updateCustomDomain } from '../actions'
-import { ExternalLink, Info } from 'lucide-react'
+import { ExternalLink, Info, Copy, Check } from 'lucide-react'
 
 interface Props {
   initialDomain: string | null
 }
+
+type Registrar = 'hostinger' | 'godaddy' | 'registro' | 'cloudflare' | 'namecheap'
+
+const REGISTRARS: { id: Registrar; label: string; fields: { campo: string; valor: string; highlight?: boolean; note?: string }[] }[] = [
+  {
+    id: 'hostinger',
+    label: 'Hostinger',
+    fields: [
+      { campo: 'Type', valor: 'A', highlight: true },
+      { campo: 'Name', valor: '@' },
+      { campo: 'Content', valor: '76.76.21.21' },
+      { campo: 'TTL', valor: '3600' },
+    ],
+  },
+  {
+    id: 'godaddy',
+    label: 'GoDaddy',
+    fields: [
+      { campo: 'Type', valor: 'A', highlight: true },
+      { campo: 'Host', valor: '@' },
+      { campo: 'Points To', valor: '76.76.21.21' },
+      { campo: 'TTL', valor: '3600' },
+    ],
+  },
+  {
+    id: 'registro',
+    label: 'Registro.br',
+    fields: [
+      { campo: 'Tipo', valor: 'A', highlight: true },
+      { campo: 'Nome', valor: '@' },
+      { campo: 'Dados', valor: '76.76.21.21' },
+      { campo: 'TTL', valor: '3600' },
+    ],
+  },
+  {
+    id: 'cloudflare',
+    label: 'Cloudflare',
+    fields: [
+      { campo: 'Type', valor: 'A', highlight: true },
+      { campo: 'Name', valor: '@' },
+      { campo: 'IPv4 address', valor: '76.76.21.21' },
+      { campo: 'Proxy status', valor: 'DNS only', note: 'nuvem laranja desativada' },
+      { campo: 'TTL', valor: 'Auto' },
+    ],
+  },
+  {
+    id: 'namecheap',
+    label: 'Namecheap',
+    fields: [
+      { campo: 'Type', valor: 'A Record', highlight: true },
+      { campo: 'Host', valor: '@' },
+      { campo: 'Value', valor: '76.76.21.21' },
+      { campo: 'TTL', valor: 'Automatic' },
+    ],
+  },
+]
 
 export default function CustomDomainForm({ initialDomain }: Props) {
   const [domain, setDomain] = useState(initialDomain ?? '')
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState<string | null>(initialDomain)
   const [isPending, startTransition] = useTransition()
+  const [registrar, setRegistrar] = useState<Registrar>('hostinger')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -35,6 +92,14 @@ export default function CustomDomainForm({ initialDomain }: Props) {
   }
 
   const dirty = domain !== (initialDomain ?? '')
+  const active = REGISTRARS.find(r => r.id === registrar)!
+  const [copied, setCopied] = useState<string | null>(null)
+
+  function copy(val: string, key: string) {
+    navigator.clipboard.writeText(val)
+    setCopied(key)
+    setTimeout(() => setCopied(null), 1500)
+  }
 
   return (
     <div className="space-y-4">
@@ -45,7 +110,7 @@ export default function CustomDomainForm({ initialDomain }: Props) {
           <a href="https://registro.br" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">Registro.br</a>,{' '}
           <a href="https://www.godaddy.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">GoDaddy</a> ou{' '}
           <a href="https://www.hostinger.com.br" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">Hostinger</a>{' '}
-          e depois vincular o DNS aqui. Basta apontar um registro CNAME para o endereço da plataforma.
+          e depois vincular o DNS aqui. Adicione um registro A apontando para o IP da plataforma.
         </p>
       </div>
 
@@ -77,9 +142,9 @@ export default function CustomDomainForm({ initialDomain }: Props) {
         </button>
       </form>
 
-      {saved && (
-        <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4 space-y-3">
-          <div className="flex items-center justify-between">
+      <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4 space-y-3">
+        {saved && (
+          <div className="flex items-center justify-between pb-1">
             <p className="text-xs font-semibold text-neutral-700">Domínio salvo</p>
             <a
               href={`https://${saved}`}
@@ -90,28 +155,73 @@ export default function CustomDomainForm({ initialDomain }: Props) {
               <ExternalLink size={11} /> {saved}
             </a>
           </div>
+        )}
 
-          <div>
-            <p className="text-xs font-medium text-neutral-600 mb-2">Configure o DNS no seu provedor:</p>
-            <div className="bg-neutral-900 rounded-lg px-4 py-3 font-mono text-xs text-white space-y-1.5">
-              <div className="flex gap-4">
-                <span className="text-neutral-400 w-12 shrink-0">Tipo</span>
-                <span className="text-neutral-400 w-8 shrink-0">Nome</span>
-                <span className="text-neutral-400">Valor</span>
-              </div>
-              <div className="flex gap-4 text-emerald-400">
-                <span className="w-12 shrink-0">CNAME</span>
-                <span className="w-8 shrink-0">@</span>
-                <span>cname.vercel-dns.com</span>
-              </div>
-            </div>
+        <div>
+          <p className="text-xs font-medium text-neutral-600 mb-2">Configure o DNS no seu provedor antes de salvar:</p>
+
+          <div className="flex gap-1 mb-2 flex-wrap">
+            {REGISTRARS.map(r => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => setRegistrar(r.id)}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
+                  registrar === r.id
+                    ? 'bg-neutral-900 text-white'
+                    : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'
+                }`}
+              >
+                {r.label}
+              </button>
+            ))}
           </div>
 
-          <p className="text-[11px] text-neutral-400">
-            Após configurar o DNS, pode levar até 48h para propagar. SSL é provisionado automaticamente pela Vercel.
-          </p>
+          <div className="overflow-hidden rounded-lg border border-neutral-200 text-xs font-mono">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-neutral-100">
+                  <th className="text-left px-3 py-2 text-neutral-500 font-medium border-b border-neutral-200">Campo</th>
+                  <th className="text-left px-3 py-2 text-neutral-500 font-medium border-b border-neutral-200">Valor</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-neutral-100">
+                {active.fields.map(f => {
+                  const key = `${registrar}-${f.campo}`
+                  const isCopied = copied === key
+                  return (
+                    <tr key={f.campo}>
+                      <td className="px-3 py-2 text-neutral-500">{f.campo}</td>
+                      <td className="px-3 py-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <div>
+                            <span className={f.highlight ? 'text-emerald-700 font-semibold' : 'text-neutral-800'}>
+                              {f.valor}
+                            </span>
+                            {f.note && <span className="ml-1.5 text-neutral-400">({f.note})</span>}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => copy(f.valor, key)}
+                            className="shrink-0 text-neutral-400 hover:text-neutral-700 transition-colors"
+                            title="Copiar"
+                          >
+                            {isCopied ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
-      )}
+
+        <p className="text-[11px] text-neutral-400">
+          Após configurar o DNS, pode levar até 48h para propagar. SSL é provisionado automaticamente.
+        </p>
+      </div>
     </div>
   )
 }
