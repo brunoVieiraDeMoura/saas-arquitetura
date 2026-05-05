@@ -20,6 +20,16 @@ export async function createInvite(_prev: unknown, formData: FormData) {
 
   if ((count ?? 0) >= 3) return { error: 'Limite de 3 membros atingido' }
 
+  const { count: pendingCount } = await admin
+    .from('tenant_invites')
+    .select('*', { count: 'exact', head: true })
+    .eq('tenant_id', tenantId)
+    .eq('email', email)
+    .is('accepted_at', null)
+    .gt('expires_at', new Date().toISOString())
+
+  if ((pendingCount ?? 0) > 0) return { error: 'Já existe um convite pendente para este email.' }
+
   const token = randomBytes(32).toString('hex')
 
   const { error } = await admin
@@ -40,6 +50,19 @@ export async function createInvite(_prev: unknown, formData: FormData) {
   revalidatePath('/dashboard/team')
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://arquiteturaorganizada.com.br'
   return { inviteUrl: `${baseUrl}/invite/${token}` }
+}
+
+export async function revokeInvite(inviteId: string) {
+  const { tenantId } = await requireTenant()
+  const admin = createAdminClient()
+
+  await admin
+    .from('tenant_invites')
+    .delete()
+    .eq('id', inviteId)
+    .eq('tenant_id', tenantId)
+
+  revalidatePath('/dashboard/team')
 }
 
 export async function removeMember(memberId: string) {

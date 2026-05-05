@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
-import { acceptInvite } from './actions'
+import { acceptInvite, acceptInviteForce } from './actions'
+import AcceptButtons from './_components/AcceptButtons'
 
 export default async function InvitePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params
@@ -37,6 +38,16 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
   const tenantName = (invite.tenants as any)?.name ?? 'Escritório'
   const initial = tenantName[0]?.toUpperCase() ?? 'E'
 
+  let userProfile: { tenant_id: string | null; role: string | null } | null = null
+  if (user) {
+    const admin = createAdminClient()
+    const { data } = await admin.from('profiles').select('tenant_id, role').eq('id', user.id).single()
+    userProfile = data
+  }
+
+  const isOwnerConflict = userProfile?.role === 'owner' && !!userProfile?.tenant_id
+  const isMemberConflict = userProfile?.role === 'member' && !!userProfile?.tenant_id
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="bg-white rounded-2xl border border-neutral-200 p-8 max-w-sm w-full">
@@ -51,16 +62,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
           </p>
         </div>
 
-        {user ? (
-          <form action={acceptInvite.bind(null, token)}>
-            <button
-              type="submit"
-              className="w-full py-3 bg-neutral-900 text-white text-sm font-medium rounded-xl hover:bg-neutral-800 transition-colors"
-            >
-              Aceitar convite
-            </button>
-          </form>
-        ) : (
+        {!user ? (
           <div className="space-y-3">
             <Link
               href={`/signup?invite=${token}`}
@@ -75,6 +77,25 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
               Já tenho conta — Entrar
             </Link>
           </div>
+        ) : isOwnerConflict ? (
+          <div className="space-y-4">
+            <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-xs text-red-700">
+              Você é o proprietário de outro escritório. Não é possível aceitar um convite sem antes excluir sua conta atual.
+            </div>
+            <Link
+              href="/dashboard"
+              className="block w-full py-3 border border-neutral-200 text-neutral-700 text-sm font-medium rounded-xl hover:bg-neutral-50 transition-colors text-center"
+            >
+              Voltar ao meu escritório
+            </Link>
+          </div>
+        ) : (
+          <AcceptButtons
+            token={token}
+            hasConflict={isMemberConflict}
+            acceptInvite={acceptInvite}
+            acceptInviteForce={acceptInviteForce}
+          />
         )}
       </div>
     </div>

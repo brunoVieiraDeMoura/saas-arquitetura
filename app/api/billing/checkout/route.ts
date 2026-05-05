@@ -54,6 +54,7 @@ export async function POST(req: Request) {
           currency_id: 'BRL',
         },
         back_url: backUrl,
+        notification_url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/billing/webhook`,
         external_reference: `${profile.tenant_id}:${plan}`,
         status: 'pending',
       },

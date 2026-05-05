@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { removeMember } from './actions'
 import InviteForm from './_components/InviteForm'
+import PendingInviteRow from './_components/PendingInviteRow'
 
 export default async function TeamPage() {
   const { tenantId, userId } = await requireTenant()
@@ -25,11 +26,13 @@ export default async function TeamPage() {
 
   const { data: invites } = await admin
     .from('tenant_invites')
-    .select('id, email, expires_at')
+    .select('id, email, expires_at, token')
     .eq('tenant_id', tenantId)
     .is('accepted_at', null)
     .gt('expires_at', new Date().toISOString())
     .order('created_at', { ascending: false })
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://arquiteturaorganizada.com.br'
 
   const canInvite = members.length < 3
 
@@ -73,17 +76,14 @@ export default async function TeamPage() {
           <h2 className="text-sm font-semibold text-neutral-900 mb-4">Convites pendentes</h2>
           <div className="divide-y divide-neutral-100">
             {invites!.map((inv) => (
-              <div key={inv.id} className="flex items-center justify-between py-3">
-                <div>
-                  <p className="text-sm text-neutral-900">{inv.email}</p>
-                  <p className="text-xs text-neutral-400 mt-0.5">
-                    Expira em {new Date(inv.expires_at).toLocaleDateString('pt-BR')}
-                  </p>
-                </div>
-                <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full font-medium">
-                  Pendente
-                </span>
-              </div>
+              <PendingInviteRow
+                key={inv.id}
+                id={inv.id}
+                email={inv.email}
+                expiresAt={inv.expires_at}
+                token={inv.token}
+                baseUrl={baseUrl}
+              />
             ))}
           </div>
         </div>
