@@ -24,7 +24,11 @@
       "Bash(claude mcp *)",
       "mcp__mercadopago__quality_checklist",
       "mcp__mercadopago__search_documentation",
-      "mcp__mercadopago__application_list"
+      "mcp__mercadopago__application_list",
+      "mcp__mercadopago__create_test_user",
+      "mcp__mercadopago__notifications_history",
+      "WebSearch",
+      "WebFetch(domain:www.mercadopago.com.br)"
     ]
   }
 }

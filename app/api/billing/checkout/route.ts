@@ -45,11 +45,12 @@ export async function POST(req: Request) {
   let sub
   try {
     const body: any = {
-      reason: `Arquitetura Organizada — Plano ${planData.name} (${billingLabel})`,
+      reason: `Arquitetura Organizada - Plano ${planData.name} (${billingLabel})`,
       payer_email: user.email!,
       auto_recurring: {
         frequency,
         frequency_type: 'months',
+        start_date: new Date().toISOString(),
         transaction_amount: transactionAmount,
         currency_id: 'BRL',
       },
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
       external_reference: `${profile.tenant_id}:${plan}`,
       status: 'pending',
     }
-    sub = await preApproval.create({ body, requestOptions: { idempotencyKey: `${profile.tenant_id}-${plan}-${billingCycle}` } })
+    sub = await preApproval.create({ body })
   } catch (err: any) {
     const detail = err?.cause ?? err
     console.error('[MP checkout error]', JSON.stringify(detail, null, 2))
