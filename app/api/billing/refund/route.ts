@@ -28,14 +28,20 @@ export async function POST(req: NextRequest) {
 
   // Find latest approved payment for this subscription
   const paymentApi = new Payment(mp)
-  const results = await paymentApi.search({
-    options: {
-      external_reference: `${tenantId}:${tenant.plan}`,
-      sort: 'date_created',
-      criteria: 'desc',
-      limit: 5,
-    },
-  })
+  let results
+  try {
+    results = await paymentApi.search({
+      options: {
+        external_reference: `${tenantId}:${tenant.plan}`,
+        sort: 'date_created',
+        criteria: 'desc',
+        limit: 5,
+      },
+    })
+  } catch (err: any) {
+    console.error('[MP refund search error]', err)
+    return NextResponse.json({ error: 'Erro ao buscar pagamentos no MP' }, { status: 500 })
+  }
 
   const latestPayment = results?.results?.find((p: any) => p.status === 'approved')
   if (!latestPayment?.id) {
@@ -44,14 +50,24 @@ export async function POST(req: NextRequest) {
 
   // Issue full refund
   const refundApi = new PaymentRefund(mp)
-  await refundApi.create({ payment_id: latestPayment.id, body: {} })
+  try {
+    await refundApi.create({ payment_id: latestPayment.id, body: {} })
+  } catch (err: any) {
+    console.error('[MP refund create error]', err)
+    return NextResponse.json({ error: 'Erro ao processar reembolso no MP' }, { status: 500 })
+  }
 
   // Cancel subscription on MP
   const preApproval = new PreApproval(mp)
-  await preApproval.update({
-    id: tenant.stripe_subscription_id,
-    body: { status: 'cancelled' },
-  })
+  try {
+    await preApproval.update({
+      id: tenant.stripe_subscription_id!,
+      body: { status: 'cancelled' },
+    })
+  } catch (err: any) {
+    console.error('[MP refund cancel error]', err)
+    return NextResponse.json({ error: 'Reembolso processado mas erro ao cancelar assinatura' }, { status: 500 })
+  }
 
   // Downgrade plan
   await admin

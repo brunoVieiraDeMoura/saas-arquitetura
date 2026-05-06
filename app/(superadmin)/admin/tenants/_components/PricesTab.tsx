@@ -7,7 +7,10 @@ import { Button } from '@/components/ui/button'
 type PlanEntry = { price_monthly: number; price_annual: number }
 
 const toInput = (cents: number) => (cents / 100).toFixed(2).replace('.', ',')
-const toCents = (s: string) => Math.round(parseFloat(s.replace(',', '.')) * 100) || 0
+const toCents = (s: string) => {
+  const n = parseFloat(s.replace(',', '.'))
+  return Number.isFinite(n) && n > 0 ? Math.round(n * 100) : 0
+}
 
 const PLAN_NAMES: Record<string, string> = { pro: 'Pro', agency: 'Agency' }
 

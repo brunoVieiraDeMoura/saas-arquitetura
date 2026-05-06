@@ -69,19 +69,40 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
 
   async function handleUpgrade(planId: string, billingCycle: BillingCycle = billing) {
     setLoading(planId)
-    const res = await fetch('/api/billing/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan: planId, billing: billingCycle }),
-    })
-    const { url } = await res.json()
-    if (url) window.location.href = url
-    else setLoading(null)
+    try {
+      const res = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: planId, billing: billingCycle }),
+      })
+      const json = await res.json()
+      if (!res.ok) {
+        alert(json.error ?? 'Erro ao iniciar checkout.')
+      } else if (json.url) {
+        window.location.href = json.url
+        return
+      }
+    } catch {
+      alert('Erro de conexão. Tente novamente.')
+    }
+    setLoading(null)
   }
 
   async function handleCancel() {
     setLoading('cancel')
-    await fetch('/api/billing/portal', { method: 'POST' })
+    try {
+      const res = await fetch('/api/billing/portal', { method: 'POST' })
+      if (!res.ok) {
+        const json = await res.json()
+        alert(json.error ?? 'Erro ao cancelar assinatura.')
+        setLoading(null)
+        return
+      }
+    } catch {
+      alert('Erro de conexão. Tente novamente.')
+      setLoading(null)
+      return
+    }
     setCancelConfirm(false)
     setLoading(null)
     router.refresh()

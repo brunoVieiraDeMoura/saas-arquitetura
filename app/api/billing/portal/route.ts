@@ -24,10 +24,15 @@ export async function POST() {
   }
 
   const preApproval = new PreApproval(mp)
-  await preApproval.update({
-    id: tenant.stripe_subscription_id,
-    body: { status: 'cancelled' },
-  })
+  try {
+    await preApproval.update({
+      id: tenant.stripe_subscription_id,
+      body: { status: 'cancelled' },
+    })
+  } catch (err: any) {
+    console.error('[MP portal cancel error]', err)
+    return NextResponse.json({ error: 'Erro ao cancelar assinatura no MP' }, { status: 500 })
+  }
 
   await admin
     .from('tenants')

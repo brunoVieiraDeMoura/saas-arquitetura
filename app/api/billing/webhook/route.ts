@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   const xRequestId = req.headers.get('x-request-id') ?? ''
   const dataId = req.nextUrl.searchParams.get('data.id') ?? ''
 
-  if (!xSignature || !dataId) {
+  if (!xSignature || !xRequestId || !dataId) {
     return NextResponse.json({ error: 'Missing signature or data id' }, { status: 400 })
   }
 

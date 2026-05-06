@@ -20,7 +20,11 @@
       "Bash(node *)",
       "Bash(git checkout *)",
       "Bash(dir \"C:\\\\Users\\\\Bruno\\\\desktop\\\\sass-arquitetura-organizada\\\\app\")",
-      "Bash(Remove-Item *)"
+      "Bash(Remove-Item *)",
+      "Bash(claude mcp *)",
+      "mcp__mercadopago__quality_checklist",
+      "mcp__mercadopago__search_documentation",
+      "mcp__mercadopago__application_list"
     ]
   }
 }

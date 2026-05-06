@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import { PreApproval } from 'mercadopago'
+import { Payment, PreApproval } from 'mercadopago'
 import { mp } from './client'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -32,7 +32,19 @@ export async function handleMPWebhook(
   if (!['subscription_preapproval', 'payment'].includes(notification.type)) return
 
   const preApproval = new PreApproval(mp)
-  const sub = await preApproval.get({ id: dataId })
+  let sub
+
+  if (notification.type === 'payment') {
+    // dataId is a payment_id for payment notifications — resolve preapproval from it
+    const paymentApi = new Payment(mp)
+    const payment = await paymentApi.get({ id: Number(dataId) })
+    const preapprovalId = (payment as any).preapproval_id
+    if (!preapprovalId) return
+    sub = await preApproval.get({ id: preapprovalId })
+  } else {
+    sub = await preApproval.get({ id: dataId })
+  }
+
   if (!sub?.external_reference) return
 
   const [tenantId, planId] = sub.external_reference.split(':')

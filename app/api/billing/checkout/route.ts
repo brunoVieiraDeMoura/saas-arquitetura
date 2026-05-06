@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       external_reference: `${profile.tenant_id}:${plan}`,
       status: 'pending',
     }
-    sub = await preApproval.create({ body })
+    sub = await preApproval.create({ body, requestOptions: { idempotencyKey: `${profile.tenant_id}-${plan}-${billingCycle}` } })
   } catch (err: any) {
     const detail = err?.cause ?? err
     console.error('[MP checkout error]', JSON.stringify(detail, null, 2))
