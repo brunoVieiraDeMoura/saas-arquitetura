@@ -63,7 +63,8 @@ export async function POST(req: Request) {
   } catch (err: any) {
     const detail = (err as any)?.cause ?? err
     console.error('[PagBank checkout error]', JSON.stringify(detail, null, 2))
-    return NextResponse.json({ error: err?.message ?? 'Erro ao criar checkout' }, { status: 500 })
+    const msg = JSON.stringify(detail)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 
   const url =
