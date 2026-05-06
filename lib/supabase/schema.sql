@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS tenants (
   plan                   TEXT NOT NULL DEFAULT 'starter',
   stripe_customer_id     TEXT,
   stripe_subscription_id TEXT,
+  subscription_expires_at TIMESTAMPTZ,
   custom_domain          TEXT,
   created_at             TIMESTAMPTZ DEFAULT NOW()
 );

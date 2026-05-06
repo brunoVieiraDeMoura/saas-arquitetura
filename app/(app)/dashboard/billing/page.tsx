@@ -8,9 +8,13 @@ export default async function BillingPage() {
   const admin = createAdminClient()
 
   const [{ data: tenant }, priceOverrides] = await Promise.all([
-    admin.from('tenants').select('plan, stripe_subscription_id, name').eq('id', tenantId).single(),
+    admin.from('tenants').select('plan, stripe_subscription_id, subscription_expires_at, name').eq('id', tenantId).single(),
     getPlanPrices(),
   ])
+
+  const hasActivePixAnnual =
+    tenant?.subscription_expires_at != null &&
+    new Date(tenant.subscription_expires_at) > new Date()
 
   return (
     <div>
@@ -20,7 +24,8 @@ export default async function BillingPage() {
       </div>
       <BillingPanel
         currentPlan={(tenant?.plan ?? 'starter') as 'starter' | 'pro' | 'agency'}
-        hasSubscription={Boolean(tenant?.stripe_subscription_id)}
+        hasSubscription={Boolean(tenant?.stripe_subscription_id) || hasActivePixAnnual}
+        subscriptionExpiresAt={tenant?.subscription_expires_at ?? null}
         companyName={tenant?.name ?? ''}
         priceOverrides={priceOverrides}
       />

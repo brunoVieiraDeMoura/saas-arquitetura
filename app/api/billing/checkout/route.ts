@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
-  const { plan, billing = 'monthly' } = await req.json()
+  const { plan, billing = 'monthly', paymentMethod = 'credit_card' } = await req.json()
   if (!plan || !(plan in PLANS) || plan === 'starter') {
     return NextResponse.json({ error: 'Plano inválido' }, { status: 400 })
   }
@@ -23,9 +23,14 @@ export async function POST(req: Request) {
   const effectiveAnnual = override?.priceAnnual ?? planData.priceAnnual
 
   const billingCycle: BillingCycle = billing === 'annual' ? 'annual' : 'monthly'
-  const billingLabel = billingCycle === 'annual' ? 'Anual' : 'Mensal'
+  // PIX is one-time upfront — only valid for annual billing
+  const usePix = paymentMethod === 'pix' && billingCycle === 'annual'
 
-  // unit_amount in cents (BRL). Annual: full year charged once per year.
+  const billingLabel = billingCycle === 'annual'
+    ? (usePix ? 'Anual — PIX' : 'Anual')
+    : 'Mensal'
+
+  // unit_amount in cents (BRL). Annual: full year charged upfront.
   const unitAmount = billingCycle === 'annual'
     ? Math.round(effectiveAnnual * 12)
     : effectiveMonthly
@@ -38,26 +43,38 @@ export async function POST(req: Request) {
   const webhookUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/billing/webhook?token=${process.env.PAGBANK_WEBHOOK_TOKEN}`
   const returnUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/billing`
 
+  // PIX annual uses suffix :pix_annual so webhook can set expiry instead of subscription_id
+  const referenceId = usePix
+    ? `${profile.tenant_id}:${plan}:pix_annual`
+    : `${profile.tenant_id}:${plan}`
+
+  const checkoutBody: Record<string, unknown> = {
+    reference_id: referenceId,
+    customer: { email: user.email },
+    items: [{
+      reference_id: plan,
+      name: `Arquitetura Organizada - Plano ${planData.name} (${billingLabel})`,
+      quantity: 1,
+      unit_amount: unitAmount,
+    }],
+    notification_urls: [webhookUrl],
+    return_url: returnUrl,
+  }
+
+  if (usePix) {
+    // One-time PIX payment — no recurrence_plan
+    checkoutBody.payment_methods = [{ type: 'PIX' }]
+  } else {
+    // Recurring credit card subscription
+    checkoutBody.payment_methods = [{ type: 'CREDIT_CARD' }]
+    checkoutBody.recurrence_plan = { interval: { unit: intervalUnit } }
+  }
+
   let checkout: any
   try {
     checkout = await pagbankFetch('/checkouts', {
       method: 'POST',
-      body: JSON.stringify({
-        reference_id: `${profile.tenant_id}:${plan}`,
-        customer: { email: user.email },
-        items: [{
-          reference_id: plan,
-          name: `Arquitetura Organizada - Plano ${planData.name} (${billingLabel})`,
-          quantity: 1,
-          unit_amount: unitAmount,
-        }],
-        payment_methods: [
-          { type: 'CREDIT_CARD' },
-        ],
-        recurrence_plan: { interval: { unit: intervalUnit } },
-        notification_urls: [webhookUrl],
-        return_url: returnUrl,
-      }),
+      body: JSON.stringify(checkoutBody),
     })
   } catch (err: any) {
     const detail = (err as any)?.cause ?? err
