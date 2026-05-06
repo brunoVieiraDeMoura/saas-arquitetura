@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 import { mp } from '@/lib/mercadopago/client'
 import { PLANS, type BillingCycle } from '@/lib/mercadopago/plans'
 import { getPlanPrices } from '@/lib/mercadopago/getPlanPrices'
@@ -41,8 +40,43 @@ export async function POST(req: Request) {
   const backUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/billing`
 
   const billingLabel = billingCycle === 'annual' ? 'Anual' : 'Mensal'
+  const externalRef = `${profile.tenant_id}:${plan}`
   const preApproval = new PreApproval(mp)
   let sub
+
+  // Reuse existing pending PreApproval for same plan+cycle to avoid accumulating
+  // duplicate subscriptions — MP's fraud engine flags consecutive identical attempts.
+  // Cancel any pending ones with a different amount (stale billing-cycle mismatch).
+  try {
+    const existing = await preApproval.search({
+      options: { external_reference: externalRef, status: 'pending', limit: 5 } as any,
+    })
+    let reuseUrl: string | null = null
+    const staleIds: string[] = []
+    for (const r of (existing as any)?.results ?? []) {
+      const sameAmount = Math.abs((r.auto_recurring?.transaction_amount ?? 0) - transactionAmount) < 0.01
+      if (sameAmount && r.init_point && !reuseUrl) {
+        reuseUrl = r.init_point
+      } else if (!sameAmount && r.id) {
+        staleIds.push(r.id)
+      }
+    }
+    // Cancel stale ones in parallel before deciding to reuse or create
+    if (staleIds.length > 0) {
+      await Promise.allSettled(
+        staleIds.map(id => preApproval.update({ id, body: { status: 'cancelled' } }))
+      )
+    }
+    if (reuseUrl) return NextResponse.json({ url: reuseUrl })
+  } catch {
+    // search failure is non-fatal — fall through to create
+  }
+
+  // Daily idempotency key prevents duplicate subscriptions from concurrent requests
+  // (e.g. double-click). A new key each day allows fresh retries after rejections.
+  const today = new Date().toISOString().slice(0, 10)
+  const idempotencyKey = `checkout-${profile.tenant_id}-${plan}-${billingCycle}-${today}`
+
   try {
     const body: any = {
       reason: `Arquitetura Organizada - Plano ${planData.name} (${billingLabel})`,
@@ -50,16 +84,15 @@ export async function POST(req: Request) {
       auto_recurring: {
         frequency,
         frequency_type: 'months',
-        start_date: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
         transaction_amount: transactionAmount,
         currency_id: 'BRL',
       },
       back_url: backUrl,
       notification_url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/billing/webhook`,
-      external_reference: `${profile.tenant_id}:${plan}`,
+      external_reference: externalRef,
       status: 'pending',
     }
-    sub = await preApproval.create({ body })
+    sub = await preApproval.create({ body, requestOptions: { idempotencyKey } as any })
   } catch (err: any) {
     const detail = err?.cause ?? err
     console.error('[MP checkout error]', JSON.stringify(detail, null, 2))

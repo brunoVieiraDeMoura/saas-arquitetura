@@ -28,7 +28,11 @@
       "mcp__mercadopago__create_test_user",
       "mcp__mercadopago__notifications_history",
       "WebSearch",
-      "WebFetch(domain:www.mercadopago.com.br)"
+      "WebFetch(domain:www.mercadopago.com.br)",
+      "WebFetch(domain:github.com)",
+      "Bash(powershell *)",
+      "mcp__mercadopago__quality_evaluation",
+      "Bash(dir C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\node_modules\\\\mercadopago *)"
     ]
   }
 }
