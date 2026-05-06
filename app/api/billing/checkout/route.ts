@@ -53,7 +53,6 @@ export async function POST(req: Request) {
         }],
         payment_methods: [
           { type: 'CREDIT_CARD' },
-          { type: 'PIX' },
         ],
         recurrence_plan: { interval: { unit: intervalUnit } },
         notification_urls: [webhookUrl],
