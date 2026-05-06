@@ -23,10 +23,12 @@ export async function pagbankFetch(
   })
 
   if (!res.ok) {
+    const raw = await res.text()
     let detail: any
-    try { detail = await res.json() } catch { detail = {} }
+    try { detail = JSON.parse(raw) } catch { detail = raw }
+    console.error(`[PagBank ${res.status}] ${base}${path}`, detail)
     const err = Object.assign(
-      new Error(`PagBank ${res.status} ${path}`),
+      new Error(`PagBank ${res.status} ${path}: ${raw.slice(0, 300)}`),
       { status: res.status, cause: detail },
     )
     throw err
