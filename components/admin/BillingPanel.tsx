@@ -157,7 +157,7 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
         </p>
         {currentPlan !== 'starter' && (
           <p className="text-xs text-neutral-400 mt-1">
-            Pagamentos processados pelo Mercado Pago.
+            Pagamentos processados pelo PagBank.
           </p>
         )}
       </div>

@@ -1,23 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleMPWebhook } from '@/lib/mercadopago/webhooks'
+import { handlePagBankWebhook } from '@/lib/pagbank/webhooks'
 
 export async function GET() {
   return NextResponse.json({ ok: true })
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.text()
-  const xSignature = req.headers.get('x-signature') ?? ''
-  const xRequestId = req.headers.get('x-request-id') ?? ''
-  const dataId = req.nextUrl.searchParams.get('data.id') ?? ''
-
-  if (!xSignature || !xRequestId || !dataId) {
-    return NextResponse.json({ error: 'Missing signature or data id' }, { status: 400 })
+  const token = req.nextUrl.searchParams.get('token') ?? ''
+  if (!token || token !== process.env.PAGBANK_WEBHOOK_TOKEN) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const body = await req.text()
+
   try {
-    await handleMPWebhook(body, xSignature, xRequestId, dataId)
+    await handlePagBankWebhook(body)
   } catch (err: any) {
+    console.error('[PagBank webhook error]', err)
     return NextResponse.json({ error: err.message }, { status: 400 })
   }
 

@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { mp } from '@/lib/mercadopago/client'
-import { PreApproval } from 'mercadopago'
+import { pagbankFetch, PAGBANK_SUBS_BASE } from '@/lib/pagbank/client'
 import { NextResponse } from 'next/server'
 
 export async function POST() {
@@ -23,15 +22,15 @@ export async function POST() {
     return NextResponse.json({ error: 'Nenhuma assinatura ativa' }, { status: 404 })
   }
 
-  const preApproval = new PreApproval(mp)
   try {
-    await preApproval.update({
-      id: tenant.stripe_subscription_id,
-      body: { status: 'cancelled' },
-    })
+    await pagbankFetch(
+      `/subscriptions/${tenant.stripe_subscription_id}/cancel`,
+      { method: 'PUT' },
+      PAGBANK_SUBS_BASE,
+    )
   } catch (err: any) {
-    console.error('[MP portal cancel error]', err)
-    return NextResponse.json({ error: 'Erro ao cancelar assinatura no MP' }, { status: 500 })
+    console.error('[PagBank cancel error]', err)
+    return NextResponse.json({ error: 'Erro ao cancelar assinatura no PagBank' }, { status: 500 })
   }
 
   await admin

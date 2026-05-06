@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireSuperAdmin } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { mp } from '@/lib/mercadopago/client'
-import { Payment, PaymentRefund, PreApproval } from 'mercadopago'
+import { pagbankFetch, PAGBANK_SUBS_BASE } from '@/lib/pagbank/client'
 
 export async function POST(req: NextRequest) {
-  try {
-    await requireSuperAdmin()
-  } catch {
+  try { await requireSuperAdmin() } catch {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 403 })
   }
 
@@ -26,54 +23,58 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Nenhuma assinatura ativa para reembolsar' }, { status: 400 })
   }
 
-  // Find latest approved payment for this subscription
-  const paymentApi = new Payment(mp)
-  let results
+  // Get latest invoice to find the charge to refund
+  let invoices: any
   try {
-    results = await paymentApi.search({
-      options: {
-        external_reference: `${tenantId}:${tenant.plan}`,
-        sort: 'date_created',
-        criteria: 'desc',
-        limit: 5,
+    invoices = await pagbankFetch(
+      `/subscriptions/${tenant.stripe_subscription_id}/invoices`,
+      {},
+      PAGBANK_SUBS_BASE,
+    )
+  } catch (err: any) {
+    console.error('[PagBank refund invoices error]', err)
+    return NextResponse.json({ error: 'Erro ao buscar faturas no PagBank' }, { status: 500 })
+  }
+
+  const latestInvoice = Array.isArray(invoices)
+    ? invoices.find((i: any) => i.status === 'PAID')
+    : invoices?.invoices?.find((i: any) => i.status === 'PAID')
+
+  if (!latestInvoice?.id) {
+    return NextResponse.json({ error: 'Nenhuma fatura paga encontrada' }, { status: 404 })
+  }
+
+  // Issue full refund via the invoice
+  try {
+    await pagbankFetch(
+      `/invoices/${latestInvoice.id}/refund`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ amount: latestInvoice.amount }),
       },
-    })
+      PAGBANK_SUBS_BASE,
+    )
   } catch (err: any) {
-    console.error('[MP refund search error]', err)
-    return NextResponse.json({ error: 'Erro ao buscar pagamentos no MP' }, { status: 500 })
+    console.error('[PagBank refund error]', err)
+    return NextResponse.json({ error: 'Erro ao processar reembolso no PagBank' }, { status: 500 })
   }
 
-  const latestPayment = results?.results?.find((p: any) => p.status === 'approved')
-  if (!latestPayment?.id) {
-    return NextResponse.json({ error: 'Nenhum pagamento aprovado encontrado' }, { status: 404 })
-  }
-
-  // Issue full refund
-  const refundApi = new PaymentRefund(mp)
+  // Cancel subscription
   try {
-    await refundApi.create({ payment_id: latestPayment.id, body: {} })
+    await pagbankFetch(
+      `/subscriptions/${tenant.stripe_subscription_id}/cancel`,
+      { method: 'PUT' },
+      PAGBANK_SUBS_BASE,
+    )
   } catch (err: any) {
-    console.error('[MP refund create error]', err)
-    return NextResponse.json({ error: 'Erro ao processar reembolso no MP' }, { status: 500 })
-  }
-
-  // Cancel subscription on MP
-  const preApproval = new PreApproval(mp)
-  try {
-    await preApproval.update({
-      id: tenant.stripe_subscription_id!,
-      body: { status: 'cancelled' },
-    })
-  } catch (err: any) {
-    console.error('[MP refund cancel error]', err)
+    console.error('[PagBank refund cancel error]', err)
     return NextResponse.json({ error: 'Reembolso processado mas erro ao cancelar assinatura' }, { status: 500 })
   }
 
-  // Downgrade plan
   await admin
     .from('tenants')
     .update({ plan: 'starter', stripe_subscription_id: null })
     .eq('id', tenantId)
 
-  return NextResponse.json({ success: true, refundedPaymentId: latestPayment.id })
+  return NextResponse.json({ success: true, refundedInvoiceId: latestInvoice.id })
 }
