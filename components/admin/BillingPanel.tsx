@@ -55,10 +55,11 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const success = searchParams.get('success')
+    const preapprovalId = searchParams.get('preapproval_id')
     const checkout = searchParams.get('checkout')
     const billingParam = searchParams.get('billing') as BillingCycle | null
-    if (success === '1') {
+    // MP redirects back with preapproval_id after the user completes checkout flow
+    if (preapprovalId) {
       setShowSuccess(true)
       router.replace('/dashboard/billing')
     } else if (checkout && checkout in PLANS && checkout !== 'starter' && checkout !== currentPlan) {
@@ -112,7 +113,7 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
     <div className="space-y-6">
       {showSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center justify-between">
-          <p className="text-sm text-green-800 font-medium">Assinatura realizada com sucesso! Seu plano será ativado em instantes.</p>
+          <p className="text-sm text-green-800 font-medium">Pagamento em processamento. Seu plano será ativado assim que a confirmação chegar — isso pode levar alguns minutos.</p>
           <button onClick={() => setShowSuccess(false)} className="text-green-600 hover:text-green-800 text-lg leading-none">×</button>
         </div>
       )}

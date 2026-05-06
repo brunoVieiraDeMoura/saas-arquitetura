@@ -37,7 +37,8 @@ export async function POST(req: Request) {
   if (!profile?.tenant_id) return NextResponse.json({ error: 'Tenant não encontrado' }, { status: 404 })
 
   // back_url must be a publicly accessible HTTPS URL — MP rejects localhost
-  const backUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/billing?success=1`
+  // success=1 is set only on the success_url; MP appends its own status params
+  const backUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/billing`
 
   const billingLabel = billingCycle === 'annual' ? 'Anual' : 'Mensal'
   const preApproval = new PreApproval(mp)
