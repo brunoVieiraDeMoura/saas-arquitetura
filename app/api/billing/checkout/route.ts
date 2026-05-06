@@ -50,7 +50,7 @@ export async function POST(req: Request) {
       auto_recurring: {
         frequency,
         frequency_type: 'months',
-        start_date: new Date().toISOString(),
+        start_date: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
         transaction_amount: transactionAmount,
         currency_id: 'BRL',
       },
