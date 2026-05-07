@@ -18,10 +18,7 @@ export async function POST(req: Request) {
   const admin = createAdminClient()
   await admin
     .from('tenants')
-    .update({
-      plan: plan ?? 'starter',
-      stripe_subscription_id: plan === 'starter' ? null : 'dev-simulated',
-    })
+    .update({ plan: plan ?? 'starter' })
     .eq('id', profile.tenant_id)
 
   return NextResponse.json({ success: true })

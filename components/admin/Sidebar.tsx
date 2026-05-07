@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import LogoBrand from '@/components/LogoBrand'
-import type { Plan } from '@/lib/mercadopago/plans'
+import type { Plan } from '@/lib/plans'
 import {
   LayoutDashboard, Palette, Tag, FolderKanban, MessageSquare,
   HelpCircle, Mail, CreditCard, Settings, LogOut, ExternalLink,
@@ -20,7 +20,7 @@ type NavItem =
 
 function getNavItems(plan: Plan): NavItem[] {
   return [
-    { href: '/dashboard',              label: 'Visão Geral',  exact: true, icon: LayoutDashboard },
+    { href: '/dashboard',              label: 'VisÃ£o Geral',  exact: true, icon: LayoutDashboard },
     { href: '/dashboard/identidade',   label: 'Identidade',               icon: Palette },
     { href: '/dashboard/categories',   label: 'Categorias',               icon: Tag },
     { href: '/dashboard/projects',     label: 'Projetos',                 icon: FolderKanban },
@@ -34,8 +34,8 @@ function getNavItems(plan: Plan): NavItem[] {
     ] : []),
     { separator: true as const },
     { href: '/dashboard/billing',      label: 'Plano',                    icon: CreditCard },
-    { href: '/dashboard/settings',     label: 'Configurações',            icon: Settings },
-    { href: '/dashboard/docs',         label: 'Documentação',             icon: BookOpen },
+    { href: '/dashboard/settings',     label: 'ConfiguraÃ§Ãµes',            icon: Settings },
+    { href: '/dashboard/docs',         label: 'DocumentaÃ§Ã£o',             icon: BookOpen },
   ]
 }
 

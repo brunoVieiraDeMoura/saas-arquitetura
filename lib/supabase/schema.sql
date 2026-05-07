@@ -8,9 +8,7 @@ CREATE TABLE IF NOT EXISTS tenants (
   slug                   TEXT UNIQUE NOT NULL,
   name                   TEXT NOT NULL,
   plan                   TEXT NOT NULL DEFAULT 'starter',
-  stripe_customer_id     TEXT,
-  stripe_subscription_id TEXT,
-  subscription_expires_at TIMESTAMPTZ,
+  subscription_id        TEXT,
   custom_domain          TEXT,
   created_at             TIMESTAMPTZ DEFAULT NOW()
 );

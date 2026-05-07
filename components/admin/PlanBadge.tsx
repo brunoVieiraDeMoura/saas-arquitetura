@@ -1,4 +1,4 @@
-import { PLANS, type Plan } from '@/lib/mercadopago/plans'
+﻿import { PLANS, type Plan } from '@/lib/plans'
 
 export default function PlanBadge({ plan }: { plan: string }) {
   const p = PLANS[plan as Plan] ?? PLANS.starter

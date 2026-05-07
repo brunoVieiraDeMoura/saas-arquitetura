@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { PLANS, formatPrice, type Plan, type BillingCycle } from '@/lib/mercadopago/plans'
-import type { PriceOverrides } from '@/lib/mercadopago/getPlanPrices'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { PLANS, formatPrice, type Plan } from '@/lib/plans'
 import PlanBadge from './PlanBadge'
 import { Globe } from 'lucide-react'
 import CopyEmailButton from '@/components/CopyEmailButton'
@@ -42,41 +41,22 @@ const PLAN_ORDER: Record<string, number> = { starter: 0, pro: 1, agency: 2 }
 type Props = {
   currentPlan: string
   hasSubscription: boolean
-  subscriptionExpiresAt?: string | null
   companyName: string
-  priceOverrides?: PriceOverrides
 }
 
-export default function BillingPanel({ currentPlan, hasSubscription, subscriptionExpiresAt, companyName, priceOverrides }: Props) {
+export default function BillingPanel({ currentPlan, hasSubscription, companyName }: Props) {
   const [loading, setLoading] = useState<string | null>(null)
   const [cancelConfirm, setCancelConfirm] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [billing, setBilling] = useState<BillingCycle>('annual')
-  const [paymentMethod, setPaymentMethod] = useState<'credit_card' | 'pix'>('credit_card')
+  const [billing, setBilling] = useState<'monthly' | 'annual'>('annual')
   const router = useRouter()
-  const searchParams = useSearchParams()
 
-  useEffect(() => {
-    const preapprovalId = searchParams.get('preapproval_id')
-    const checkout = searchParams.get('checkout')
-    const billingParam = searchParams.get('billing') as BillingCycle | null
-    // MP redirects back with preapproval_id after the user completes checkout flow
-    if (preapprovalId) {
-      setShowSuccess(true)
-      router.replace('/dashboard/billing')
-    } else if (checkout && checkout in PLANS && checkout !== 'starter' && checkout !== currentPlan) {
-      if (billingParam === 'annual') setBilling('annual')
-      handleUpgrade(checkout, billingParam === 'annual' ? 'annual' : 'monthly')
-    }
-  }, [])
-
-  async function handleUpgrade(planId: string, billingCycle: BillingCycle = billing, method = paymentMethod) {
+  async function handleUpgrade(planId: string, billingCycle: 'monthly' | 'annual' = billing) {
     setLoading(planId)
     try {
       const res = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planId, billing: billingCycle, paymentMethod: method }),
+        body: JSON.stringify({ plan: planId, billing: billingCycle }),
       })
       const json = await res.json()
       if (!res.ok) {
@@ -113,12 +93,6 @@ export default function BillingPanel({ currentPlan, hasSubscription, subscriptio
 
   return (
     <div className="space-y-6">
-      {showSuccess && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center justify-between">
-          <p className="text-sm text-green-800 font-medium">Pagamento em processamento. Seu plano será ativado assim que a confirmação chegar — isso pode levar alguns minutos.</p>
-          <button onClick={() => setShowSuccess(false)} className="text-green-600 hover:text-green-800 text-lg leading-none">×</button>
-        </div>
-      )}
       <div className="bg-white rounded-xl border border-neutral-200 p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -158,12 +132,7 @@ export default function BillingPanel({ currentPlan, hasSubscription, subscriptio
             : 'Categorias e projetos ilimitados'}
         </p>
         {currentPlan !== 'starter' && (
-          <p className="text-xs text-neutral-400 mt-1">
-            Pagamentos processados pelo PagBank.
-            {subscriptionExpiresAt && (
-              <> Ativo até {new Date(subscriptionExpiresAt).toLocaleDateString('pt-BR')}.</>
-            )}
-          </p>
+          <p className="text-xs text-neutral-400 mt-1">Pagamentos processados pelo Mercado Pago.</p>
         )}
       </div>
 
@@ -177,7 +146,7 @@ export default function BillingPanel({ currentPlan, hasSubscription, subscriptio
           Mensal
         </span>
         <button
-          onClick={() => { setBilling(b => { if (b === 'annual') setPaymentMethod('credit_card'); return b === 'monthly' ? 'annual' : 'monthly' }) }}
+          onClick={() => setBilling(b => b === 'monthly' ? 'annual' : 'monthly')}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
             billing === 'annual' ? 'bg-neutral-900' : 'bg-neutral-200'
           }`}
@@ -199,41 +168,8 @@ export default function BillingPanel({ currentPlan, hasSubscription, subscriptio
         )}
       </div>
 
-      {/* Payment method selector — PIX only available for annual */}
-      {billing === 'annual' && (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setPaymentMethod('credit_card')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-              paymentMethod === 'credit_card'
-                ? 'bg-neutral-900 text-white border-neutral-900'
-                : 'bg-white text-neutral-500 border-neutral-200 hover:border-neutral-400'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-            Cartão de crédito
-          </button>
-          <button
-            onClick={() => setPaymentMethod('pix')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-              paymentMethod === 'pix'
-                ? 'bg-neutral-900 text-white border-neutral-900'
-                : 'bg-white text-neutral-500 border-neutral-200 hover:border-neutral-400'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 512 512" fill="currentColor"><path d="M242.4 292.5C247.8 287.1 257.1 287.1 262.5 292.5L339.5 369.5C353.7 383.7 372.6 391.5 392.5 391.5H407.7L310.6 488.6C280.3 518.1 231.1 518.1 200.8 488.6L103.3 391.2H112.6C132.5 391.2 151.4 383.4 165.6 369.2L242.4 292.5zM262.5 219.5C257.1 224.9 247.8 224.9 242.4 219.5L165.6 142.9C151.4 128.7 132.5 120.9 112.6 120.9H103.3L200.7 23.4C231 -7.1 280.2 -7.1 310.5 23.4L407.7 120.5H392.5C372.6 120.5 353.7 128.3 339.5 142.5L262.5 219.5zM112.6 144.7C126.4 144.7 139.1 150.3 148.5 160.1L225.3 236.8C236.1 247.6 251 254.1 266.9 254.1C282.8 254.1 297.8 247.6 308.5 236.8L385.5 159.8C394.9 150.4 407.6 144.7 421.4 144.7H443.5L458.3 159.5C488.6 189.8 488.6 239 458.3 269.3L443.5 284.2H421.4C407.6 284.2 394.9 278.5 385.5 269.1L308.5 192.1C297.8 181.3 282.8 174.9 266.9 174.9C251 174.9 236.1 181.4 225.3 192.1L148.5 268.9C139.1 278.6 126.4 284.2 112.6 284.2H89.9L53.7 248C23.4 217.7 23.4 168.5 53.7 138.2L89.9 102H112.6V144.7z"/></svg>
-            PIX
-          </button>
-          {paymentMethod === 'pix' && (
-            <span className="text-xs text-neutral-400">Pagamento único — sem renovação automática</span>
-          )}
-        </div>
-      )}
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {(Object.values(PLANS) as typeof PLANS[Plan][]).map((basePlan) => {
-          const o = priceOverrides?.[basePlan.id as Plan]
-          const plan = o ? { ...basePlan, price: o.price, priceAnnual: o.priceAnnual, annualDiscount: o.annualDiscount } : basePlan
+        {(Object.values(PLANS) as typeof PLANS[Plan][]).map((plan) => {
           const isCurrent = plan.id === currentPlan
           const isDowngrade = PLAN_ORDER[plan.id] < PLAN_ORDER[currentPlan]
           const price = billing === 'annual' ? plan.priceAnnual : plan.price

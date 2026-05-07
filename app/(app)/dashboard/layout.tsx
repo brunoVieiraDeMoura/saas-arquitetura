@@ -1,6 +1,6 @@
-import { requireTenant } from '@/lib/tenant/guard'
+﻿import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import type { Plan } from '@/lib/mercadopago/plans'
+import type { Plan } from '@/lib/plans'
 import Sidebar from '@/components/admin/Sidebar'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {

@@ -1,7 +1,7 @@
-import { requireTenant } from '@/lib/tenant/guard'
+﻿import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { PLANS } from '@/lib/mercadopago/plans'
-import type { Plan } from '@/lib/mercadopago/plans'
+import { PLANS } from '@/lib/plans'
+import type { Plan } from '@/lib/plans'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     if ((count ?? 0) >= limit) {
       return NextResponse.json(
-        { error: `Limite de ${limit} categoria${limit > 1 ? 's' : ''} atingido no plano ${PLANS[plan].name}. Faça upgrade para continuar.` },
+        { error: `Limite de ${limit} categoria${limit > 1 ? 's' : ''} atingido no plano ${PLANS[plan].name}. FaÃ§a upgrade para continuar.` },
         { status: 403 }
       )
     }

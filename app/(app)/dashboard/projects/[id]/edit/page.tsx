@@ -1,7 +1,7 @@
 import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { PLANS } from '@/lib/mercadopago/plans'
-import type { Plan } from '@/lib/mercadopago/plans'
+import { PLANS } from '@/lib/plans'
+import type { Plan } from '@/lib/plans'
 import { notFound } from 'next/navigation'
 import ProjectForm from '@/components/admin/ProjectForm'
 

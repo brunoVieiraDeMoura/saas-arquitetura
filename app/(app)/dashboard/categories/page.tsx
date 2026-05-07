@@ -1,7 +1,7 @@
-import { requireTenant } from '@/lib/tenant/guard'
+﻿import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { PLANS } from '@/lib/mercadopago/plans'
-import type { Plan } from '@/lib/mercadopago/plans'
+import { PLANS } from '@/lib/plans'
+import type { Plan } from '@/lib/plans'
 import Link from 'next/link'
 import DeleteCategoryButton from './_components/DeleteCategoryButton'
 import { Plus, Settings, FolderPlus, Lock } from 'lucide-react'
@@ -38,7 +38,7 @@ export default async function CategoriesPage() {
           <Link
             href="/dashboard/billing"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-300 text-neutral-500 text-sm font-medium cursor-not-allowed opacity-60"
-            title="Limite atingido — faça upgrade"
+            title="Limite atingido â€” faÃ§a upgrade"
           >
             <Lock className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Limite atingido</span>
@@ -72,7 +72,7 @@ export default async function CategoriesPage() {
                     <div className="flex items-center justify-between px-4 sm:px-6 py-2 bg-amber-50 border-b border-amber-100">
                       <p className="text-xs text-amber-700 flex items-center gap-1.5">
                         <Lock className="w-3 h-3 shrink-0" />
-                        Oculta no site — limite de {catLimit} categorias do plano Starter
+                        Oculta no site â€” limite de {catLimit} categorias do plano Starter
                       </p>
                       <Link href="/dashboard/billing" className="text-xs font-semibold text-amber-800 underline shrink-0">
                         Fazer upgrade
@@ -83,7 +83,7 @@ export default async function CategoriesPage() {
                     <div>
                       <p className="text-sm font-medium text-neutral-800">{cat.name}</p>
                       <p className="text-xs text-neutral-400 flex items-center gap-1.5">
-                        /{cat.slug} ·{' '}
+                        /{cat.slug} Â·{' '}
                         <span className={atProjLimit ? 'text-red-500 font-medium' : ''}>
                           {projCount}{projLimit !== Infinity ? `/${projLimit}` : ''} projeto{projCount !== 1 ? 's' : ''}
                         </span>

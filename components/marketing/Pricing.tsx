@@ -2,15 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { PLANS, formatPrice, type BillingCycle, type Plan } from '@/lib/mercadopago/plans'
-import type { PriceOverrides } from '@/lib/mercadopago/getPlanPrices'
+import { PLANS, formatPrice } from '@/lib/plans'
 
-export default function MarketingPricing({ priceOverrides }: { priceOverrides?: PriceOverrides }) {
-  const [billing, setBilling] = useState<BillingCycle>('annual')
-  const plans = Object.values(PLANS).map((plan) => {
-    const o = priceOverrides?.[plan.id as Plan]
-    return o ? { ...plan, price: o.price, priceAnnual: o.priceAnnual, annualDiscount: o.annualDiscount } : plan
-  })
+export default function MarketingPricing() {
+  const [billing, setBilling] = useState<'monthly' | 'annual'>('annual')
+  const plans = Object.values(PLANS)
 
   return (
     <section id="pricing" className="py-24 px-6 bg-white">

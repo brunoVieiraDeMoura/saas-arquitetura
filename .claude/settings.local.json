@@ -40,7 +40,9 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Bash(git commit *)",
-      "WebFetch(domain:developer.pagbank.com.br)"
+      "WebFetch(domain:developer.pagbank.com.br)",
+      "Bash(npx tsc *)",
+      "PowerShell(New-Item *)"
     ]
   }
 }

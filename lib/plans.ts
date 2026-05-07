@@ -1,5 +1,4 @@
 export type Plan = 'starter' | 'pro' | 'agency'
-export type BillingCycle = 'monthly' | 'annual'
 
 export const PLANS = {
   starter: {
@@ -20,8 +19,8 @@ export const PLANS = {
   pro: {
     id: 'pro',
     name: 'Pro',
-    price: 13000,      // R$130/mês (mensal)
-    priceAnnual: 9900, // R$99/mês (anual — cobrado R$1.188/ano)
+    price: 13000,
+    priceAnnual: 9900,
     annualDiscount: 24,
     limits: { categories: Infinity, projects: Infinity },
     galleryLimit: 6,
@@ -35,8 +34,8 @@ export const PLANS = {
   agency: {
     id: 'agency',
     name: 'Agency',
-    price: 25000,        // R$250/mês (mensal)
-    priceAnnual: 17000,  // R$170/mês (anual — cobrado R$2.040/ano)
+    price: 25000,
+    priceAnnual: 17000,
     annualDiscount: 32,
     limits: { categories: Infinity, projects: Infinity },
     galleryLimit: Infinity,
@@ -65,8 +64,4 @@ export function formatPrice(cents: number): string {
     style: 'currency',
     currency: 'BRL',
   }).format(cents / 100)
-}
-
-export function getPrice(plan: typeof PLANS[Plan], billing: BillingCycle): number {
-  return billing === 'annual' ? plan.priceAnnual : plan.price
 }

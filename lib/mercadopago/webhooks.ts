@@ -1,66 +1,65 @@
 import crypto from 'crypto'
-import { Payment, PreApproval } from 'mercadopago'
+import { PreApproval } from 'mercadopago'
 import { mp } from './client'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-function verifySignature(dataId: string, xSignature: string, xRequestId: string): boolean {
-  let ts = '', hash = ''
-  for (const part of xSignature.split(',')) {
-    const [k, v] = part.split('=')
-    if (k?.trim() === 'ts') ts = v?.trim() ?? ''
-    if (k?.trim() === 'v1') hash = v?.trim() ?? ''
-  }
-  const manifest = `id:${dataId};request-id:${xRequestId};ts:${ts};`
-  const expected = crypto
-    .createHmac('sha256', process.env.MP_WEBHOOK_SECRET!)
-    .update(manifest)
-    .digest('hex')
-  return expected === hash
+export function verifyMPSignature(req: Request, rawBody: string): boolean {
+  const xSignature = req.headers.get('x-signature')
+  const xRequestId = req.headers.get('x-request-id')
+  const url = new URL(req.url)
+  const dataId = url.searchParams.get('data.id')
+
+  if (!xSignature) return false
+
+  const parts = Object.fromEntries(xSignature.split(',').map((p) => p.split('=')))
+  const ts = parts['ts']
+  const v1 = parts['v1']
+  if (!ts || !v1) return false
+
+  const parts2: string[] = []
+  if (dataId) parts2.push(`id:${dataId}`)
+  if (xRequestId) parts2.push(`request-id:${xRequestId}`)
+  parts2.push(`ts:${ts}`)
+
+  const template = parts2.join(';') + ';'
+  const secret = process.env.MP_WEBHOOK_SECRET!
+  const computed = crypto.createHmac('sha256', secret).update(template).digest('hex')
+
+  return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(v1))
 }
 
-export async function handleMPWebhook(
-  body: string,
-  xSignature: string,
-  xRequestId: string,
-  dataId: string,
-) {
-  if (!verifySignature(dataId, xSignature, xRequestId)) {
-    throw new Error('Invalid webhook signature')
-  }
-
-  const notification = JSON.parse(body)
-  if (!['subscription_preapproval', 'payment'].includes(notification.type)) return
-
-  const preApproval = new PreApproval(mp)
-  let sub
-
-  if (notification.type === 'payment') {
-    // dataId is a payment_id for payment notifications — resolve preapproval from it
-    const paymentApi = new Payment(mp)
-    const payment = await paymentApi.get({ id: Number(dataId) })
-    const preapprovalId = (payment as any).preapproval_id
-    if (!preapprovalId) return
-    sub = await preApproval.get({ id: preapprovalId })
-  } else {
-    sub = await preApproval.get({ id: dataId })
-  }
-
-  if (!sub?.external_reference) return
-
-  const [tenantId, planId] = sub.external_reference.split(':')
-  if (!tenantId || !planId) return
-
+export async function handleMPWebhook(body: MPWebhookPayload) {
   const admin = createAdminClient()
 
-  if (sub.status === 'authorized') {
-    await admin
-      .from('tenants')
-      .update({ plan: planId, stripe_subscription_id: sub.id })
-      .eq('id', tenantId)
-  } else if (sub.status === 'cancelled' || sub.status === 'paused') {
-    await admin
-      .from('tenants')
-      .update({ plan: 'starter', stripe_subscription_id: null })
-      .eq('id', tenantId)
+  if (body.type === 'subscription_preapproval') {
+    const preapproval = new PreApproval(mp)
+    const sub = await preapproval.get({ id: body.data.id })
+
+    const externalRef = sub.external_reference // format: tenantId:planId:billing
+    if (!externalRef) return
+
+    const [tenantId, planId] = externalRef.split(':')
+    if (!tenantId || !planId) return
+
+    if (sub.status === 'authorized') {
+      await admin
+        .from('tenants')
+        .update({ plan: planId, subscription_id: sub.id })
+        .eq('id', tenantId)
+    } else if (sub.status === 'cancelled' || sub.status === 'paused') {
+      await admin
+        .from('tenants')
+        .update({ plan: 'starter', subscription_id: null })
+        .eq('id', tenantId)
+    }
   }
+}
+
+type MPWebhookPayload = {
+  type: string
+  action: string
+  data: { id: string }
+  api_version: string
+  date_created: string
+  user_id: number
 }

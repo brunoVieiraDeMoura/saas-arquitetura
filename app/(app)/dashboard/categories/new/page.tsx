@@ -1,7 +1,7 @@
-import { requireTenant } from '@/lib/tenant/guard'
+﻿import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { PLANS } from '@/lib/mercadopago/plans'
-import type { Plan } from '@/lib/mercadopago/plans'
+import { PLANS } from '@/lib/plans'
+import type { Plan } from '@/lib/plans'
 import CategoryForm from '@/components/admin/CategoryForm'
 import Link from 'next/link'
 
@@ -30,13 +30,13 @@ export default async function NewCategoryPage() {
             Limite de {limit} categoria{limit > 1 ? 's' : ''} atingido
           </p>
           <p className="text-xs text-neutral-500 mb-5">
-            O plano {PLANS[plan].name} permite até {limit} categorias. Faça upgrade para criar mais.
+            O plano {PLANS[plan].name} permite atÃ© {limit} categorias. FaÃ§a upgrade para criar mais.
           </p>
           <Link
             href="/dashboard/billing"
             className="inline-flex items-center px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors"
           >
-            Ver planos →
+            Ver planos â†’
           </Link>
         </div>
       ) : (

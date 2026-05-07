@@ -5,7 +5,7 @@ export default async function AdminBillingPage() {
   const admin = createAdminClient()
   const { data: tenants } = await admin
     .from('tenants')
-    .select('id, name, slug, plan, stripe_customer_id, stripe_subscription_id')
+    .select('id, name, slug, plan, subscription_id')
     .order('plan', { ascending: false })
 
   const counts = { starter: 0, pro: 0, agency: 0 }
@@ -34,11 +34,9 @@ export default async function AdminBillingPage() {
                 <p className="text-sm font-medium text-neutral-800">{t.name}</p>
                 <p className="text-xs text-neutral-400">{t.slug}</p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <PlanBadge plan={t.plan as 'starter' | 'pro' | 'agency'} />
-                {t.stripe_subscription_id && (
-                  <span className="text-xs text-green-600">ativo</span>
-                )}
+                {t.subscription_id && <span className="text-xs text-green-600">ativo</span>}
               </div>
             </li>
           ))}
