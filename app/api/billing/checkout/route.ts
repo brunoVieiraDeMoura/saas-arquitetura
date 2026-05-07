@@ -2,17 +2,14 @@ import { NextResponse } from 'next/server'
 import { PreApproval } from 'mercadopago'
 import { mp } from '@/lib/mercadopago/client'
 import { requireTenant } from '@/lib/tenant/guard'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import { PLANS, type Plan } from '@/lib/plans'
 
-const PLAN_IDS: Record<string, Record<string, string | undefined>> = {
-  pro: {
-    monthly: process.env.MP_PLAN_ID_PRO_MONTHLY,
-    annual: process.env.MP_PLAN_ID_PRO_ANNUAL,
-  },
-  agency: {
-    monthly: process.env.MP_PLAN_ID_AGENCY_MONTHLY,
-    annual: process.env.MP_PLAN_ID_AGENCY_ANNUAL,
-  },
+const AMOUNTS: Record<Plan, Record<'monthly' | 'annual', { amount: number; frequency: number }>> = {
+  starter: { monthly: { amount: 0, frequency: 1 }, annual: { amount: 0, frequency: 12 } },
+  pro:     { monthly: { amount: 130, frequency: 1 }, annual: { amount: 1188, frequency: 12 } },
+  agency:  { monthly: { amount: 250, frequency: 1 }, annual: { amount: 2040, frequency: 12 } },
 }
 
 export async function POST(req: Request) {
@@ -27,12 +24,22 @@ export async function POST(req: Request) {
     const planDef = PLANS[plan]
     if (!planDef) return NextResponse.json({ error: 'Plano não encontrado.' }, { status: 400 })
 
-    const preapprovalPlanId = PLAN_IDS[plan]?.[billing]
-    if (!preapprovalPlanId) {
-      return NextResponse.json({ error: 'Plano MP não configurado.' }, { status: 500 })
+    const config = AMOUNTS[plan]?.[billing]
+    if (!config || config.amount === 0) {
+      return NextResponse.json({ error: 'Configuração de valor inválida.' }, { status: 400 })
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.arquiteturaorganizada.com.br'
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const admin = createAdminClient()
+    const { data: tenant } = await admin
+      .from('tenants')
+      .select('name')
+      .eq('id', tenantId)
+      .single()
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://arquiteturaorganizada.com.br'
     const webhookToken = process.env.MP_WEBHOOK_TOKEN!
     const webhookUrl = `${baseUrl}/api/billing/webhook?token=${webhookToken}`
 
@@ -40,9 +47,15 @@ export async function POST(req: Request) {
     const result = await preapproval.create({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       body: {
-        preapproval_plan_id: preapprovalPlanId,
-        reason: `${planDef.name} — ${billing === 'annual' ? 'Anual' : 'Mensal'}`,
+        reason: `${planDef.name} — ${billing === 'annual' ? 'Anual' : 'Mensal'} · ${tenant?.name ?? ''}`,
         external_reference: `${tenantId}:${plan}:${billing}`,
+        payer_email: user?.email,
+        auto_recurring: {
+          frequency: config.frequency,
+          frequency_type: 'months',
+          transaction_amount: config.amount,
+          currency_id: 'BRL',
+        },
         back_url: `${baseUrl}/dashboard/billing?checkout=success`,
         status: 'pending',
         notification_url: webhookUrl,
@@ -56,8 +69,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url: initPoint })
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erro interno.'
-    console.error('[billing/checkout]', err)
+    console.error('[billing/checkout] raw error:', JSON.stringify(err, null, 2))
+    const e = err as Record<string, unknown>
+    const message =
+      (e?.message as string) ??
+      (e?.error as string) ??
+      JSON.stringify(err)
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
