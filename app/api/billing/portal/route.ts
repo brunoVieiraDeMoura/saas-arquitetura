@@ -20,7 +20,7 @@ export async function POST() {
 
   const preapproval = new PreApproval(mp)
   await preapproval.update({
-    id: tenant.subscription_id,
+    id: tenant.subscription_id as string,
     body: { status: 'cancelled' },
   })
 

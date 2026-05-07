@@ -44,7 +44,7 @@ export async function handleMPWebhook(body: MPWebhookPayload) {
     if (sub.status === 'authorized') {
       await admin
         .from('tenants')
-        .update({ plan: planId, subscription_id: sub.id })
+        .update({ plan: planId, subscription_id: sub.id ?? null })
         .eq('id', tenantId)
     } else if (sub.status === 'cancelled' || sub.status === 'paused') {
       await admin

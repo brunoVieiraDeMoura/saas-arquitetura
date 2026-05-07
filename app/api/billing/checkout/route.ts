@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { PreApproval } from 'mercadopago'
 import { mp } from '@/lib/mercadopago/client'
 import { requireTenant } from '@/lib/tenant/guard'
-import { createAdminClient } from '@/lib/supabase/admin'
 import { PLANS, type Plan } from '@/lib/plans'
 
 const PLAN_IDS: Record<string, Record<string, string | undefined>> = {
@@ -32,13 +31,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Plano MP não configurado.' }, { status: 500 })
   }
 
-  const admin = createAdminClient()
-  const { data: tenant } = await admin
-    .from('tenants')
-    .select('name')
-    .eq('id', tenantId)
-    .single()
-
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.arquiteturaorganizada.com.br'
   const webhookToken = process.env.MP_WEBHOOK_TOKEN!
   const webhookUrl = `${baseUrl}/api/billing/webhook?token=${webhookToken}`
@@ -56,7 +48,7 @@ export async function POST(req: Request) {
     } as any,
   })
 
-  const initPoint = (result as Record<string, unknown>).init_point as string | undefined
+  const initPoint = result.init_point
   if (!initPoint) {
     return NextResponse.json({ error: 'Erro ao criar assinatura no MercadoPago.' }, { status: 500 })
   }
