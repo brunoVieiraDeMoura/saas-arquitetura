@@ -8,8 +8,8 @@ import { PLANS, type Plan } from '@/lib/plans'
 
 const AMOUNTS: Record<Plan, Record<'monthly' | 'annual', { amount: number; frequency: number }>> = {
   starter: { monthly: { amount: 0, frequency: 1 }, annual: { amount: 0, frequency: 12 } },
-  pro:     { monthly: { amount: 1, frequency: 1 }, annual: { amount: 1, frequency: 12 } },
-  agency:  { monthly: { amount: 1, frequency: 1 }, annual: { amount: 1, frequency: 12 } },
+  pro:     { monthly: { amount: 130, frequency: 1 }, annual: { amount: 1188, frequency: 12 } },
+  agency:  { monthly: { amount: 250, frequency: 1 }, annual: { amount: 2040, frequency: 12 } },
 }
 
 export async function POST(req: Request) {
