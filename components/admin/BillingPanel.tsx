@@ -58,15 +58,16 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan: planId, billing: billingCycle }),
       })
-      const json = await res.json()
+      let json: Record<string, unknown> = {}
+      try { json = await res.json() } catch { /* non-json response */ }
       if (!res.ok) {
-        alert(json.error ?? 'Erro ao iniciar checkout.')
+        alert((json.error as string) ?? `Erro ${res.status} ao iniciar checkout.`)
       } else if (json.url) {
-        window.location.href = json.url
+        window.location.href = json.url as string
         return
       }
     } catch {
-      alert('Erro de conexão. Tente novamente.')
+      alert('Erro de rede. Verifique sua conexão.')
     }
     setLoading(null)
   }
