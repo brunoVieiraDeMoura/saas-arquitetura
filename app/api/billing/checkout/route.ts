@@ -45,6 +45,7 @@ export async function POST(req: Request) {
 
   const preapproval = new PreApproval(mp)
   const result = await preapproval.create({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body: {
       preapproval_plan_id: preapprovalPlanId,
       reason: `${planDef.name} — ${billing === 'annual' ? 'Anual' : 'Mensal'}`,
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
       back_url: `${baseUrl}/dashboard/billing?checkout=success`,
       status: 'pending',
       notification_url: webhookUrl,
-    },
+    } as any,
   })
 
   const initPoint = (result as Record<string, unknown>).init_point as string | undefined
