@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS tenants (
   name                   TEXT NOT NULL,
   plan                   TEXT NOT NULL DEFAULT 'starter',
   subscription_id        TEXT,
+  stripe_customer_id     TEXT,
   custom_domain          TEXT,
   created_at             TIMESTAMPTZ DEFAULT NOW()
 );

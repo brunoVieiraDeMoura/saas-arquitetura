@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PreApproval } from 'mercadopago'
-import { mp } from '@/lib/mercadopago/client'
+import { stripe } from '@/lib/stripe'
 import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -10,24 +9,19 @@ export async function POST() {
 
   const { data: tenant } = await admin
     .from('tenants')
-    .select('subscription_id')
+    .select('stripe_customer_id')
     .eq('id', tenantId)
     .single()
 
-  if (!tenant?.subscription_id) {
+  if (!tenant?.stripe_customer_id) {
     return NextResponse.json({ error: 'Sem assinatura ativa.' }, { status: 400 })
   }
 
-  const preapproval = new PreApproval(mp)
-  await preapproval.update({
-    id: tenant.subscription_id as string,
-    body: { status: 'cancelled' },
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL!
+  const portalSession = await stripe.billingPortal.sessions.create({
+    customer: tenant.stripe_customer_id,
+    return_url: `${baseUrl}/dashboard/billing`,
   })
 
-  await admin
-    .from('tenants')
-    .update({ plan: 'starter', subscription_id: null })
-    .eq('id', tenantId)
-
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ url: portalSession.url })
 }

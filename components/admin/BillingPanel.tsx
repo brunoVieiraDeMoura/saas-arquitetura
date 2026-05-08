@@ -76,20 +76,20 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
     setLoading('cancel')
     try {
       const res = await fetch('/api/billing/portal', { method: 'POST' })
+      const json = await res.json()
       if (!res.ok) {
-        const json = await res.json()
-        alert(json.error ?? 'Erro ao cancelar assinatura.')
+        alert(json.error ?? 'Erro ao abrir portal de assinatura.')
         setLoading(null)
+        return
+      }
+      if (json.url) {
+        window.location.href = json.url
         return
       }
     } catch {
       alert('Erro de conexão. Tente novamente.')
       setLoading(null)
-      return
     }
-    setCancelConfirm(false)
-    setLoading(null)
-    router.refresh()
   }
 
   return (
@@ -133,7 +133,7 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
             : 'Categorias e projetos ilimitados'}
         </p>
         {currentPlan !== 'starter' && (
-          <p className="text-xs text-neutral-400 mt-1">Pagamentos processados pelo Mercado Pago.</p>
+          <p className="text-xs text-neutral-400 mt-1">Pagamentos processados pelo Stripe.</p>
         )}
       </div>
 
