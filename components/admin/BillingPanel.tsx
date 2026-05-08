@@ -71,6 +71,30 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
     setLoading(null)
   }
 
+  async function handleUpgradeToAgency() {
+    setLoading('upgrade-agency')
+    try {
+      const res = await fetch('/api/billing/upgrade', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ billing }),
+      })
+      const json = await res.json()
+      if (!res.ok) {
+        alert(json.error ?? 'Erro ao iniciar upgrade.')
+        setLoading(null)
+        return
+      }
+      if (json.url) {
+        window.location.href = json.url
+        return
+      }
+    } catch {
+      alert('Erro de rede. Tente novamente.')
+      setLoading(null)
+    }
+  }
+
   async function handlePortal() {
     setLoading('portal')
     try {
@@ -208,7 +232,15 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
                     </button>
                   )}
                 </div>
-              ) : isDowngrade ? null : plan.price > 0 ? (
+              ) : isDowngrade ? null : plan.id === 'agency' && currentPlan === 'pro' ? (
+                <button
+                  onClick={handleUpgradeToAgency}
+                  disabled={loading === 'upgrade-agency'}
+                  className="w-full py-2 text-sm font-medium bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 disabled:opacity-60 transition-colors"
+                >
+                  {loading === 'upgrade-agency' ? 'Aguarde...' : 'Fazer upgrade — paga só a diferença'}
+                </button>
+              ) : plan.price > 0 ? (
                 <button
                   onClick={() => handleUpgrade(plan.id)}
                   disabled={loading === plan.id}
