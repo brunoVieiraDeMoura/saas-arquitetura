@@ -46,17 +46,16 @@ type Props = {
 
 export default function BillingPanel({ currentPlan, hasSubscription, companyName }: Props) {
   const [loading, setLoading] = useState<string | null>(null)
-  const [cancelConfirm, setCancelConfirm] = useState(false)
   const [billing, setBilling] = useState<'monthly' | 'annual'>('annual')
   const router = useRouter()
 
-  async function handleUpgrade(planId: string, billingCycle: 'monthly' | 'annual' = billing) {
+  async function handleUpgrade(planId: string) {
     setLoading(planId)
     try {
       const res = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planId, billing: billingCycle }),
+        body: JSON.stringify({ plan: planId, billing }),
       })
       let json: Record<string, unknown> = {}
       try { json = await res.json() } catch { /* non-json response */ }
@@ -72,8 +71,8 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
     setLoading(null)
   }
 
-  async function handleCancel() {
-    setLoading('cancel')
+  async function handlePortal() {
+    setLoading('portal')
     try {
       const res = await fetch('/api/billing/portal', { method: 'POST' })
       const json = await res.json()
@@ -95,37 +94,9 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl border border-neutral-200 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <p className="text-sm font-medium text-neutral-900">Plano atual</p>
-            <div className="mt-1"><PlanBadge plan={currentPlan} /></div>
-          </div>
-          {currentPlan !== 'starter' && hasSubscription && (
-            <div>
-              {cancelConfirm ? (
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-neutral-500">Confirmar cancelamento?</span>
-                  <button
-                    onClick={handleCancel}
-                    disabled={loading === 'cancel'}
-                    className="text-xs text-red-600 hover:underline disabled:opacity-50"
-                  >
-                    {loading === 'cancel' ? 'Cancelando...' : 'Sim, cancelar'}
-                  </button>
-                  <button onClick={() => setCancelConfirm(false)} className="text-xs text-neutral-400 hover:underline">
-                    Voltar
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setCancelConfirm(true)}
-                  className="text-xs text-neutral-500 hover:underline"
-                >
-                  Cancelar assinatura
-                </button>
-              )}
-            </div>
-          )}
+        <div className="mb-4">
+          <p className="text-sm font-medium text-neutral-900">Plano atual</p>
+          <div className="mt-1"><PlanBadge plan={currentPlan} /></div>
         </div>
         <p className="text-xs text-neutral-400">
           {currentPlan === 'starter'
@@ -223,16 +194,21 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
                 ))}
               </ul>
               {isCurrent ? (
-                <div className="text-xs text-center text-neutral-400 py-2">Plano atual</div>
-              ) : isDowngrade && plan.id !== 'starter' ? (
-                <button
-                  onClick={() => handleUpgrade(plan.id)}
-                  disabled={loading === plan.id}
-                  className="w-full py-2 text-xs font-medium text-neutral-400 border border-neutral-200 rounded-lg hover:border-neutral-400 hover:text-neutral-600 disabled:opacity-50 transition-colors"
-                >
-                  {loading === plan.id ? 'Aguarde...' : `Regredir para ${plan.name}`}
-                </button>
-              ) : plan.price > 0 ? (
+                <div className="flex flex-col gap-2">
+                  <div className="text-xs text-center text-neutral-400 py-2 border border-neutral-200 rounded-lg">
+                    Plano atual
+                  </div>
+                  {hasSubscription && (
+                    <button
+                      onClick={handlePortal}
+                      disabled={loading === 'portal'}
+                      className="w-full py-2 text-xs text-neutral-400 hover:text-neutral-700 transition-colors disabled:opacity-50"
+                    >
+                      {loading === 'portal' ? 'Abrindo...' : 'Gerenciar / Cancelar assinatura'}
+                    </button>
+                  )}
+                </div>
+              ) : isDowngrade ? null : plan.price > 0 ? (
                 <button
                   onClick={() => handleUpgrade(plan.id)}
                   disabled={loading === plan.id}
