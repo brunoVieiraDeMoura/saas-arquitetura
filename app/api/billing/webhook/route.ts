@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       .from('tenants')
       .update({
         plan,
-        subscription_id:    session.subscription as string,
+        stripe_subscription_id:    session.subscription as string,
         stripe_customer_id: session.customer as string,
       })
       .eq('id', tenantId)
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
 
     await admin
       .from('tenants')
-      .update({ plan: 'starter', subscription_id: null })
+      .update({ plan: 'starter', stripe_subscription_id: null })
       .eq('stripe_customer_id', subscription.customer as string)
   }
 
