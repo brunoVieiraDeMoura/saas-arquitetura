@@ -31,16 +31,25 @@ export async function POST(req: Request) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
     const { tenantId, plan } = session.metadata ?? {}
-    if (!tenantId || !plan) return NextResponse.json({ ok: true })
 
-    await admin
+    console.log('[webhook] checkout.session.completed — tenantId:', tenantId, 'plan:', plan, 'customer:', session.customer, 'subscription:', session.subscription)
+
+    if (!tenantId || !plan) {
+      console.error('[webhook] missing metadata — tenantId or plan null')
+      return NextResponse.json({ ok: true })
+    }
+
+    const { error } = await admin
       .from('tenants')
       .update({
         plan,
-        subscription_id:     session.subscription as string,
-        stripe_customer_id:  session.customer as string,
+        subscription_id:    session.subscription as string,
+        stripe_customer_id: session.customer as string,
       })
       .eq('id', tenantId)
+
+    if (error) console.error('[webhook] supabase update failed:', error)
+    else console.log('[webhook] tenant updated successfully')
   }
 
   if (event.type === 'customer.subscription.updated') {
