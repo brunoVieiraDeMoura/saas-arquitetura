@@ -44,7 +44,8 @@
       "Bash(npx tsc *)",
       "PowerShell(New-Item *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\" -Recurse -Force)",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(dir C:\\\\Users\\\\Bruno\\\\Desktop\\\\olha-o-erro* *)"
     ]
   }
 }
