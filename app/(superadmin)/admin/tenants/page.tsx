@@ -19,12 +19,12 @@ export default async function AdminTenantsPage() {
         {tenants?.length ? (
           <ul className="divide-y divide-neutral-100">
             {tenants.map((t) => (
-              <li key={t.id} className="flex items-center justify-between px-6 py-4">
-                <div>
-                  <p className="text-sm font-medium text-neutral-800">{t.name}</p>
-                  <p className="text-xs text-neutral-400">{t.slug}.{process.env.NEXT_PUBLIC_ROOT_DOMAIN}</p>
+              <li key={t.id} className="flex items-start justify-between gap-3 px-4 sm:px-6 py-4">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-neutral-800 truncate">{t.name}</p>
+                  <p className="text-xs text-neutral-400 truncate">{t.slug}.{process.env.NEXT_PUBLIC_ROOT_DOMAIN}</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 sm:gap-4 shrink-0">
                   <PlanBadge plan={t.plan as 'starter' | 'pro' | 'agency'} />
                   <p className="text-xs text-neutral-400">
                     {new Date(t.created_at).toLocaleDateString('pt-BR')}
