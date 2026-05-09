@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import YoutubePlayer from '@/components/marketing/YoutubePlayer'
 
 export const metadata: Metadata = {
   title: 'Como usar — Arquitetura Organizada',
@@ -134,12 +135,7 @@ export default function ComoUsarPage() {
             Vídeo explicativo
           </p>
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl">
-            <iframe
-              src="https://www.youtube.com/embed/--TTnKPEjlc?vq=hd1080"
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            <YoutubePlayer videoId="--TTnKPEjlc" />
           </div>
           <p className="text-center text-xs text-neutral-400 mt-4">
             Assista ao tutorial completo e veja como é simples montar seu portfólio.
