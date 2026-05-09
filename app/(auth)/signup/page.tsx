@@ -11,6 +11,7 @@ function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
@@ -101,9 +102,29 @@ function SignupPage() {
               placeholder="Mínimo 8 caracteres" />
           </div>
 
+          <label className="flex items-start gap-2.5 cursor-pointer">
+            <input
+              type="checkbox"
+              required
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+            />
+            <span className="text-xs text-neutral-500 leading-relaxed">
+              Li e concordo com os{' '}
+              <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-neutral-900 underline underline-offset-2">
+                Termos e Condições
+              </a>{' '}
+              e com a{' '}
+              <a href="/return-policy" target="_blank" rel="noopener noreferrer" className="text-neutral-900 underline underline-offset-2">
+                Política de Reembolso
+              </a>
+            </span>
+          </label>
+
           {error && <p className="text-sm text-red-600">{error}</p>}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || !agreed}>
             {loading ? 'Criando conta...' : 'Criar conta grátis'}
           </Button>
         </form>
