@@ -57,7 +57,7 @@ export default function SettingsForm({ initialSlug, rootDomain }: Props) {
             minLength={3}
             maxLength={50}
           />
-          <span className="text-xs text-neutral-400 ml-1 shrink-0">.{rootDomain}</span>
+          <span className="text-xs text-neutral-400 ml-1 shrink-0 hidden sm:inline">.{rootDomain}</span>
         </div>
         <p className="text-[11px] text-neutral-400 mt-1.5">
           Preview: <span className="text-neutral-600 font-medium">{slugPreview}</span>
