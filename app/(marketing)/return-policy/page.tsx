@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function ReturnPolicyPage() {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-16">
+    <div className="max-w-3xl mx-auto px-6 pt-32 pb-16">
       <h1 className="text-3xl font-bold text-neutral-900 mb-2">Política de Reembolso e Devoluções</h1>
       <p className="text-sm text-neutral-400 mb-10">Última atualização: 8 de maio de 2026</p>
 
