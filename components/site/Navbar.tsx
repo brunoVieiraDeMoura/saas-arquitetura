@@ -23,7 +23,8 @@ export default function Navbar({
 }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
-  const base = `/${tenantSlug}`
+  const onSubdomain = !pathname.startsWith(`/${tenantSlug}`)
+  const base = onSubdomain ? '' : `/${tenantSlug}`
 
   const links = [
     { href: `${base}/projetos`, label: 'Projetos' },

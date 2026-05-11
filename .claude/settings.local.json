@@ -45,7 +45,11 @@
       "PowerShell(New-Item *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\" -Recurse -Force)",
       "Bash(Select-Object FullName)",
-      "Bash(dir C:\\\\Users\\\\Bruno\\\\Desktop\\\\olha-o-erro* *)"
+      "Bash(dir C:\\\\Users\\\\Bruno\\\\Desktop\\\\olha-o-erro* *)",
+      "Bash(Get-ChildItem -Recurse -Name \"page.tsx\")",
+      "Bash(Select-Object -First 30)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\" -Recurse | Where-Object { !$_.PSIsContainer } | Select-Object -ExpandProperty FullName | Select-Object -First 40)",
+      "PowerShell(git *)"
     ]
   }
 }
