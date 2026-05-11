@@ -34,8 +34,8 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-50">
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-neutral-200 p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4 py-8">
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8 text-center">
           <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mx-auto mb-4 text-2xl">✉️</div>
           <h1 className="text-xl font-semibold text-neutral-900 mb-2">Verifique seu email</h1>
           <p className="text-sm text-neutral-500 mb-6">
@@ -50,8 +50,8 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-neutral-200 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4 py-8">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 sm:p-8">
         <Link href="/login" className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-900 transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" />
           Voltar para o login

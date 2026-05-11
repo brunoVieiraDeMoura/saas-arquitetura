@@ -1,4 +1,5 @@
 import { getTenantBySlug } from '@/lib/tenant/resolver'
+import { getSiteBase } from '@/lib/tenant/site-base'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { PLANS } from '@/lib/plans'
 import type { Plan } from '@/lib/plans'
@@ -64,6 +65,7 @@ export default async function TenantProjectPage({
   const categorySlugResolved = (project.categories as any)?.slug ?? categorySlug
   const companyName = tenant.settings.find((r) => r.key === 'company_name')?.value ?? tenant.name
 
+  const base = await getSiteBase(tenantSlug)
   const galleryLimit = PLANS[(tenant.plan as Plan) ?? 'starter'].galleryLimit
   const rawGallery: string[] = project.gallery ?? []
   const limitedGallery = galleryLimit === Infinity ? rawGallery : rawGallery.slice(0, galleryLimit)
@@ -78,11 +80,11 @@ export default async function TenantProjectPage({
       <div className="border-b border-neutral-200 bg-white">
         <div className="max-w-[1000px] mx-auto px-6 py-4">
           <nav className="flex items-center gap-2 text-sm text-neutral-500">
-            <Link href={`/${tenantSlug}`} className="hover:text-neutral-900 transition-colors">Home</Link>
+            <Link href={`${base}`} className="hover:text-neutral-900 transition-colors">Home</Link>
             <span>/</span>
-            <Link href={`/${tenantSlug}/projetos`} className="hover:text-neutral-900 transition-colors">Projetos</Link>
+            <Link href={`${base}/projetos`} className="hover:text-neutral-900 transition-colors">Projetos</Link>
             <span>/</span>
-            <Link href={`/${tenantSlug}/${categorySlugResolved}`} className="hover:text-neutral-900 transition-colors">
+            <Link href={`${base}/${categorySlugResolved}`} className="hover:text-neutral-900 transition-colors">
               {categoryName}
             </Link>
             <span>/</span>

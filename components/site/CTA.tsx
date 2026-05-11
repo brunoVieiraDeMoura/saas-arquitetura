@@ -1,4 +1,7 @@
-export default function CTA({ companyName = 'Arquitetura Organizada', tenantSlug }: { companyName?: string; tenantSlug: string }) {
+import { getSiteBase } from '@/lib/tenant/site-base'
+
+export default async function CTA({ companyName = 'Arquitetura Organizada', tenantSlug }: { companyName?: string; tenantSlug: string }) {
+  const base = await getSiteBase(tenantSlug)
   return (
     <section className="bg-neutral-900 py-16 md:py-24 px-6">
       <div className="max-w-3xl mx-auto text-center">
@@ -8,7 +11,7 @@ export default function CTA({ companyName = 'Arquitetura Organizada', tenantSlug
         <p className="text-neutral-400 mb-8 text-lg">
           Entre em contato e vamos criar juntos um projeto único para você.
         </p>
-        <a href={`/${tenantSlug}/#contato`}
+        <a href={`${base}/#contato`}
           className="inline-flex items-center bg-white text-neutral-900 px-8 py-4 rounded-full font-medium hover:bg-neutral-100 transition-colors">
           Fale Conosco →
         </a>

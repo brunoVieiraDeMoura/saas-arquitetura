@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
 type Project = {
@@ -13,6 +14,8 @@ type Project = {
 }
 
 export default function Hero({ projects, tenantSlug }: { projects: Project[]; tenantSlug: string }) {
+  const pathname = usePathname()
+  const base = pathname.startsWith(`/${tenantSlug}`) ? `/${tenantSlug}` : ''
   const [current, setCurrent] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const touchStartX = useRef<number | null>(null)
@@ -48,7 +51,7 @@ export default function Hero({ projects, tenantSlug }: { projects: Project[]; te
     touchStartX.current = null
   }
 
-  const projectHref = `/${tenantSlug}/${project.categories?.slug ?? 'projetos'}/${project.slug}`
+  const projectHref = `${base}/${project.categories?.slug ?? 'projetos'}/${project.slug}`
 
   return (
     <section className="relative h-[100svh] overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>

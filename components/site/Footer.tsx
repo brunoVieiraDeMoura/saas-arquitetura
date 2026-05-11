@@ -1,4 +1,5 @@
 import LogoBrand from '@/components/LogoBrand'
+import { getSiteBase } from '@/lib/tenant/site-base'
 
 type LogoSettings = {
   type: 'text' | 'image'
@@ -9,7 +10,7 @@ type LogoSettings = {
   subnameAlign: 'start' | 'center' | 'end'
 }
 
-export default function Footer({
+export default async function Footer({
   companyName = 'Arquitetura Organizada',
   tenantSlug,
   logoSettings,
@@ -18,6 +19,7 @@ export default function Footer({
   tenantSlug: string
   logoSettings?: LogoSettings
 }) {
+  const base = await getSiteBase(tenantSlug)
   return (
     <footer className="bg-neutral-900 text-white py-12 px-6">
       <div className="max-w-[1000px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
@@ -31,9 +33,9 @@ export default function Footer({
         </div>
 
         <div className="flex items-center gap-6">
-          <a href={`/${tenantSlug}/projetos`} className="text-xs text-neutral-400 hover:text-white transition-colors">Projetos</a>
-          <a href={`/${tenantSlug}/#contato`} className="text-xs text-neutral-400 hover:text-white transition-colors">Contato</a>
-          <a href={`/${tenantSlug}/#faq`} className="text-xs text-neutral-400 hover:text-white transition-colors">FAQ</a>
+          <a href={`${base}/projetos`} className="text-xs text-neutral-400 hover:text-white transition-colors">Projetos</a>
+          <a href={`${base}/#contato`} className="text-xs text-neutral-400 hover:text-white transition-colors">Contato</a>
+          <a href={`${base}/#faq`} className="text-xs text-neutral-400 hover:text-white transition-colors">FAQ</a>
           <a href="/dashboard" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Dash</a>
         </div>
 

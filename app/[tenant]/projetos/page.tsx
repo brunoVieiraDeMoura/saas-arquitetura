@@ -1,4 +1,5 @@
 import { getTenantBySlug } from '@/lib/tenant/resolver'
+import { getSiteBase } from '@/lib/tenant/site-base'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -45,6 +46,7 @@ export default async function TenantProjetosPage({
 
   const isFree = tenant.plan === 'starter'
   const cats = isFree ? allCats.slice(0, 2) : allCats
+  const base = await getSiteBase(slug)
 
   return (
     <>
@@ -52,7 +54,7 @@ export default async function TenantProjetosPage({
       <div className="border-b border-neutral-200 bg-white">
         <div className="max-w-[1000px] mx-auto px-6 py-4">
           <nav className="flex items-center gap-2 text-sm text-neutral-500">
-            <Link href={`/${slug}`} className="hover:text-neutral-900 transition-colors">Home</Link>
+            <Link href={`${base}`} className="hover:text-neutral-900 transition-colors">Home</Link>
             <span>/</span>
             <span className="text-neutral-900 font-medium">Projetos</span>
           </nav>
@@ -62,7 +64,7 @@ export default async function TenantProjetosPage({
       <div className="bg-white border-b border-neutral-100">
         <div className="max-w-[1000px] mx-auto px-6 py-3 flex items-center gap-2 overflow-x-auto flex-nowrap md:flex-wrap scrollbar-none">
           {cats.map((cat: any) => (
-            <Link key={cat.id} href={`/${slug}/${cat.slug}`}
+            <Link key={cat.id} href={`${base}/${cat.slug}`}
               className="text-xs px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors">
               {cat.name}
             </Link>
@@ -86,14 +88,14 @@ export default async function TenantProjetosPage({
               <section key={cat.id} id={`cat-${cat.slug}`} className="mb-20">
                 <div className="flex items-center gap-4 mb-8">
                   {projects[0] && (
-                    <Link href={`/${slug}/${cat.slug}`} className="flex-shrink-0">
+                    <Link href={`${base}/${cat.slug}`} className="flex-shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={projects[0].main_image} alt={projects[0].title}
                         className="w-20 h-20 rounded-xl object-cover hover:opacity-90 transition-opacity" />
                     </Link>
                   )}
                   <div>
-                    <Link href={`/${slug}/${cat.slug}`} className="group inline-flex items-center gap-2">
+                    <Link href={`${base}/${cat.slug}`} className="group inline-flex items-center gap-2">
                       <h2 className="text-2xl font-semibold text-neutral-900 group-hover:underline underline-offset-4">{cat.name}</h2>
                       <span className="text-neutral-400 text-sm group-hover:translate-x-0.5 transition-transform">→</span>
                     </Link>
@@ -108,7 +110,7 @@ export default async function TenantProjetosPage({
                       {preview.map((p: any) => {
                         const excerpt = extractTiptapText(p.content, 110)
                         return (
-                          <Link key={p.id} href={`/${slug}/${cat.slug}/${p.slug}`}
+                          <Link key={p.id} href={`${base}/${cat.slug}/${p.slug}`}
                             className="group block overflow-hidden rounded-xl border border-neutral-200 hover:shadow-lg transition-shadow">
                             <div className="aspect-[4/3] overflow-hidden">
                               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -125,7 +127,7 @@ export default async function TenantProjetosPage({
                       })}
                     </div>
                     <div className="mt-6 flex justify-end">
-                      <Link href={`/${slug}/${cat.slug}`}
+                      <Link href={`${base}/${cat.slug}`}
                         className="inline-flex items-center gap-2 text-sm border border-neutral-300 text-neutral-700 px-4 py-2 rounded-lg hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors">
                         Ver todos de {cat.name} <span className="text-xs">→</span>
                       </Link>
@@ -141,6 +143,7 @@ export default async function TenantProjetosPage({
       </main>
 
       <Footer companyName={companyName} tenantSlug={slug} />
+
     </>
   )
 }

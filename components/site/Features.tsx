@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { formatDate, extractTiptapText, truncate } from '@/lib/utils'
+import { getSiteBase } from '@/lib/tenant/site-base'
 
 type Project = {
   id: string; title: string; slug: string; main_image: string; date: string; content?: unknown; created_at?: string
@@ -8,7 +9,8 @@ type Category = {
   id: string; name: string; slug: string; description: string; projects: Project[]
 }
 
-export default function Features({ categories, tenantSlug, plan }: { categories: Category[]; tenantSlug: string; plan?: string }) {
+export default async function Features({ categories, tenantSlug, plan }: { categories: Category[]; tenantSlug: string; plan?: string }) {
+  const base = await getSiteBase(tenantSlug)
   const visible = categories.slice(0, 2)
 
   return (
@@ -25,14 +27,14 @@ export default function Features({ categories, tenantSlug, plan }: { categories:
             <div key={cat.id} className="mb-20">
               <div className="mb-8 flex items-center gap-4">
                 {cover && (
-                  <Link href={`/${tenantSlug}/${cat.slug}`} className="flex-shrink-0">
+                  <Link href={`${base}/${cat.slug}`} className="flex-shrink-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={cover.main_image} alt={cover.title}
                       className="w-20 h-20 rounded-xl object-cover hover:opacity-90 transition-opacity" />
                   </Link>
                 )}
                 <div>
-                  <Link href={`/${tenantSlug}/${cat.slug}`} className="group inline-flex items-center gap-2">
+                  <Link href={`${base}/${cat.slug}`} className="group inline-flex items-center gap-2">
                     <h3 className="text-2xl font-semibold text-neutral-900 group-hover:underline underline-offset-4">{cat.name}</h3>
                     <span className="text-neutral-400 text-sm group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
@@ -52,7 +54,7 @@ export default function Features({ categories, tenantSlug, plan }: { categories:
                     {projects.map((p, pi) => {
                       const excerpt = extractTiptapText(p.content, 110)
                       return (
-                        <Link key={p.id} href={`/${tenantSlug}/${cat.slug}/${p.slug}`}
+                        <Link key={p.id} href={`${base}/${cat.slug}/${p.slug}`}
                           className={`group block overflow-hidden rounded-xl border border-neutral-200 hover:shadow-lg transition-shadow${pi >= 2 ? ' hidden md:block' : ''}`}>
                           <div className="aspect-video overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -69,7 +71,7 @@ export default function Features({ categories, tenantSlug, plan }: { categories:
                     })}
                   </div>
                   <div className="mt-6 flex justify-end">
-                    <Link href={`/${tenantSlug}/${cat.slug}`}
+                    <Link href={`${base}/${cat.slug}`}
                       className="inline-flex items-center gap-2 text-sm border border-neutral-300 text-neutral-700 px-4 py-2 rounded-lg hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors">
                       Ver todos de {cat.name} <span className="text-xs">→</span>
                     </Link>
@@ -82,7 +84,7 @@ export default function Features({ categories, tenantSlug, plan }: { categories:
           )
         })}
         <div className="mt-4 flex justify-center">
-          <Link href={`/${tenantSlug}/projetos`}
+          <Link href={`${base}/projetos`}
             className="inline-flex items-center gap-2 bg-neutral-900 text-white text-sm font-medium px-8 py-3 rounded-full hover:bg-neutral-700 transition-colors">
             Exibir Todos os Projetos →
           </Link>

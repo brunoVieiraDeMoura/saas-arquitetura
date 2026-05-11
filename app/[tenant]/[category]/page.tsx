@@ -1,4 +1,5 @@
 import { getTenantBySlug } from '@/lib/tenant/resolver'
+import { getSiteBase } from '@/lib/tenant/site-base'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -80,6 +81,7 @@ export default async function TenantCategoryPage({
   const otherCategories = orderedCats
     .filter((c, i) => c.slug !== categorySlug && (!isFree || i < CAT_LIMIT))
   const companyName = tenant.settings.find((r) => r.key === 'company_name')?.value ?? tenant.name
+  const base = await getSiteBase(tenantSlug)
 
   return (
     <>
@@ -87,9 +89,9 @@ export default async function TenantCategoryPage({
       <div className="border-b border-neutral-200 bg-white">
         <div className="max-w-[1000px] mx-auto px-6 py-4">
           <nav className="flex items-center gap-2 text-sm text-neutral-500">
-            <Link href={`/${tenantSlug}`} className="hover:text-neutral-900 transition-colors">Home</Link>
+            <Link href={`${base}`} className="hover:text-neutral-900 transition-colors">Home</Link>
             <span>/</span>
-            <Link href={`/${tenantSlug}/projetos`} className="hover:text-neutral-900 transition-colors">Projetos</Link>
+            <Link href={`${base}/projetos`} className="hover:text-neutral-900 transition-colors">Projetos</Link>
             <span>/</span>
             <span className="text-neutral-900 font-medium">{category.name}</span>
           </nav>
@@ -101,7 +103,7 @@ export default async function TenantCategoryPage({
           <div className="max-w-[1000px] mx-auto px-6 py-3 flex items-center gap-2 overflow-x-auto flex-nowrap md:flex-wrap scrollbar-none">
             <span className="text-xs text-neutral-400 shrink-0">Ver também:</span>
             {otherCategories.map((cat) => (
-              <Link key={cat.id} href={`/${tenantSlug}/${cat.slug}`}
+              <Link key={cat.id} href={`${base}/${cat.slug}`}
                 className="text-xs px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors shrink-0">
                 {cat.name}
               </Link>
@@ -128,7 +130,7 @@ export default async function TenantCategoryPage({
         {projects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((p: any) => (
-              <Link key={p.id} href={`/${tenantSlug}/${categorySlug}/${p.slug}`}
+              <Link key={p.id} href={`${base}/${categorySlug}/${p.slug}`}
                 className="group block overflow-hidden rounded-xl border border-neutral-200 hover:shadow-lg transition-shadow">
                 <div className="aspect-[4/3] overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -145,7 +147,7 @@ export default async function TenantCategoryPage({
         ) : (
           <div className="text-center py-20 text-neutral-400">
             <p className="text-lg">Nenhum projeto nesta categoria ainda.</p>
-            <Link href={`/${tenantSlug}/projetos`}
+            <Link href={`${base}/projetos`}
               className="mt-4 inline-block text-sm underline hover:text-neutral-900 transition-colors">
               Ver outras categorias
             </Link>
