@@ -107,24 +107,6 @@ function SignupPage() {
           <p className="text-sm text-neutral-500 mt-1">Comece gratuitamente, sem cartão</p>
         </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full py-3 sm:py-2 flex items-center justify-center gap-2"
-          onClick={handleGoogleSignup}
-          disabled={googleLoading}
-        >
-          <GoogleIcon />
-          {googleLoading ? 'Redirecionando...' : 'Criar conta com Google'}
-        </Button>
-
-        <div className="relative my-2">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-neutral-200" />
-          </div>
-          <div className="relative flex justify-center text-xs text-neutral-400 bg-white px-2">ou</div>
-        </div>
-
         <form onSubmit={handleSignup} className="space-y-5">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-neutral-700 mb-1.5">Nome</label>
@@ -171,6 +153,24 @@ function SignupPage() {
             {loading ? 'Criando conta...' : 'Criar conta grátis'}
           </Button>
         </form>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-neutral-200" />
+          </div>
+          <div className="relative flex justify-center text-xs text-neutral-400 bg-white px-2">ou</div>
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full py-3 sm:py-2 flex items-center justify-center gap-2"
+          onClick={handleGoogleSignup}
+          disabled={googleLoading}
+        >
+          <GoogleIcon />
+          {googleLoading ? 'Redirecionando...' : 'Criar conta com Google'}
+        </Button>
 
         <p className="mt-8 text-center text-sm text-neutral-500">
           Já tem conta?{' '}
