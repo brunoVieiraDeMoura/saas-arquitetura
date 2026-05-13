@@ -34,7 +34,8 @@ export default function Navbar({
 
   function handleLogoClick(e: React.MouseEvent) {
     setOpen(false)
-    if (pathname === base || pathname === `${base}/`) {
+    const homeHref = base || '/'
+    if (pathname === homeHref || pathname === `${homeHref}/`) {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
@@ -44,7 +45,7 @@ export default function Navbar({
     <header className="fixed top-0 left-0 right-0 z-[100]">
       <nav className="bg-white border-b border-neutral-200">
         <div className="max-w-[1000px] mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href={base} onClick={handleLogoClick}>
+          <Link href={base || '/'} onClick={handleLogoClick}>
             <LogoBrand {...logoSettings} nameColor="var(--site-primary)" />
           </Link>
 

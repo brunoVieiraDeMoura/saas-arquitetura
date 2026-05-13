@@ -54,7 +54,7 @@ export default async function TenantProjetosPage({
       <div className="border-b border-neutral-200 bg-white">
         <div className="max-w-[1000px] mx-auto px-6 py-4">
           <nav className="flex items-center gap-2 text-sm text-neutral-500">
-            <Link href={`${base}`} className="hover:text-neutral-900 transition-colors">Home</Link>
+            <Link href={base || '/'} className="hover:text-neutral-900 transition-colors">Home</Link>
             <span>/</span>
             <span className="text-neutral-900 font-medium">Projetos</span>
           </nav>
