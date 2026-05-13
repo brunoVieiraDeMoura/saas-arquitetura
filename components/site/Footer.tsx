@@ -29,17 +29,17 @@ export default async function Footer({
           ) : (
             <p className="font-semibold text-sm tracking-wide uppercase mb-1">{companyName}</p>
           )}
-          <p className="text-xs text-neutral-400 mt-2">Design de interiores e arquitetura</p>
+          <p className="text-xs text-white/60 mt-2">Design de interiores e arquitetura</p>
         </div>
 
         <div className="flex items-center gap-6">
-          <a href={`${base}/projetos`} className="text-xs text-neutral-400 hover:text-white transition-colors">Projetos</a>
-          <a href={`${base}/#contato`} className="text-xs text-neutral-400 hover:text-white transition-colors">Contato</a>
-          <a href={`${base}/#faq`} className="text-xs text-neutral-400 hover:text-white transition-colors">FAQ</a>
-          <a href="/dashboard" className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors">Dash</a>
+          <a href={`${base}/projetos`} className="text-xs text-white/60 hover:text-white transition-colors">Projetos</a>
+          <a href={`${base}/#contato`} className="text-xs text-white/60 hover:text-white transition-colors">Contato</a>
+          <a href={`${base}/#faq`} className="text-xs text-white/60 hover:text-white transition-colors">FAQ</a>
+          <a href="/dashboard" className="text-xs text-white/40 hover:text-white/70 transition-colors">Dash</a>
         </div>
 
-        <p className="text-xs text-neutral-500 text-center md:text-left">
+        <p className="text-xs text-white/40 text-center md:text-left">
           © {new Date().getFullYear()} {companyName}. Todos os direitos reservados.
         </p>
       </div>

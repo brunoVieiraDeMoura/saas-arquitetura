@@ -5,7 +5,9 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
   return (
     <section id="depoimentos" className="py-16 md:py-24 px-6 bg-neutral-50">
       <div className="max-w-[1000px] mx-auto">
-        <h2 className="text-3xl font-bold text-neutral-900 mb-12 text-center">O que dizem nossos clientes</h2>
+        <h2 className="text-3xl font-bold mb-12 text-center" style={{ color: 'var(--site-title)' }}>
+          O que dizem <span style={{ color: 'var(--site-primary)' }}>nossos clientes</span>
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.slice(0, 6).map((t, i) => (
             <div key={t.id} className={`bg-white rounded-xl border border-neutral-200 p-6 flex flex-col${i >= 4 ? ' hidden md:flex' : ''}`}>
@@ -20,7 +22,7 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
                   </div>
                 )}
                 <div>
-                  <p className="font-medium text-neutral-900 text-sm">{t.author}</p>
+                  <p className="font-medium text-sm" style={{ color: 'var(--site-title)' }}>{t.author}</p>
                   {t.role && <p className="text-xs text-neutral-400">{t.role}</p>}
                 </div>
               </div>

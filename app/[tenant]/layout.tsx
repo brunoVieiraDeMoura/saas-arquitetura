@@ -37,6 +37,7 @@ export default async function TenantLayout({
   const cssVars = {
     '--site-primary':   primaryColor,
     '--site-secondary': secondaryColor,
+    '--site-title':     'color-mix(in srgb, var(--site-primary) 5%, #202020)',
   } as CSSProperties
 
   return (

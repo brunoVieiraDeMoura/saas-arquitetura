@@ -255,8 +255,10 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
       <div className="xl:w-80 xl:shrink-0 xl:sticky xl:top-8 xl:self-start space-y-3">
         <p className="text-xs font-medium text-neutral-500 uppercase tracking-widest">Preview</p>
 
-        {/* Navbar + buttons (light) */}
-        <div className="rounded-xl border border-neutral-200 overflow-hidden">
+        {/* Mini site template */}
+        <div className="rounded-xl border border-neutral-200 overflow-hidden text-[11px] shadow-sm">
+
+          {/* Navbar */}
           <div className="bg-white border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
             <LogoBrand
               type={type}
@@ -267,60 +269,93 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
               subnameAlign={subnameAlign}
               nameColor={primary}
             />
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex gap-2">
-                <div className="w-7 h-1 bg-neutral-200 rounded" />
-                <div className="w-7 h-1 bg-neutral-200 rounded" />
-                <div className="w-7 h-1 bg-neutral-200 rounded" />
+            <div className="flex items-center gap-2">
+              <div className="hidden sm:flex gap-1.5">
+                <div className="w-6 h-1 bg-neutral-200 rounded" />
+                <div className="w-6 h-1 bg-neutral-200 rounded" />
+                <div className="w-6 h-1 bg-neutral-200 rounded" />
               </div>
-              <div className="flex flex-col gap-[3px]">
-                <div className="w-4 h-0.5 rounded" style={{ backgroundColor: primary }} />
-                <div className="w-4 h-0.5 rounded" style={{ backgroundColor: primary }} />
-                <div className="w-4 h-0.5 rounded" style={{ backgroundColor: primary }} />
+              <div className="flex flex-col gap-[3px] ml-1">
+                <div className="w-3.5 h-0.5 rounded" style={{ backgroundColor: primary }} />
+                <div className="w-3.5 h-0.5 rounded" style={{ backgroundColor: primary }} />
+                <div className="w-3.5 h-0.5 rounded" style={{ backgroundColor: primary }} />
               </div>
             </div>
           </div>
 
-          <div className="bg-neutral-50 px-4 py-4 flex flex-col gap-2.5">
-            <div className="flex gap-2 flex-wrap">
-              <span className="px-3 py-1.5 rounded-lg text-[11px] text-white font-medium"
+          {/* Hero */}
+          <div className="bg-neutral-50 px-5 py-5 text-center">
+            <p className="font-bold text-[15px] leading-snug mb-1">
+              <span style={{ color: 'color-mix(in srgb, ' + primary + ' 5%, #202020)' }}>Seu escritório de </span>
+              <span style={{ color: primary }}>Arquitetura</span>
+            </p>
+            <p className="text-neutral-500 text-[10px] mb-3">Design de interiores e projetos exclusivos.</p>
+            <div className="flex justify-center gap-2">
+              <span className="px-3 py-1 rounded-full text-[10px] text-white font-medium"
                 style={{ backgroundColor: primary }}>
-                Botão CTA
+                Ver Projetos →
               </span>
-              <span className="px-3 py-1.5 rounded-lg text-[11px] font-medium border"
+              <span className="px-3 py-1 rounded-full text-[10px] font-medium border"
                 style={{ borderColor: primary, color: primary }}>
                 Saiba Mais
               </span>
             </div>
-            <div className="flex gap-2">
-              <span className="flex-1 text-center px-2 py-1.5 rounded-lg text-[11px] font-medium border"
+          </div>
+
+          {/* Projects section */}
+          <div className="bg-white px-5 py-4 border-t border-neutral-100">
+            <p className="font-semibold text-[12px] text-center mb-3">
+              <span style={{ color: 'color-mix(in srgb, ' + primary + ' 5%, #202020)' }}>Nossos </span>
+              <span style={{ color: primary }}>Projetos</span>
+            </p>
+            <div className="grid grid-cols-3 gap-1.5 mb-2">
+              {[0,1,2].map((i) => (
+                <div key={i} className="rounded-lg overflow-hidden border border-neutral-200">
+                  <div className="h-8 bg-neutral-100" />
+                  <div className="px-1.5 py-1">
+                    <div className="w-full h-1 bg-neutral-200 rounded mb-0.5" />
+                    <div className="w-2/3 h-0.5 bg-neutral-100 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end">
+              <span className="text-[9px] border rounded px-2 py-0.5" style={{ borderColor: primary, color: primary }}>
+                Ver todos →
+              </span>
+            </div>
+          </div>
+
+          {/* Contact buttons */}
+          <div className="bg-neutral-50 px-5 py-3 border-t border-neutral-100">
+            <p className="font-semibold text-[12px] text-center mb-2">
+              <span style={{ color: 'color-mix(in srgb, ' + primary + ' 5%, #202020)' }}>Entre em </span>
+              <span style={{ color: primary }}>Contato</span>
+            </p>
+            <div className="flex gap-1.5">
+              <span className="flex-1 text-center py-1 rounded-lg text-[9px] font-medium border"
                 style={{ borderColor: primary, color: primary }}>
                 WhatsApp
               </span>
-              <span className="flex-1 text-center px-2 py-1.5 rounded-lg text-[11px] font-medium text-white"
+              <span className="flex-1 text-center py-1 rounded-lg text-[9px] font-medium text-white"
                 style={{ backgroundColor: primary }}>
                 Instagram
               </span>
             </div>
           </div>
-          <div className="px-3 py-1.5 bg-white border-t border-neutral-100">
-            <p className="text-[10px] text-neutral-400">Modo claro</p>
-          </div>
-        </div>
 
-        {/* CTA + Footer (dark) */}
-        <div className="rounded-xl overflow-hidden border-2" style={{ borderColor: primary }}>
-          <div className="px-4 py-5 text-center" style={{ backgroundColor: primary }}>
-            <div className="w-28 h-1.5 bg-white/20 rounded mx-auto mb-1.5" />
-            <div className="w-20 h-1 bg-white/10 rounded mx-auto mb-3" />
-            <span className="px-4 py-1.5 rounded-full text-[11px] font-medium"
+          {/* CTA */}
+          <div className="px-5 py-4 text-center" style={{ backgroundColor: primary }}>
+            <p className="text-white font-semibold text-[11px] mb-0.5">Pronto para começar?</p>
+            <p className="text-white/60 text-[9px] mb-2">Transforme seu espaço com a gente.</p>
+            <span className="px-4 py-1 rounded-full text-[9px] font-medium"
               style={{ backgroundColor: '#FFFFFF', color: primary }}>
               Fale Conosco →
             </span>
           </div>
 
-          <div className="px-4 py-3 flex items-center justify-between border-t border-white/10"
-            style={{ backgroundColor: primary }}>
+          {/* Footer */}
+          <div className="px-4 py-3 flex items-center justify-between" style={{ backgroundColor: primary }}>
             <div className="text-white/90">
               <LogoBrand
                 type={type}
@@ -331,15 +366,7 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
                 subnameAlign={subnameAlign}
               />
             </div>
-            <div className="flex gap-3">
-              <div className="w-7 h-1 bg-white/20 rounded" />
-              <div className="w-7 h-1 bg-white/20 rounded" />
-            </div>
             <span className="text-[8px] text-white/40">© 2025</span>
-          </div>
-
-          <div className="px-3 py-1.5 border-t border-white/10" style={{ backgroundColor: primary }}>
-            <p className="text-[10px] text-white/30">Modo escuro</p>
           </div>
         </div>
       </div>

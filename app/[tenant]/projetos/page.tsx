@@ -65,7 +65,7 @@ export default async function TenantProjetosPage({
         <div className="max-w-[1000px] mx-auto px-6 py-3 flex items-center gap-2 overflow-x-auto flex-nowrap md:flex-wrap scrollbar-none">
           {cats.map((cat: any) => (
             <Link key={cat.id} href={`${base}/${cat.slug}`}
-              className="text-xs px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors">
+              className="text-xs px-3 py-1 rounded-full border border-[var(--site-primary)] text-[var(--site-primary)] hover:bg-[var(--site-primary)] hover:text-white transition-colors">
               {cat.name}
             </Link>
           ))}
@@ -74,7 +74,9 @@ export default async function TenantProjetosPage({
 
       <main className="py-10 md:py-20 px-6">
         <div className="max-w-[1000px] mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-3 text-center">Todos os Projetos</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-center" style={{ color: 'var(--site-title)' }}>
+            Todos os <span style={{ color: 'var(--site-primary)' }}>Projetos</span>
+          </h1>
           <p className="text-neutral-500 text-center mb-10 md:mb-16">
             Explore o portfólio completo de projetos de {companyName}.
           </p>
@@ -96,7 +98,7 @@ export default async function TenantProjetosPage({
                   )}
                   <div>
                     <Link href={`${base}/${cat.slug}`} className="group inline-flex items-center gap-2">
-                      <h2 className="text-2xl font-semibold text-neutral-900 group-hover:underline underline-offset-4">{cat.name}</h2>
+                      <h2 className="text-2xl font-semibold group-hover:underline underline-offset-4" style={{ color: 'var(--site-title)' }}>{cat.name}</h2>
                       <span className="text-neutral-400 text-sm group-hover:translate-x-0.5 transition-transform">→</span>
                     </Link>
                     {cat.description && <p className="text-neutral-500 mt-1 text-sm">{truncate(cat.description, 140)}</p>}
@@ -118,7 +120,7 @@ export default async function TenantProjetosPage({
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             </div>
                             <div className="p-4">
-                              <h3 className="font-medium text-neutral-900 mb-1">{p.title}</h3>
+                              <h3 className="font-medium mb-1" style={{ color: 'var(--site-title)' }}>{p.title}</h3>
                               <p className="text-xs text-neutral-400 mb-2">{formatDate(p.date)}</p>
                               {excerpt && <p className="text-sm text-neutral-500 line-clamp-2">{excerpt}</p>}
                             </div>
@@ -128,7 +130,7 @@ export default async function TenantProjetosPage({
                     </div>
                     <div className="mt-6 flex justify-end">
                       <Link href={`${base}/${cat.slug}`}
-                        className="inline-flex items-center gap-2 text-sm border border-neutral-300 text-neutral-700 px-4 py-2 rounded-lg hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors">
+                        className="inline-flex items-center gap-2 text-sm border border-[var(--site-primary)] text-[var(--site-primary)] px-4 py-2 rounded-lg hover:bg-[var(--site-primary)] hover:text-white transition-colors">
                         Ver todos de {cat.name} <span className="text-xs">→</span>
                       </Link>
                     </div>

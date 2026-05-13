@@ -16,7 +16,9 @@ export default async function Features({ categories, tenantSlug, plan }: { categ
   return (
     <section id="projetos" className="py-16 md:py-24 px-6">
       <div className="max-w-[1000px] mx-auto">
-        <h2 className="text-3xl font-bold text-neutral-900 mb-16 text-center">Nossos Projetos</h2>
+        <h2 className="text-3xl font-bold mb-16 text-center" style={{ color: 'var(--site-title)' }}>
+          Nossos <span style={{ color: 'var(--site-primary)' }}>Projetos</span>
+        </h2>
         {visible.map((cat) => {
           const sorted = [...cat.projects].sort((a, b) =>
             new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime()
@@ -35,7 +37,7 @@ export default async function Features({ categories, tenantSlug, plan }: { categ
                 )}
                 <div>
                   <Link href={`${base}/${cat.slug}`} className="group inline-flex items-center gap-2">
-                    <h3 className="text-2xl font-semibold text-neutral-900 group-hover:underline underline-offset-4">{cat.name}</h3>
+                    <h3 className="text-2xl font-semibold group-hover:underline underline-offset-4" style={{ color: 'var(--site-title)' }}>{cat.name}</h3>
                     <span className="text-neutral-400 text-sm group-hover:translate-x-0.5 transition-transform">→</span>
                   </Link>
                   {cat.description && (
@@ -62,7 +64,7 @@ export default async function Features({ categories, tenantSlug, plan }: { categ
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           </div>
                           <div className="p-4">
-                            <h4 className="font-medium text-neutral-900 mb-1">{p.title}</h4>
+                            <h4 className="font-medium mb-1" style={{ color: 'var(--site-title)' }}>{p.title}</h4>
                             <p className="text-xs text-neutral-400 mb-2">{formatDate(p.date)}</p>
                             {excerpt && <p className="text-sm text-neutral-500 line-clamp-2">{excerpt}</p>}
                           </div>
