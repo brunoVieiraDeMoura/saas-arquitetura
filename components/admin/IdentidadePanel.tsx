@@ -67,7 +67,14 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
   const titlePreviewColor =
     titleMode === 'primary' ? primary :
     titleMode === 'gray'    ? '#374151' :
-                              '#1a1a1a'
+                              (() => {
+                                // approximate color-mix(primary 15%, #0f0f0f) in JS for live preview
+                                const hex = primary.replace('#', '')
+                                const r = Math.round(parseInt(hex.slice(0,2),16) * 0.15 + 15 * 0.85)
+                                const g = Math.round(parseInt(hex.slice(2,4),16) * 0.15 + 15 * 0.85)
+                                const b = Math.round(parseInt(hex.slice(4,6),16) * 0.15 + 15 * 0.85)
+                                return `rgb(${r},${g},${b})`
+                              })()
 
   // Save state
   const [saving, setSaving] = useState(false)
@@ -259,17 +266,19 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
           </p>
           <div className="grid grid-cols-3 gap-2">
             {([
-              { value: 'primary', label: 'Primária',  preview: primary },
-              { value: 'gray',    label: 'Cinza',     preview: '#374151' },
-              { value: 'dark',    label: 'Preto',     preview: '#1a1a1a' },
-            ] as { value: TitleColorMode; label: string; preview: string }[]).map((opt) => (
+              { value: 'primary', label: 'Primária' },
+              { value: 'gray',    label: 'Cinza' },
+              { value: 'dark',    label: 'Preto' },
+            ] as { value: TitleColorMode; label: string }[]).map((opt) => (
               <button key={opt.value} type="button" onClick={() => setTitleMode(opt.value)}
                 className={`flex flex-col items-center gap-2 px-3 py-3 rounded-xl border text-xs transition-colors ${
                   titleMode === opt.value
                     ? 'border-neutral-900 bg-neutral-50 font-medium text-neutral-900'
                     : 'border-neutral-200 text-neutral-500 hover:border-neutral-400'
                 }`}>
-                <span className="text-sm font-bold" style={{ color: opt.preview }}>Aa</span>
+                <span className="text-sm font-bold" style={{
+                  color: opt.value === 'primary' ? primary : opt.value === 'gray' ? '#374151' : titlePreviewColor
+                }}>Aa</span>
                 <span>{opt.label}</span>
               </button>
             ))}
