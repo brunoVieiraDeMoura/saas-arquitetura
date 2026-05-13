@@ -8,7 +8,7 @@ interface Props {
   initialDomain: string | null
 }
 
-type Registrar = 'hostinger' | 'godaddy' | 'registro' | 'cloudflare' | 'namecheap'
+type Registrar = 'hostinger' | 'godaddy' | 'registro' | 'cloudflare' | 'namecheap' | 'kinghost'
 
 const REGISTRARS: { id: Registrar; label: string; fields: { campo: string; valor: string; highlight?: boolean; note?: string }[] }[] = [
   {
@@ -62,6 +62,16 @@ const REGISTRARS: { id: Registrar; label: string; fields: { campo: string; valor
       { campo: 'TTL', valor: 'Automatic' },
     ],
   },
+  {
+    id: 'kinghost',
+    label: 'KingHost',
+    fields: [
+      { campo: 'Tipo', valor: 'A', highlight: true },
+      { campo: 'Nome', valor: '@' },
+      { campo: 'Valor', valor: '76.76.21.21' },
+      { campo: 'TTL', valor: '3600' },
+    ],
+  },
 ]
 
 export default function CustomDomainForm({ initialDomain }: Props) {
@@ -109,7 +119,8 @@ export default function CustomDomainForm({ initialDomain }: Props) {
           Você pode comprar um domínio em registradoras como{' '}
           <a href="https://registro.br" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">Registro.br</a>,{' '}
           <a href="https://www.godaddy.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">GoDaddy</a> ou{' '}
-          <a href="https://www.hostinger.com.br" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">Hostinger</a>{' '}
+          <a href="https://www.hostinger.com.br" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">Hostinger</a> ou{' '}
+          <a href="https://www.kinghost.com.br" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">KingHost</a>{' '}
           e depois vincular o DNS aqui. Adicione um registro A apontando para o IP da plataforma.
         </p>
       </div>

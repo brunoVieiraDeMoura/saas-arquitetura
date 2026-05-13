@@ -53,7 +53,9 @@
       "PowerShell(Get-ChildItem *)",
       "PowerShell([System.Environment]::GetFolderPath\\('Desktop'\\))",
       "PowerShell(cmd /c dir \"C:\\\\Users\\\\Bruno\\\\Desktop\" /a)",
-      "PowerShell(cmd /c dir \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\\\\[tenant]\" /a /s /b)"
+      "PowerShell(cmd /c dir \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\\\\[tenant]\" /a /s /b)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\")",
+      "Bash(findstr /i \"campanha\")"
     ]
   }
 }
