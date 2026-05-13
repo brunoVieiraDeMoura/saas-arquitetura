@@ -31,6 +31,8 @@ const PALETTES = [
   { id: 'cinza',    label: 'Cinza',    primary: '#374151' },
 ]
 
+type TitleColorMode = 'primary' | 'gray' | 'dark'
+
 type Props = {
   logoInitial: {
     companyName: string
@@ -44,6 +46,7 @@ type Props = {
   colorInitial: {
     primaryColor: string
     secondaryColor: string
+    titleColorMode: TitleColorMode
   }
 }
 
@@ -59,6 +62,12 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
 
   // Color state — secondary is always white
   const [primary, setPrimary] = useState(colorInitial.primaryColor)
+  const [titleMode, setTitleMode] = useState<TitleColorMode>(colorInitial.titleColorMode)
+
+  const titlePreviewColor =
+    titleMode === 'primary' ? primary :
+    titleMode === 'gray'    ? '#374151' :
+                              '#1a1a1a'
 
   // Save state
   const [saving, setSaving] = useState(false)
@@ -84,6 +93,7 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
         { key: 'logo_subname_align', value: subnameAlign },
         { key: 'primary_color',      value: primary },
         { key: 'secondary_color',    value: '#FFFFFF' },
+        { key: 'title_color_mode',   value: titleMode },
       ]),
     })
     setSaving(false)
@@ -241,6 +251,31 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
           </div>
         </div>
 
+        {/* Title color mode */}
+        <div className="bg-white rounded-2xl border border-neutral-200 p-5">
+          <h2 className="text-sm font-semibold text-neutral-900 mb-0.5">Cor dos Títulos</h2>
+          <p className="text-xs text-neutral-400 mb-4">
+            Define a cor dos títulos e cabeçalhos das páginas do site.
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {([
+              { value: 'primary', label: 'Primária',  preview: primary },
+              { value: 'gray',    label: 'Cinza',     preview: '#374151' },
+              { value: 'dark',    label: 'Preto',     preview: '#1a1a1a' },
+            ] as { value: TitleColorMode; label: string; preview: string }[]).map((opt) => (
+              <button key={opt.value} type="button" onClick={() => setTitleMode(opt.value)}
+                className={`flex flex-col items-center gap-2 px-3 py-3 rounded-xl border text-xs transition-colors ${
+                  titleMode === opt.value
+                    ? 'border-neutral-900 bg-neutral-50 font-medium text-neutral-900'
+                    : 'border-neutral-200 text-neutral-500 hover:border-neutral-400'
+                }`}>
+                <span className="text-sm font-bold" style={{ color: opt.preview }}>Aa</span>
+                <span>{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={handleSave}
@@ -286,7 +321,7 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
           {/* Hero */}
           <div className="bg-neutral-50 px-5 py-5 text-center">
             <p className="font-bold text-[15px] leading-snug mb-1">
-              <span style={{ color: 'color-mix(in srgb, ' + primary + ' 5%, #202020)' }}>Seu escritório de </span>
+              <span style={{ color: titlePreviewColor }}>Seu escritório de </span>
               <span style={{ color: primary }}>Arquitetura</span>
             </p>
             <p className="text-neutral-500 text-[10px] mb-3">Design de interiores e projetos exclusivos.</p>
@@ -305,7 +340,7 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
           {/* Projects section */}
           <div className="bg-white px-5 py-4 border-t border-neutral-100">
             <p className="font-semibold text-[12px] text-center mb-3">
-              <span style={{ color: 'color-mix(in srgb, ' + primary + ' 5%, #202020)' }}>Nossos </span>
+              <span style={{ color: titlePreviewColor }}>Nossos </span>
               <span style={{ color: primary }}>Projetos</span>
             </p>
             <div className="grid grid-cols-3 gap-1.5 mb-2">
@@ -329,7 +364,7 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
           {/* Contact buttons */}
           <div className="bg-neutral-50 px-5 py-3 border-t border-neutral-100">
             <p className="font-semibold text-[12px] text-center mb-2">
-              <span style={{ color: 'color-mix(in srgb, ' + primary + ' 5%, #202020)' }}>Entre em </span>
+              <span style={{ color: titlePreviewColor }}>Entre em </span>
               <span style={{ color: primary }}>Contato</span>
             </p>
             <div className="flex gap-1.5">

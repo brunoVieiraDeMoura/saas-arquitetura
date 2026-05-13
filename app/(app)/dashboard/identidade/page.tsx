@@ -13,7 +13,7 @@ export default async function IdentidadePage() {
     .in('key', [
       'company_name', 'logo_type', 'logo_name', 'logo_subname',
       'logo_image_url', 'logo_font', 'logo_subname_align',
-      'primary_color', 'secondary_color',
+      'primary_color', 'secondary_color', 'title_color_mode',
     ])
 
   const get = (key: string, fallback = '') => rows?.find((r) => r.key === key)?.value ?? fallback
@@ -29,8 +29,9 @@ export default async function IdentidadePage() {
   }
 
   const colorInitial = {
-    primaryColor:   get('primary_color', '#000000'),
-    secondaryColor: get('secondary_color', '#FFFFFF'),
+    primaryColor:     get('primary_color', '#000000'),
+    secondaryColor:   get('secondary_color', '#FFFFFF'),
+    titleColorMode:   (get('title_color_mode', 'dark') as 'primary' | 'gray' | 'dark'),
   }
 
   return (

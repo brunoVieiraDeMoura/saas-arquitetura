@@ -104,7 +104,7 @@ export default async function TenantCategoryPage({
             <span className="text-xs text-neutral-400 shrink-0">Ver também:</span>
             {otherCategories.map((cat) => (
               <Link key={cat.id} href={`${base}/${cat.slug}`}
-                className="text-xs px-3 py-1 rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors shrink-0">
+                className="text-xs px-3 py-1 rounded-full border border-[var(--site-primary)] text-[var(--site-primary)] hover:bg-[var(--site-primary)] hover:text-white transition-colors shrink-0">
                 {cat.name}
               </Link>
             ))}
@@ -113,7 +113,7 @@ export default async function TenantCategoryPage({
       )}
 
       <div className="max-w-[1000px] mx-auto px-6 py-12">
-        <h1 className="text-4xl font-bold text-neutral-900">{category.name}</h1>
+        <h1 className="text-4xl font-bold" style={{ color: 'var(--site-title)' }}>{category.name}</h1>
         {(category as any).description && (
           <p className="text-neutral-500 mt-3 text-base max-w-2xl">{(category as any).description}</p>
         )}
@@ -138,7 +138,7 @@ export default async function TenantCategoryPage({
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="p-4">
-                  <h2 className="font-medium text-neutral-900 mb-1">{p.title}</h2>
+                  <h2 className="font-medium mb-1" style={{ color: 'var(--site-title)' }}>{p.title}</h2>
                   <p className="text-xs text-neutral-400">{formatDate(p.date)}</p>
                 </div>
               </Link>

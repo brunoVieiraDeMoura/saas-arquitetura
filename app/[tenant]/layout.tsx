@@ -33,11 +33,17 @@ export default async function TenantLayout({
 
   const primaryColor   = get('primary_color', '#1E1E1E')
   const secondaryColor = get('secondary_color', '#FFFFFF')
+  const titleMode      = get('title_color_mode', 'dark')
+
+  const titleColor =
+    titleMode === 'primary' ? 'var(--site-primary)' :
+    titleMode === 'gray'    ? '#374151' :
+                              '#1a1a1a'
 
   const cssVars = {
     '--site-primary':   primaryColor,
     '--site-secondary': secondaryColor,
-    '--site-title':     'color-mix(in srgb, var(--site-primary) 5%, #202020)',
+    '--site-title':     titleColor,
   } as CSSProperties
 
   return (
