@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { generateHTML } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import TiptapImage from '@tiptap/extension-image'
+import YoutubeEmbed from '@/lib/tiptap/youtube'
 
 export default function ProjectContent({ content }: { content: unknown }) {
   const [html, setHtml] = useState('')
@@ -14,7 +15,7 @@ export default function ProjectContent({ content }: { content: unknown }) {
     if (typeof parsed === 'string') {
       try { parsed = JSON.parse(parsed) } catch { return }
     }
-    try { setHtml(generateHTML(parsed as any, [StarterKit, TiptapImage])) } catch {}
+    try { setHtml(generateHTML(parsed as any, [StarterKit, TiptapImage, YoutubeEmbed])) } catch {}
   }, [content])
 
   if (!html) return null

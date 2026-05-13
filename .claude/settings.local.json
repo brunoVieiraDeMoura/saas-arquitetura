@@ -55,7 +55,11 @@
       "PowerShell(cmd /c dir \"C:\\\\Users\\\\Bruno\\\\Desktop\" /a)",
       "PowerShell(cmd /c dir \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\\\\[tenant]\" /a /s /b)",
       "Bash(dir /s /b \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\")",
-      "Bash(findstr /i \"campanha\")"
+      "Bash(findstr /i \"campanha\")",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\" -Force | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\app\" -Recurse -Force | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\\", \"\"\\) })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\components\" -Recurse -Force | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\\", \"\"\\) })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\lib\" -Recurse | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\\", \"\"\\) })"
     ]
   }
 }

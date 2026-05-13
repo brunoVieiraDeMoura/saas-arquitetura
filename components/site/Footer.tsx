@@ -21,7 +21,7 @@ export default async function Footer({
 }) {
   const base = await getSiteBase(tenantSlug)
   return (
-    <footer className="bg-neutral-900 text-white py-12 px-6">
+    <footer style={{ backgroundColor: 'var(--site-primary)' }} className="text-white py-12 px-6">
       <div className="max-w-[1000px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-center md:text-left">
           {logoSettings ? (

@@ -5,13 +5,14 @@ import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import type { JSONContent } from '@tiptap/react'
 import { useMemo } from 'react'
+import YoutubeEmbed from '@/lib/tiptap/youtube'
 
 type Props = { title: string; mainImage: string | null; content: JSONContent | null; date: string; gallery?: string[] }
 
 export default function TiptapPreview({ title, mainImage, content, date, gallery }: Props) {
   const html = useMemo(() => {
     if (!content) return ''
-    try { return generateHTML(content, [StarterKit, Image]) } catch { return '' }
+    try { return generateHTML(content, [StarterKit, Image, YoutubeEmbed]) } catch { return '' }
   }, [content])
 
   return (

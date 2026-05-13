@@ -2,6 +2,7 @@ import { getTenantBySlug } from '@/lib/tenant/resolver'
 import { notFound } from 'next/navigation'
 import Navbar from '@/components/site/Navbar'
 import WhatsAppFloat from '@/components/site/WhatsAppFloat'
+import type { CSSProperties } from 'react'
 
 export default async function TenantLayout({
   children,
@@ -30,13 +31,21 @@ export default async function TenantLayout({
   const whatsappNumber   = get('whatsapp_number', '')
   const whatsappMessage  = get('whatsapp_message', '')
 
+  const primaryColor   = get('primary_color', '#1E1E1E')
+  const secondaryColor = get('secondary_color', '#FFFFFF')
+
+  const cssVars = {
+    '--site-primary':   primaryColor,
+    '--site-secondary': secondaryColor,
+  } as CSSProperties
+
   return (
-    <>
+    <div style={cssVars}>
       <Navbar logoSettings={logoSettings} tenantSlug={slug} />
       <div className="pt-16">{children}</div>
       {whatsappFloating && whatsappNumber && (
         <WhatsAppFloat number={whatsappNumber} message={whatsappMessage} />
       )}
-    </>
+    </div>
   )
 }

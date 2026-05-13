@@ -5,6 +5,7 @@ type Props = {
   imageUrl?: string
   logoFont?: string
   subnameAlign?: 'start' | 'center' | 'end'
+  nameColor?: string
 }
 
 export default function LogoBrand({
@@ -14,6 +15,7 @@ export default function LogoBrand({
   imageUrl,
   logoFont = '',
   subnameAlign = 'end',
+  nameColor,
 }: Props) {
   if (type === 'image' && imageUrl) {
     return (
@@ -27,7 +29,10 @@ export default function LogoBrand({
 
   return (
     <div className="inline-flex flex-col leading-tight gap-[2px]" style={logoFont ? { fontFamily: logoFont } : undefined}>
-      <span className="self-end text-sm font-bold tracking-widest uppercase whitespace-nowrap">{name}</span>
+      <span
+        className="self-end text-sm font-bold tracking-widest uppercase whitespace-nowrap"
+        style={nameColor ? { color: nameColor } : undefined}
+      >{name}</span>
       <span
         className="text-[9px] font-medium tracking-[0.25em] uppercase opacity-60 whitespace-nowrap"
         style={{ alignSelf }}

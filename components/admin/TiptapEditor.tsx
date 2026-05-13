@@ -5,6 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Placeholder from '@tiptap/extension-placeholder'
 import type { JSONContent } from '@tiptap/react'
+import YoutubeEmbed, { extractYoutubeId } from '@/lib/tiptap/youtube'
 
 const Btn = ({ onClick, active, children }: { onClick: () => void; active?: boolean; children: React.ReactNode }) => (
   <button type="button" onMouseDown={(e) => { e.preventDefault(); onClick() }}
@@ -20,6 +21,7 @@ export default function TiptapEditor({ content, onChange }: { content: JSONConte
       StarterKit.configure({ link: { openOnClick: false } }),
       Image,
       Placeholder.configure({ placeholder: 'Escreva a descrição do projeto...' }),
+      YoutubeEmbed,
     ],
     content: content ?? undefined,
     onUpdate: ({ editor }) => onChange(editor.getJSON()),
@@ -32,9 +34,21 @@ export default function TiptapEditor({ content, onChange }: { content: JSONConte
     const url = window.prompt('URL da imagem:')
     if (url) editor!.chain().focus().setImage({ src: url }).run()
   }
+
   function setLink() {
     const url = window.prompt('URL do link:')
     if (url) editor!.chain().focus().setLink({ href: url }).run()
+  }
+
+  function addYoutube() {
+    const input = window.prompt('Link do YouTube:')
+    if (!input) return
+    const videoId = extractYoutubeId(input.trim())
+    if (!videoId) {
+      window.alert('Link do YouTube inválido.')
+      return
+    }
+    editor!.chain().focus().insertContent({ type: 'youtubeEmbed', attrs: { videoId } }).run()
   }
 
   return (
@@ -50,6 +64,7 @@ export default function TiptapEditor({ content, onChange }: { content: JSONConte
         <Btn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')}>" Citação</Btn>
         <Btn onClick={setLink} active={editor.isActive('link')}>Link</Btn>
         <Btn onClick={addImage}>Imagem</Btn>
+        <Btn onClick={addYoutube}>▶ YouTube</Btn>
         <Btn onClick={() => editor.chain().focus().undo().run()}>↩ Desfazer</Btn>
         <Btn onClick={() => editor.chain().focus().redo().run()}>↪ Refazer</Btn>
       </div>

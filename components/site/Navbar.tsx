@@ -44,8 +44,8 @@ export default function Navbar({
     <header className="fixed top-0 left-0 right-0 z-[100]">
       <nav className="bg-white border-b border-neutral-200">
         <div className="max-w-[1000px] mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href={base} className="text-neutral-900" onClick={handleLogoClick}>
-            <LogoBrand {...logoSettings} />
+          <Link href={base} onClick={handleLogoClick}>
+            <LogoBrand {...logoSettings} nameColor="var(--site-primary)" />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
@@ -54,7 +54,9 @@ export default function Navbar({
                 {l.label}
               </a>
             ))}
-            <a href={`${base}/#contato`} className="text-sm bg-neutral-900 text-white px-4 py-2 rounded-lg hover:bg-neutral-800 transition-colors">
+            <a href={`${base}/#contato`}
+              style={{ backgroundColor: 'var(--site-primary)' }}
+              className="text-sm text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">
               Contato
             </a>
           </div>
@@ -67,9 +69,9 @@ export default function Navbar({
             onClick={() => setOpen((v) => !v)}
           >
             <div className="w-5 flex flex-col gap-[5px]">
-              <span className={`block h-0.5 bg-neutral-900 transition-all duration-200 origin-center ${open ? 'translate-y-[7px] rotate-45' : ''}`} />
-              <span className={`block h-0.5 bg-neutral-900 transition-all duration-200 ${open ? 'opacity-0' : ''}`} />
-              <span className={`block h-0.5 bg-neutral-900 transition-all duration-200 origin-center ${open ? '-translate-y-[7px] -rotate-45' : ''}`} />
+              <span style={{ backgroundColor: 'var(--site-primary)' }} className={`block h-0.5 transition-all duration-200 origin-center ${open ? 'translate-y-[7px] rotate-45' : ''}`} />
+              <span style={{ backgroundColor: 'var(--site-primary)' }} className={`block h-0.5 transition-all duration-200 ${open ? 'opacity-0' : ''}`} />
+              <span style={{ backgroundColor: 'var(--site-primary)' }} className={`block h-0.5 transition-all duration-200 origin-center ${open ? '-translate-y-[7px] -rotate-45' : ''}`} />
             </div>
           </button>
         </div>
@@ -86,7 +88,8 @@ export default function Navbar({
               </a>
             ))}
             <a href={`${base}/#contato`} onClick={() => setOpen(false)}
-              className="mt-2 text-center text-sm bg-neutral-900 text-white px-4 py-3 rounded-lg hover:bg-neutral-800 transition-colors">
+              style={{ backgroundColor: 'var(--site-primary)' }}
+              className="mt-2 text-center text-sm text-white px-4 py-3 rounded-lg hover:opacity-90 transition-opacity">
               Contato
             </a>
           </div>

@@ -72,7 +72,7 @@ export default async function Features({ categories, tenantSlug, plan }: { categ
                   </div>
                   <div className="mt-6 flex justify-end">
                     <Link href={`${base}/${cat.slug}`}
-                      className="inline-flex items-center gap-2 text-sm border border-neutral-300 text-neutral-700 px-4 py-2 rounded-lg hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors">
+                      className="inline-flex items-center gap-2 text-sm border border-[var(--site-primary)] text-[var(--site-primary)] px-4 py-2 rounded-lg hover:bg-[var(--site-primary)] hover:text-white transition-colors">
                       Ver todos de {cat.name} <span className="text-xs">→</span>
                     </Link>
                   </div>
@@ -85,7 +85,7 @@ export default async function Features({ categories, tenantSlug, plan }: { categ
         })}
         <div className="mt-4 flex justify-center">
           <Link href={`${base}/projetos`}
-            className="inline-flex items-center gap-2 bg-neutral-900 text-white text-sm font-medium px-8 py-3 rounded-full hover:bg-neutral-700 transition-colors">
+            className="inline-flex items-center gap-2 bg-[var(--site-primary)] text-white text-sm font-medium px-8 py-3 rounded-full hover:opacity-90 transition-opacity">
             Exibir Todos os Projetos →
           </Link>
         </div>
