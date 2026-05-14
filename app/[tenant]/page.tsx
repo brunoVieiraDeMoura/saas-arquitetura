@@ -92,6 +92,7 @@ export default async function TenantHomePage({
     : (featuredRaw ?? [])
 
   const companyName = get('company_name', tenant.name)
+  const getTheme = (key: string) => (Number(get(key, '1')) || 1) as 1 | 2 | 3
 
   const logoSettings = {
     type: (get('logo_type', 'text') as 'text' | 'image'),
@@ -106,14 +107,14 @@ export default async function TenantHomePage({
     <>
       <TrackPageView tenantId={tenant.id} />
       <ScrollReveal />
-      <Hero projects={featuredProjects as any} tenantSlug={slug} />
-      <div data-reveal><Features categories={((categories as any) ?? []).filter((c: any) => c.projects?.length > 0)} tenantSlug={slug} plan={tenant.plan} /></div>
-      <div data-reveal><CTA companyName={companyName} tenantSlug={slug} /></div>
+      <Hero projects={featuredProjects as any} tenantSlug={slug} theme={getTheme('theme_hero')} />
+      <div data-reveal><Features categories={((categories as any) ?? []).filter((c: any) => c.projects?.length > 0)} tenantSlug={slug} plan={tenant.plan} theme={getTheme('theme_projects')} /></div>
+      <div data-reveal><CTA companyName={companyName} tenantSlug={slug} theme={getTheme('theme_cta')} /></div>
       {testimonials && testimonials.length > 0 && (
-        <div data-reveal><Testimonials testimonials={testimonials} /></div>
+        <div data-reveal><Testimonials testimonials={testimonials} theme={getTheme('theme_testimonials')} /></div>
       )}
       {faqs && faqs.length > 0 && (
-        <div data-reveal><FAQ faqs={faqs} /></div>
+        <div data-reveal><FAQ faqs={faqs} theme={getTheme('theme_faq')} /></div>
       )}
       <div data-reveal>
         <Contact
@@ -121,6 +122,7 @@ export default async function TenantHomePage({
           whatsappMessage={get('whatsapp_message', `Olá! Gostaria de saber mais sobre os projetos de ${companyName}.`)}
           instagramPath={get('instagram_path', '')}
           tenantSlug={slug}
+          theme={getTheme('theme_contact')}
         />
       </div>
       <Footer companyName={companyName} tenantSlug={slug} logoSettings={logoSettings} />

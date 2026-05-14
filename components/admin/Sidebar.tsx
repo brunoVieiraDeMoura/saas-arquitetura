@@ -10,7 +10,7 @@ import type { Plan } from '@/lib/plans'
 import {
   LayoutDashboard, Palette, Tag, FolderKanban, MessageSquare,
   HelpCircle, Mail, CreditCard, Settings, LogOut, ExternalLink,
-  BookOpen, BarChart2, Users, Lock,
+  BookOpen, BarChart2, Users, Lock, Paintbrush,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -29,6 +29,7 @@ function getNavItems(plan: Plan): NavItem[] {
     { href: '/dashboard/faqs',         label: 'FAQs',                     icon: HelpCircle },
     { href: '/dashboard/contact',      label: 'Contato',                  icon: Mail },
     { separator: true as const },
+    { href: '/dashboard/temas',        label: 'Temas',                    icon: Paintbrush },
     { href: '/dashboard/analytics',    label: 'Analytics',                icon: BarChart2, locked },
     { href: '/dashboard/team',         label: 'Equipe',                   icon: Users,    locked },
     { separator: true as const },
