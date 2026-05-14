@@ -33,15 +33,15 @@ export default async function CTA({ companyName = 'Arquitetura Organizada', tena
       <section className="py-16 md:py-24 px-6 bg-neutral-900">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Transforme seu espaço com a {companyName}
+            Vamos criar algo extraordinário juntos
           </h2>
-          <p className="text-neutral-400 mb-8 text-lg">
-            Entre em contato e vamos criar juntos um projeto único para você.
+          <p className="text-neutral-400 mb-10 text-lg">
+            Conte-nos sobre o seu projeto e daremos vida à sua visão.
           </p>
           <a href={`${base}/#contato`}
-            style={{ backgroundColor: 'var(--site-primary)' }}
-            className="inline-flex items-center px-8 py-4 rounded-full font-medium text-white hover:opacity-90 transition-opacity">
-            Fale Conosco →
+            className="inline-flex items-center gap-3 text-white font-medium text-lg group hover:opacity-80 transition-opacity">
+            Fale Conosco
+            <span className="w-8 h-px bg-white transition-all duration-300 group-hover:w-12" />
           </a>
         </div>
       </section>

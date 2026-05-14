@@ -48,14 +48,17 @@ export default async function Features({ categories, tenantSlug, plan, theme = 1
                     {/* Large feature card */}
                     <Link href={`${base}/${cat.slug}/${cover.slug}`}
                       className="md:col-span-3 group block overflow-hidden rounded-xl border border-neutral-200 hover:shadow-lg transition-shadow">
-                      <div className="aspect-[4/3] md:aspect-auto md:h-72 overflow-hidden">
+                      <div className="aspect-[4/3] md:aspect-auto md:h-64 overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={cover.main_image} alt={cover.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </div>
                       <div className="p-5">
                         <h4 className="text-lg font-semibold mb-1" style={{ color: 'var(--site-title)' }}>{cover.title}</h4>
-                        <p className="text-xs text-neutral-400">{formatDate(cover.date)}</p>
+                        <p className="text-xs text-neutral-400 mb-3">{formatDate(cover.date)}</p>
+                        {(() => { const excerpt = extractTiptapText(cover.content, 160); return excerpt ? (
+                          <p className="text-sm text-neutral-500 leading-relaxed line-clamp-3 hidden md:block">{excerpt}</p>
+                        ) : null })()}
                       </div>
                     </Link>
 

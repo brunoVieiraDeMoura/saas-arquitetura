@@ -119,11 +119,14 @@ export default function Contact({
             {/* Left panel */}
             <div className="p-8 sm:p-10 flex flex-col justify-between gap-8" style={{ backgroundColor: 'var(--site-primary)' }}>
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
                   Entre em Contato
                 </h2>
-                <p className="text-white/60 text-sm leading-relaxed">
+                <p className="text-white/70 text-sm leading-relaxed mb-3">
                   Adoramos novos projetos. Conte-nos sobre o seu e vamos criar algo único juntos.
+                </p>
+                <p className="text-white/50 text-sm leading-relaxed hidden md:block">
+                  Seja uma residência, escritório ou espaço comercial — estamos prontos para transformar sua visão em realidade.
                 </p>
               </div>
               <div className="space-y-3">

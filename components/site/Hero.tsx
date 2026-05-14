@@ -97,48 +97,80 @@ export default function Hero({ projects, tenantSlug, theme = 1 }: Props) {
     )
   }
 
-  // ── Style 3: Minimal editorial ────────────────────────────────────────────
+  // ── Style 3: Editorial split (white panel left + photo right) ───────────────
   if (theme === 3) {
     return (
       <section
-        className="relative overflow-hidden bg-white"
+        className="relative h-[100svh] overflow-hidden bg-white flex flex-col md:flex-row"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Photo: 65svh */}
-        <div className="relative h-[65svh] overflow-hidden">
+        {/* Mobile: fullscreen photo with bottom text */}
+        <div className="md:hidden absolute inset-0">
           {projects.map((p, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img key={p.id} src={p.main_image} alt={p.title}
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === current ? 'opacity-100' : 'opacity-0'}`} />
           ))}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+          <div className="relative z-10 h-full flex flex-col justify-end pb-20 px-8">
+            {project.categories && (
+              <span className="text-xs font-medium text-white/60 uppercase tracking-[0.2em] mb-3 block">
+                {project.categories.name}
+              </span>
+            )}
+            <h1 className="text-4xl font-bold text-white mb-6 leading-tight">{project.title}</h1>
+            <Link href={projectHref} className="text-sm text-white/80 hover:text-white transition-colors">
+              Ver Projeto →
+            </Link>
+            {projects.length > 1 && (
+              <div className="flex gap-2 mt-8">
+                {projects.map((_, i) => (
+                  <button key={i} onClick={() => goTo(i)} aria-label={`Slide ${i + 1}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? 'bg-white w-6' : 'bg-white/40 w-1.5'}`} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Desktop: white left panel + photo right */}
+        <div className="hidden md:flex w-[38%] flex-col justify-between px-12 py-16 z-10 bg-white">
+          <div />
+          <div>
+            {project.categories && (
+              <span className="text-xs font-medium text-neutral-400 uppercase tracking-[0.2em] mb-6 block">
+                {project.categories.name}
+              </span>
+            )}
+            <h1 className="text-5xl xl:text-6xl font-bold leading-[1.05] mb-10" style={{ color: 'var(--site-title)' }}>
+              {project.title}
+            </h1>
+            <Link href={projectHref}
+              className="inline-flex items-center gap-3 text-sm font-medium group"
+              style={{ color: 'var(--site-primary)' }}>
+              <span className="w-8 h-px transition-all duration-300 group-hover:w-12" style={{ backgroundColor: 'var(--site-primary)' }} />
+              Ver Projeto
+            </Link>
+          </div>
           {projects.length > 1 && (
-            <div className="absolute bottom-4 right-4 z-10 flex gap-1.5">
+            <div className="flex gap-2">
               {projects.map((_, i) => (
                 <button key={i} onClick={() => goTo(i)} aria-label={`Slide ${i + 1}`}
-                  className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'bg-white w-6' : 'bg-white/50 w-1'}`} />
+                  className={`h-1 rounded-full transition-all duration-300 ${i === current ? 'w-8' : 'bg-neutral-200 w-1'}`}
+                  style={i === current ? { backgroundColor: 'var(--site-primary)' } : undefined} />
               ))}
             </div>
           )}
         </div>
 
-        {/* Text bar */}
-        <div className="px-6 py-8 sm:py-10 max-w-[1000px] mx-auto flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-          <div>
-            {project.categories && (
-              <span className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-2 block">
-                {project.categories.name}
-              </span>
-            )}
-            <h1 className="text-3xl sm:text-5xl font-bold leading-tight" style={{ color: 'var(--site-title)' }}>
-              {project.title}
-            </h1>
-          </div>
-          <Link href={projectHref}
-            className="shrink-0 inline-flex items-center gap-2 text-sm font-medium border border-neutral-300 px-5 py-3 rounded-lg hover:bg-neutral-50 transition-colors"
-            style={{ color: 'var(--site-title)' }}>
-            Ver Projeto →
-          </Link>
+        {/* Photo right */}
+        <div className="hidden md:block flex-1 relative">
+          {projects.map((p, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={p.id} src={p.main_image} alt={p.title}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${i === current ? 'opacity-100' : 'opacity-0'}`} />
+          ))}
         </div>
       </section>
     )

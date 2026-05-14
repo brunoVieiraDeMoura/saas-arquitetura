@@ -16,33 +16,32 @@ function Avatar({ t }: { t: Testimonial }) {
 export default function Testimonials({ testimonials, theme = 1 }: Props) {
   if (!testimonials.length) return null
 
-  // ── Style 2: Dark ─────────────────────────────────────────────────────────
+  // ── Style 2: Warm cards ───────────────────────────────────────────────────
   if (theme === 2) {
     return (
-      <section id="depoimentos" className="py-16 md:py-24 px-6 bg-neutral-900">
+      <section id="depoimentos" className="py-16 md:py-24 px-6" style={{ backgroundColor: 'var(--site-primary)' }}>
         <div className="max-w-[1000px] mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center text-white">
-            O que dizem <span style={{ color: 'var(--site-primary)' }}>nossos clientes</span>
+            O que dizem nossos clientes
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {testimonials.slice(0, 6).map((t, i) => (
-              <div key={t.id} className={`flex flex-col${i >= 4 ? ' hidden md:flex' : ''}`}>
-                <span className="text-5xl leading-none font-serif mb-3" style={{ color: 'var(--site-primary)' }}>"</span>
-                <p className="text-neutral-300 text-sm leading-relaxed flex-1 mb-6">
-                  {t.content}
+              <div key={t.id} className={`bg-white/10 backdrop-blur-sm rounded-2xl p-6 flex flex-col${i >= 4 ? ' hidden md:flex' : ''}`}>
+                <p className="text-white/90 text-sm leading-relaxed flex-1 mb-6 italic">
+                  "{t.content}"
                 </p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 pt-4 border-t border-white/20">
                   {t.avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={t.avatar} alt={t.author} className="w-10 h-10 rounded-full object-cover shrink-0 border border-neutral-700" />
+                    <img src={t.avatar} alt={t.author} className="w-9 h-9 rounded-full object-cover shrink-0 border border-white/30" />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-neutral-700 flex items-center justify-center shrink-0 text-sm font-medium text-neutral-300">
+                    <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shrink-0 text-sm font-semibold text-white">
                       {t.author.charAt(0).toUpperCase()}
                     </div>
                   )}
                   <div>
-                    <p className="font-medium text-sm text-white">{t.author}</p>
-                    {t.role && <p className="text-xs text-neutral-500">{t.role}</p>}
+                    <p className="font-semibold text-sm text-white">{t.author}</p>
+                    {t.role && <p className="text-xs text-white/60">{t.role}</p>}
                   </div>
                 </div>
               </div>
@@ -63,19 +62,12 @@ export default function Testimonials({ testimonials, theme = 1 }: Props) {
             O que dizem <span style={{ color: 'var(--site-primary)' }}>nossos clientes</span>
           </h2>
 
-          {/* Featured testimonial */}
-          <div className="bg-white rounded-2xl border border-neutral-200 p-6 sm:p-8 mb-6 flex flex-col sm:flex-row gap-6 items-start">
-            <div className="flex items-center gap-4 sm:flex-col sm:items-center shrink-0">
-              <Avatar t={featured} />
-              <div className="sm:text-center">
-                <p className="font-semibold text-sm" style={{ color: 'var(--site-title)' }}>{featured.author}</p>
-                {featured.role && <p className="text-xs text-neutral-400">{featured.role}</p>}
-              </div>
-            </div>
-            <div className="flex-1">
-              <span className="text-4xl leading-none font-serif text-neutral-200 block mb-3">"</span>
-              <p className="text-neutral-600 leading-relaxed">"{featured.content}"</p>
-            </div>
+          {/* Featured testimonial — centered stack on desktop */}
+          <div className="bg-white rounded-2xl border border-neutral-200 p-6 sm:p-10 mb-6 flex flex-col items-start sm:items-center sm:text-center">
+            <Avatar t={featured} />
+            <p className="font-semibold text-sm mt-3" style={{ color: 'var(--site-title)' }}>{featured.author}</p>
+            {featured.role && <p className="text-xs text-neutral-400 mt-0.5">{featured.role}</p>}
+            <p className="text-neutral-600 leading-relaxed mt-5 max-w-xl">{featured.content}</p>
           </div>
 
           {/* Smaller grid */}

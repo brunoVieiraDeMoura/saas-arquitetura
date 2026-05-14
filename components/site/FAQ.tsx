@@ -9,7 +9,7 @@ type Props = { faqs: FAQ[]; theme?: number }
 // ── Style 2: Lines ─────────────────────────────────────────────────────────
 
 function FAQLines({ faqs }: { faqs: FAQ[] }) {
-  const [open, setOpen] = useState<string | null>(null)
+  const [open, setOpen] = useState<string | null>(faqs[0]?.id ?? null)
   return (
     <section id="faq" className="py-16 md:py-24 px-6 bg-white">
       <div className="max-w-2xl mx-auto">
@@ -48,8 +48,8 @@ function FAQOpen({ faqs }: { faqs: FAQ[] }) {
           <span style={{ color: 'var(--site-primary)' }}>Perguntas</span> Frequentes
         </h2>
         <div className="columns-1 sm:columns-2 gap-6">
-          {faqs.slice(0, 6).map((f) => (
-            <div key={f.id} className="break-inside-avoid mb-6 bg-white rounded-xl border border-neutral-200 p-5 sm:p-6">
+          {faqs.slice(0, 6).map((f, i) => (
+            <div key={f.id} className={`break-inside-avoid mb-6 bg-white rounded-xl border border-neutral-200 p-5 sm:p-6${i >= 5 ? ' sm:block hidden' : ''}`}>
               <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--site-title)' }}>{f.question}</h3>
               <p className="text-sm text-neutral-500 leading-relaxed">{f.answer}</p>
             </div>
