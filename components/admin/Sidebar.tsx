@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -10,15 +10,16 @@ import type { Plan } from '@/lib/plans'
 import {
   LayoutDashboard, Palette, Tag, FolderKanban, MessageSquare,
   HelpCircle, Mail, CreditCard, Settings, LogOut, ExternalLink,
-  BookOpen, BarChart2, Users,
+  BookOpen, BarChart2, Users, Lock,
   type LucideIcon,
 } from 'lucide-react'
 
 type NavItem =
   | { separator: true }
-  | { href: string; label: string; icon: LucideIcon; exact?: boolean }
+  | { href: string; label: string; icon: LucideIcon; exact?: boolean; locked?: boolean }
 
 function getNavItems(plan: Plan): NavItem[] {
+  const locked = plan !== 'agency'
   return [
     { href: '/dashboard',              label: 'Visão Geral',  exact: true, icon: LayoutDashboard },
     { href: '/dashboard/identidade',   label: 'Identidade',               icon: Palette },
@@ -27,11 +28,9 @@ function getNavItems(plan: Plan): NavItem[] {
     { href: '/dashboard/testimonials', label: 'Depoimentos',              icon: MessageSquare },
     { href: '/dashboard/faqs',         label: 'FAQs',                     icon: HelpCircle },
     { href: '/dashboard/contact',      label: 'Contato',                  icon: Mail },
-    ...(plan === 'agency' ? [
-      { separator: true as const },
-      { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart2 },
-      { href: '/dashboard/team',      label: 'Equipe',    icon: Users },
-    ] : []),
+    { separator: true as const },
+    { href: '/dashboard/analytics',    label: 'Analytics',                icon: BarChart2, locked },
+    { href: '/dashboard/team',         label: 'Equipe',                   icon: Users,    locked },
     { separator: true as const },
     { href: '/dashboard/billing',      label: 'Plano',                    icon: CreditCard },
     { href: '/dashboard/settings',     label: 'Configurações',            icon: Settings },
@@ -39,11 +38,47 @@ function getNavItems(plan: Plan): NavItem[] {
   ]
 }
 
+function UpgradeModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center px-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40" />
+      <div
+        className="relative bg-white rounded-2xl shadow-xl border border-neutral-200 p-8 w-full max-w-sm text-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 mx-auto mb-4">
+          <Lock size={22} className="text-neutral-700" />
+        </div>
+        <h2 className="text-lg font-semibold text-neutral-900 mb-2">Recurso exclusivo Agency</h2>
+        <p className="text-sm text-neutral-500 mb-6">
+          Analytics e Equipe estão disponíveis no plano Agency. Faça upgrade para desbloquear essas funcionalidades.
+        </p>
+        <div className="flex flex-col gap-2">
+          <Link
+            href="/dashboard/billing"
+            className="w-full inline-flex items-center justify-center rounded-lg bg-neutral-900 text-white text-sm font-medium px-4 py-2.5 hover:bg-neutral-800 transition-colors"
+            onClick={onClose}
+          >
+            Ver planos
+          </Link>
+          <button
+            className="w-full text-sm text-neutral-500 hover:text-neutral-700 py-2 transition-colors"
+            onClick={onClose}
+          >
+            Agora não
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Sidebar({ tenantSlug, plan }: { tenantSlug: string; plan: Plan }) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
   const [open, setOpen] = useState(false)
+  const [upgradeModal, setUpgradeModal] = useState(false)
 
   const navItems = getNavItems(plan)
 
@@ -72,6 +107,21 @@ export default function Sidebar({ tenantSlug, plan }: { tenantSlug: string; plan
             ? pathname === item.href
             : pathname.startsWith(item.href)
           const Icon = item.icon
+
+          if (item.locked) {
+            return (
+              <button
+                key={item.href}
+                onClick={() => { onClose?.(); setUpgradeModal(true) }}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-neutral-400 hover:bg-neutral-100 transition-colors"
+              >
+                <Icon size={16} />
+                <span className="flex-1 text-left">{item.label}</span>
+                <Lock size={12} className="text-neutral-400" />
+              </button>
+            )
+          }
+
           return (
             <Link key={item.href} href={item.href} onClick={() => onClose?.()}
               className={cn(
@@ -101,6 +151,8 @@ export default function Sidebar({ tenantSlug, plan }: { tenantSlug: string; plan
 
   return (
     <>
+      {upgradeModal && <UpgradeModal onClose={() => setUpgradeModal(false)} />}
+
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-white border-b border-neutral-200 flex items-center justify-between px-4">
         <Link href="/dashboard" className="text-neutral-900"><LogoBrand /></Link>

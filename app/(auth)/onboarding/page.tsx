@@ -58,10 +58,10 @@ function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-neutral-200 p-8">
+    <div className="min-h-screen bg-white sm:bg-neutral-50 px-6 pt-16 pb-10 sm:flex sm:items-center sm:justify-center sm:px-4 sm:py-8">
+      <div className="w-full sm:max-w-md sm:bg-white sm:rounded-2xl sm:shadow-sm sm:border sm:border-neutral-200 sm:p-8">
         <div className="mb-8">
-          <h1 className="text-xl font-semibold text-neutral-900">Configure seu espaço</h1>
+          <h1 className="text-2xl sm:text-xl font-semibold text-neutral-900">Configure seu espaço</h1>
           <p className="text-sm text-neutral-500 mt-1">Isso leva menos de um minuto.</p>
         </div>
 
@@ -69,7 +69,7 @@ function OnboardingPage() {
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">Nome do escritório</label>
             <input type="text" required value={officeName} onChange={(e) => handleNameChange(e.target.value)}
-              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              className="w-full px-3 py-3 sm:py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
               placeholder="Arquitetura Organizada" />
           </div>
 
@@ -77,7 +77,7 @@ function OnboardingPage() {
             <label className="block text-sm font-medium text-neutral-700 mb-1">URL do seu site</label>
             <div className="flex items-center border border-neutral-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-neutral-900">
               <input type="text" required value={slug} onChange={(e) => handleSlugChange(e.target.value)}
-                className="flex-1 px-3 py-2 text-sm focus:outline-none"
+                className="flex-1 px-3 py-3 sm:py-2 text-sm focus:outline-none"
                 placeholder="arquitetura-organizada" />
               <span className="px-3 py-2 bg-neutral-50 text-sm text-neutral-400 border-l border-neutral-300 shrink-0 select-none">
                 .{process.env.NEXT_PUBLIC_ROOT_DOMAIN}
@@ -88,7 +88,7 @@ function OnboardingPage() {
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full py-3 sm:py-2" disabled={loading}>
             {loading ? 'Criando...' : 'Criar meu site'}
           </Button>
         </form>
