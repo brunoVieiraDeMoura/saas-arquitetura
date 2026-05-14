@@ -48,7 +48,7 @@ export default async function Features({ categories, tenantSlug, plan, theme = 1
                     {/* Large feature card */}
                     <Link href={`${base}/${cat.slug}/${cover.slug}`}
                       className="md:col-span-3 group block overflow-hidden rounded-xl border border-neutral-200 hover:shadow-lg transition-shadow">
-                      <div className="aspect-[4/3] md:aspect-auto md:h-64 overflow-hidden">
+                      <div className="aspect-[4/3] md:aspect-auto md:h-48 overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={cover.main_image} alt={cover.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -67,12 +67,12 @@ export default async function Features({ categories, tenantSlug, plan, theme = 1
                       {small.map((p) => (
                         <Link key={p.id} href={`${base}/${cat.slug}/${p.slug}`}
                           className="group flex-1 block overflow-hidden rounded-xl border border-neutral-200 hover:shadow-lg transition-shadow">
-                          <div className="aspect-video overflow-hidden">
+                          <div className="aspect-[4/3] md:aspect-auto md:h-[88px] overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={p.main_image} alt={p.title}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           </div>
-                          <div className="p-3">
+                          <div className="p-2.5">
                             <h4 className="font-medium text-sm" style={{ color: 'var(--site-title)' }}>{p.title}</h4>
                             <p className="text-xs text-neutral-400 mt-0.5">{formatDate(p.date)}</p>
                           </div>

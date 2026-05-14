@@ -12,10 +12,10 @@ export default async function CTA({ companyName = 'Arquitetura Organizada', tena
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 mb-4">Próximo passo</p>
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--site-primary)' }}>
-            Transforme seu espaço com a {companyName}
+            Cada espaço tem uma história. Vamos criar a sua.
           </h2>
           <p className="text-neutral-500 mb-8 text-lg">
-            Entre em contato e vamos criar juntos um projeto único para você.
+            Fale com a {companyName} e dê o primeiro passo para o projeto dos seus sonhos.
           </p>
           <a href={`${base}/#contato`}
             style={{ borderColor: 'var(--site-primary)', color: 'var(--site-primary)' }}

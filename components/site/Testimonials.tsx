@@ -62,8 +62,18 @@ export default function Testimonials({ testimonials, theme = 1 }: Props) {
             O que dizem <span style={{ color: 'var(--site-primary)' }}>nossos clientes</span>
           </h2>
 
-          {/* Featured testimonial — centered stack on desktop */}
-          <div className="bg-white rounded-2xl border border-neutral-200 p-6 sm:p-10 mb-6 flex flex-col items-start sm:items-center sm:text-center">
+          {/* Featured — mobile: igual aos menores; desktop: centralizado */}
+          <div className="sm:hidden bg-white rounded-xl border border-neutral-200 p-4 flex flex-col mb-4">
+            <p className="text-neutral-600 text-sm leading-relaxed mb-4 flex-1">"{featured.content}"</p>
+            <div className="flex items-center gap-2">
+              <Avatar t={featured} />
+              <div>
+                <p className="font-medium text-xs" style={{ color: 'var(--site-title)' }}>{featured.author}</p>
+                {featured.role && <p className="text-xs text-neutral-400">{featured.role}</p>}
+              </div>
+            </div>
+          </div>
+          <div className="hidden sm:flex flex-col items-center text-center bg-white rounded-2xl border border-neutral-200 p-10 mb-6">
             <Avatar t={featured} />
             <p className="font-semibold text-sm mt-3" style={{ color: 'var(--site-title)' }}>{featured.author}</p>
             {featured.role && <p className="text-xs text-neutral-400 mt-0.5">{featured.role}</p>}

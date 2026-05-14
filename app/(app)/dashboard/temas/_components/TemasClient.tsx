@@ -90,23 +90,24 @@ function HeroCentered() {
 function HeroMinimal() {
   return (
     <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      {/* Photo top 60% */}
-      <rect width="320" height="112" fill={P.img}/>
-      {/* Dots on photo */}
-      <rect x="290" y="98" width="8" height="2" rx="1" fill={P.white}/>
-      <circle cx="303" cy="99" r="1.5" fill={P.white} opacity="0.5"/>
-      <circle cx="309" cy="99" r="1.5" fill={P.white} opacity="0.5"/>
-      {/* White bar */}
-      <rect y="112" width="320" height="68" fill={P.white}/>
-      <line x1="0" y1="112" x2="320" y2="112" stroke={P.mgray} strokeWidth="1"/>
+      {/* White left panel */}
+      <rect width="118" height="180" fill={P.white}/>
+      <line x1="118" y1="0" x2="118" y2="180" stroke={P.mgray} strokeWidth="1"/>
       {/* Category */}
-      <rect x="20" y="124" width="36" height="2" rx="1" fill={P.ltext}/>
-      {/* Title */}
-      <rect x="20" y="132" width="130" height="10" rx="2" fill={P.text}/>
-      <rect x="20" y="146" width="90" height="10" rx="2" fill={P.text}/>
-      {/* Button */}
-      <rect x="230" y="136" width="70" height="22" rx="6" fill="none" stroke={P.mgray} strokeWidth="1.5"/>
-      <rect x="244" y="143" width="42" height="5" rx="1.5" fill={P.mtext}/>
+      <rect x="14" y="64" width="38" height="2" rx="1" fill={P.ltext}/>
+      {/* Title lines */}
+      <rect x="14" y="74" width="90" height="8" rx="2" fill={P.text}/>
+      <rect x="14" y="86" width="76" height="8" rx="2" fill={P.text}/>
+      <rect x="14" y="98" width="56" height="8" rx="2" fill={P.text}/>
+      {/* Arrow link */}
+      <rect x="14" y="118" width="18" height="1.5" rx="0.75" fill={P.pri}/>
+      <rect x="36" y="118" width="34" height="1.5" rx="0.75" fill={P.pri}/>
+      {/* Nav dots bottom left */}
+      <rect x="14" y="158" width="12" height="2.5" rx="1.25" fill={P.text}/>
+      <circle cx="32" cy="159" r="1.5" fill={P.mgray}/>
+      <circle cx="39" cy="159" r="1.5" fill={P.mgray}/>
+      {/* Photo right */}
+      <rect x="119" width="201" height="180" fill={P.img}/>
     </svg>
   )
 }

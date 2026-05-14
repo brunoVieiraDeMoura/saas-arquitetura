@@ -122,22 +122,23 @@ export default function Contact({
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
                   Entre em Contato
                 </h2>
-                <p className="text-white/70 text-sm leading-relaxed mb-3">
+                <p className="text-white/80 text-base leading-relaxed mb-4">
                   Adoramos novos projetos. Conte-nos sobre o seu e vamos criar algo único juntos.
                 </p>
-                <p className="text-white/50 text-sm leading-relaxed hidden md:block">
-                  Seja uma residência, escritório ou espaço comercial — estamos prontos para transformar sua visão em realidade.
+                <p className="text-white/55 text-sm leading-relaxed hidden md:block">
+                  Seja uma residência, escritório ou espaço comercial — estamos prontos para transformar sua visão em realidade com dedicação e cuidado em cada detalhe.
                 </p>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-4">
+                <p className="text-white/40 text-xs uppercase tracking-widest hidden md:block">Fale diretamente</p>
                 <a href={whatsappHref} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-sm text-white/80 hover:text-white transition-colors">
+                  className="flex items-center gap-3 text-sm font-medium text-white/80 hover:text-white transition-colors">
                   <WhatsAppIcon />
                   WhatsApp
                 </a>
                 {instagramPath && (
                   <a href={instagramHref} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-white/80 hover:text-white transition-colors">
+                    className="flex items-center gap-3 text-sm font-medium text-white/80 hover:text-white transition-colors">
                     <InstagramIcon />
                     Instagram
                   </a>
