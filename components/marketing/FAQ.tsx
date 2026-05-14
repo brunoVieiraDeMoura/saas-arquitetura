@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: 'Quantos projetos posso criar?',
-    a: 'No plano Starter: até 10 projetos em 2 categorias. No plano Pro e Agency: projetos e categorias ilimitados.',
+    a: 'No plano Starter: até 6 projetos em 2 categorias. No plano Pro e Agency: projetos e categorias ilimitados.',
   },
   {
     q: 'Como é feito o suporte?',
