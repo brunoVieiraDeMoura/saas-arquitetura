@@ -31,8 +31,6 @@ const PALETTES = [
   { id: 'cinza',    label: 'Cinza',    primary: '#374151' },
 ]
 
-type TitleColorMode = 'primary' | 'gray' | 'dark'
-
 type Props = {
   logoInitial: {
     companyName: string
@@ -46,7 +44,6 @@ type Props = {
   colorInitial: {
     primaryColor: string
     secondaryColor: string
-    titleColorMode: TitleColorMode
   }
 }
 
@@ -62,19 +59,15 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
 
   // Color state — secondary is always white
   const [primary, setPrimary] = useState(colorInitial.primaryColor)
-  const [titleMode, setTitleMode] = useState<TitleColorMode>(colorInitial.titleColorMode)
 
-  const titlePreviewColor =
-    titleMode === 'primary' ? primary :
-    titleMode === 'gray'    ? '#374151' :
-                              (() => {
-                                // approximate color-mix(primary 15%, #0f0f0f) in JS for live preview
-                                const hex = primary.replace('#', '')
-                                const r = Math.round(parseInt(hex.slice(0,2),16) * 0.15 + 15 * 0.85)
-                                const g = Math.round(parseInt(hex.slice(2,4),16) * 0.15 + 15 * 0.85)
-                                const b = Math.round(parseInt(hex.slice(4,6),16) * 0.15 + 15 * 0.85)
-                                return `rgb(${r},${g},${b})`
-                              })()
+  const titlePreviewColor = (() => {
+    // approximate color-mix(primary 10%, #1a1a1a) in JS for live preview
+    const hex = primary.replace('#', '')
+    const r = Math.round(parseInt(hex.slice(0,2),16) * 0.10 + 26 * 0.90)
+    const g = Math.round(parseInt(hex.slice(2,4),16) * 0.10 + 26 * 0.90)
+    const b = Math.round(parseInt(hex.slice(4,6),16) * 0.10 + 26 * 0.90)
+    return `rgb(${r},${g},${b})`
+  })()
 
   // Save state
   const [saving, setSaving] = useState(false)
@@ -100,7 +93,6 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
         { key: 'logo_subname_align', value: subnameAlign },
         { key: 'primary_color',      value: primary },
         { key: 'secondary_color',    value: '#FFFFFF' },
-        { key: 'title_color_mode',   value: titleMode },
       ]),
     })
     setSaving(false)
@@ -255,33 +247,6 @@ export default function IdentidadePanel({ logoInitial, colorInitial }: Props) {
             <input type="text" value={primary} onChange={(e) => setPrimary(e.target.value)}
               className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-neutral-900 uppercase"
               maxLength={7} placeholder="#000000" />
-          </div>
-        </div>
-
-        {/* Title color mode */}
-        <div className="bg-white rounded-2xl border border-neutral-200 p-5">
-          <h2 className="text-sm font-semibold text-neutral-900 mb-0.5">Cor dos Títulos</h2>
-          <p className="text-xs text-neutral-400 mb-4">
-            Define a cor dos títulos e cabeçalhos das páginas do site.
-          </p>
-          <div className="grid grid-cols-3 gap-2">
-            {([
-              { value: 'primary', label: 'Primária' },
-              { value: 'gray',    label: 'Cinza' },
-              { value: 'dark',    label: 'Preto' },
-            ] as { value: TitleColorMode; label: string }[]).map((opt) => (
-              <button key={opt.value} type="button" onClick={() => setTitleMode(opt.value)}
-                className={`flex flex-col items-center gap-2 px-3 py-3 rounded-xl border text-xs transition-colors ${
-                  titleMode === opt.value
-                    ? 'border-neutral-900 bg-neutral-50 font-medium text-neutral-900'
-                    : 'border-neutral-200 text-neutral-500 hover:border-neutral-400'
-                }`}>
-                <span className="text-sm font-bold" style={{
-                  color: opt.value === 'primary' ? primary : opt.value === 'gray' ? '#374151' : titlePreviewColor
-                }}>Aa</span>
-                <span>{opt.label}</span>
-              </button>
-            ))}
           </div>
         </div>
 
