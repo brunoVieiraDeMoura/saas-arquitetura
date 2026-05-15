@@ -28,6 +28,7 @@ export const PLANS = {
       'Categorias e projetos ilimitados',
       'Utilize seu próprio domínio',
       'Até 6 fotos por projeto',
+      'Alteração de Temas',
       'Email prioritário',
     ],
   },
