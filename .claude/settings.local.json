@@ -61,7 +61,9 @@
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\components\" -Recurse -Force | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\\", \"\"\\) })",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\lib\" -Recurse | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Bruno\\\\Desktop\\\\saas-arquitetura-main\\\\\", \"\"\\) })",
       "Bash(Get-ChildItem -Recurse -Filter \"page.tsx\" \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\")",
-      "Bash(Get-ChildItem -Recurse -Filter \"page.tsx\" -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\")"
+      "Bash(Get-ChildItem -Recurse -Filter \"page.tsx\" -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\" -Recurse -Directory -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object -First 30 FullName)"
     ]
   }
 }

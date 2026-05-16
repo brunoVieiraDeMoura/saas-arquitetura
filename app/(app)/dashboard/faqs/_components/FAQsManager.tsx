@@ -86,7 +86,7 @@ export default function FAQsManager({ initial }: { initial: FAQ[] }) {
         {items.length ? (
           <ul className="divide-y divide-neutral-100">
             {items.map((f) => (
-              <li key={f.id} className="px-6 py-4">
+              <li key={f.id} className="px-4 py-4 sm:px-6">
                 {editingId === f.id ? (
                   <div className="space-y-3">
                     <input value={editQuestion} onChange={(e) => setEditQuestion(e.target.value)}
@@ -109,15 +109,15 @@ export default function FAQsManager({ initial }: { initial: FAQ[] }) {
                       <p className="text-sm font-medium text-neutral-800">{f.question}</p>
                       <p className="text-sm text-neutral-600 mt-1">{f.answer}</p>
                     </div>
-                    <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+                    <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                       <button onClick={() => startEdit(f)}
-                        className="p-1.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors" title="Editar">
-                        <Pencil className="w-4 h-4 sm:hidden" />
+                        className="p-2.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors" title="Editar">
+                        <Pencil className="w-5 h-5 sm:hidden" />
                         <span className="hidden sm:inline text-xs hover:underline">Editar</span>
                       </button>
                       <button onClick={() => handleDelete(f.id)}
-                        className="p-1.5 sm:p-0 rounded-md text-red-500 hover:text-red-700 hover:bg-red-50 sm:hover:bg-transparent transition-colors" title="Deletar">
-                        <Trash2 className="w-4 h-4 sm:hidden" />
+                        className="p-2.5 sm:p-0 rounded-md text-red-500 hover:text-red-700 hover:bg-red-50 sm:hover:bg-transparent transition-colors" title="Deletar">
+                        <Trash2 className="w-5 h-5 sm:hidden" />
                         <span className="hidden sm:inline text-xs hover:underline">Deletar</span>
                       </button>
                     </div>

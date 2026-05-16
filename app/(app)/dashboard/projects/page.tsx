@@ -63,7 +63,7 @@ export default async function ProjectsPage({
         ) : (
           <Link
             href="/dashboard/projects/new"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-lg bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Novo Projeto</span>
@@ -102,7 +102,7 @@ export default async function ProjectsPage({
                       </Link>
                     </div>
                   )}
-                  <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+                  <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-4">
                     <div>
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-neutral-800">{p.title}</p>
@@ -115,13 +115,13 @@ export default async function ProjectsPage({
                         {p.categories?.name} Â· {p.date}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 sm:gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                       <Link
                         href={`/dashboard/projects/${p.id}/edit`}
-                        className="p-1.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors"
+                        className="p-2.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors"
                         title="Editar"
                       >
-                        <Pencil className="w-4 h-4 sm:hidden" />
+                        <Pencil className="w-5 h-5 sm:hidden" />
                         <span className="hidden sm:inline text-xs hover:underline">Editar</span>
                       </Link>
                       <DeleteProjectButton id={p.id} title={p.title} />

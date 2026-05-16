@@ -15,10 +15,10 @@ export default function DeleteProjectButton({ id, title }: { id: string; title: 
   return (
     <button
       onClick={handleDelete}
-      className="p-1.5 sm:p-0 rounded-md text-red-500 hover:text-red-700 hover:bg-red-50 sm:hover:bg-transparent transition-colors"
+      className="p-2.5 sm:p-0 rounded-md text-red-500 hover:text-red-700 hover:bg-red-50 sm:hover:bg-transparent transition-colors"
       title="Deletar"
     >
-      <Trash2 className="w-4 h-4 sm:hidden" />
+      <Trash2 className="w-5 h-5 sm:hidden" />
       <span className="hidden sm:inline text-xs hover:underline">Deletar</span>
     </button>
   )

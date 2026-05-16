@@ -105,7 +105,7 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
         {items.length ? (
           <ul className="divide-y divide-neutral-100">
             {items.map((t) => (
-              <li key={t.id} className="px-6 py-4">
+              <li key={t.id} className="px-4 py-4 sm:px-6">
                 {editingId === t.id ? (
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
@@ -148,15 +148,15 @@ export default function TestimonialsManager({ initial }: { initial: Testimonial[
                         <p className="text-sm text-neutral-600 mt-1">{t.content}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+                    <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                       <button onClick={() => startEdit(t)}
-                        className="p-1.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors" title="Editar">
-                        <Pencil className="w-4 h-4 sm:hidden" />
+                        className="p-2.5 sm:p-0 rounded-md text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 sm:hover:bg-transparent transition-colors" title="Editar">
+                        <Pencil className="w-5 h-5 sm:hidden" />
                         <span className="hidden sm:inline text-xs hover:underline">Editar</span>
                       </button>
                       <button onClick={() => handleDelete(t.id)}
-                        className="p-1.5 sm:p-0 rounded-md text-red-500 hover:text-red-700 hover:bg-red-50 sm:hover:bg-transparent transition-colors" title="Deletar">
-                        <Trash2 className="w-4 h-4 sm:hidden" />
+                        className="p-2.5 sm:p-0 rounded-md text-red-500 hover:text-red-700 hover:bg-red-50 sm:hover:bg-transparent transition-colors" title="Deletar">
+                        <Trash2 className="w-5 h-5 sm:hidden" />
                         <span className="hidden sm:inline text-xs hover:underline">Deletar</span>
                       </button>
                     </div>

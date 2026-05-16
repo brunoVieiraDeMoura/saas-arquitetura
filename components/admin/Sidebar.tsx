@@ -114,9 +114,9 @@ export default function Sidebar({ tenantSlug, plan }: { tenantSlug: string; plan
               <button
                 key={item.href}
                 onClick={() => { onClose?.(); setUpgradeModal(true) }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-neutral-400 hover:bg-neutral-100 transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-3 md:py-2 rounded-lg text-sm text-neutral-400 hover:bg-neutral-100 transition-colors"
               >
-                <Icon size={16} />
+                <Icon size={18} className="md:w-4 md:h-4 shrink-0" />
                 <span className="flex-1 text-left">{item.label}</span>
                 <Lock size={12} className="text-neutral-400" />
               </button>
@@ -126,25 +126,25 @@ export default function Sidebar({ tenantSlug, plan }: { tenantSlug: string; plan
           return (
             <Link key={item.href} href={item.href} onClick={() => onClose?.()}
               className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                'flex items-center gap-3 px-3 py-3 md:py-2 rounded-lg text-sm transition-colors',
                 active ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
               )}>
-              <Icon size={16} />
+              <Icon size={18} className="md:w-4 md:h-4 shrink-0" />
               {item.label}
             </Link>
           )
         })}
         <a href={`/${tenantSlug}`} target="_blank"
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors">
-          <ExternalLink size={16} />
+          className="w-full flex items-center gap-3 px-3 py-3 md:py-2 rounded-lg text-sm text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors">
+          <ExternalLink size={18} className="md:w-4 md:h-4 shrink-0" />
           Ver site
         </a>
       </nav>
 
       <div className="px-3 py-4 border-t border-neutral-200 shrink-0">
         <button onClick={handleLogout}
-          className="w-full flex items-center justify-end gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
-          Sair <LogOut size={16} />
+          className="w-full flex items-center justify-end gap-3 px-3 py-3 md:py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+          Sair <LogOut size={18} className="md:w-4 md:h-4" />
         </button>
       </div>
     </>
