@@ -63,7 +63,10 @@
       "Bash(Get-ChildItem -Recurse -Filter \"page.tsx\" \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\")",
       "Bash(Get-ChildItem -Recurse -Filter \"page.tsx\" -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\\\\app\")",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\" -Recurse -Directory -ErrorAction SilentlyContinue)",
-      "Bash(Select-Object -First 30 FullName)"
+      "Bash(Select-Object -First 30 FullName)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\" -Recurse -Directory | Where-Object { $_.Name -match \"\\(dashboard|tema|identidade|theme|color\\)\" } | Select-Object -ExpandProperty FullName)"
     ]
   }
 }

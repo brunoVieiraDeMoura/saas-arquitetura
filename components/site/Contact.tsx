@@ -79,9 +79,9 @@ function ContactForm({
       </div>
       {formError && <p className="text-sm text-red-600">{formError}</p>}
       <button type="submit" disabled={sending}
-        style={minimal ? undefined : { backgroundColor: 'var(--site-primary)' }}
+        style={{ backgroundColor: 'var(--site-primary)' }}
         className={minimal
-          ? 'w-full text-white bg-neutral-900 py-3 rounded-full text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-60'
+          ? 'w-full text-white py-3 rounded-full text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-60'
           : 'w-full text-white py-3 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-60'
         }>
         {sending ? 'Enviando...' : 'Enviar Mensagem'}

@@ -39,9 +39,11 @@ export default async function CTA({ companyName = 'Arquitetura Organizada', tena
             Conte-nos sobre o seu projeto e daremos vida à sua visão.
           </p>
           <a href={`${base}/#contato`}
-            className="inline-flex items-center gap-3 text-white font-medium text-lg group hover:opacity-80 transition-opacity">
+            style={{ color: 'var(--site-primary)' }}
+            className="inline-flex items-center gap-3 font-medium text-lg group hover:opacity-80 transition-opacity">
             Fale Conosco
-            <span className="w-8 h-px bg-white transition-all duration-300 group-hover:w-12" />
+            <span className="w-8 h-px transition-all duration-300 group-hover:w-12"
+              style={{ backgroundColor: 'var(--site-primary)' }} />
           </a>
         </div>
       </section>
