@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { seedTenant } from '@/lib/seed'
+import { tiktokEvents } from '@/lib/tiktok-events'
 import { NextResponse } from 'next/server'
 
 const RESERVED_SLUGS = new Set([
@@ -67,6 +68,14 @@ export async function POST(req: Request) {
   }
 
   await seedTenant(admin, tenant.id, name)
+
+  tiktokEvents.completeRegistration({
+    ip: req.headers.get('x-forwarded-for')?.split(',')[0] ?? undefined,
+    userAgent: req.headers.get('user-agent') ?? undefined,
+    externalId: user.id,
+    email: user.email ?? undefined,
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/onboarding`,
+  }, { contentName: name })
 
   return NextResponse.json({ ok: true, slug })
 }
