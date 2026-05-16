@@ -102,6 +102,12 @@ export default function Sidebar({ tenantSlug, plan }: { tenantSlug: string; plan
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <a href={`/${tenantSlug}`} target="_blank"
+          className="w-full flex items-center gap-3 px-3 py-3 md:py-2 rounded-lg text-sm text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors">
+          <ExternalLink size={18} className="md:w-4 md:h-4 shrink-0" />
+          Ver site
+        </a>
+        <hr className="my-2 border-neutral-200" />
         {navItems.map((item, i) => {
           if ('separator' in item) return <hr key={i} className="my-2 border-neutral-200" />
           const active = item.exact
@@ -134,11 +140,6 @@ export default function Sidebar({ tenantSlug, plan }: { tenantSlug: string; plan
             </Link>
           )
         })}
-        <a href={`/${tenantSlug}`} target="_blank"
-          className="w-full flex items-center gap-3 px-3 py-3 md:py-2 rounded-lg text-sm text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors">
-          <ExternalLink size={18} className="md:w-4 md:h-4 shrink-0" />
-          Ver site
-        </a>
       </nav>
 
       <div className="px-3 py-4 border-t border-neutral-200 shrink-0">
