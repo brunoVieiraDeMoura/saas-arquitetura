@@ -159,7 +159,7 @@ export default function BillingPanel({ currentPlan, hasSubscription, companyName
         </span>
         {billing === 'annual' && (
           <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
-            Economize até 32%
+            Economize até {Math.max(...(Object.values(PLANS).map((p) => p.annualDiscount)))}%
           </span>
         )}
       </div>

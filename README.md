@@ -6,48 +6,70 @@ SaaS multi-tenant de portfólio para escritórios de arquitetura. Cada cliente t
 
 - **Next.js 16** (App Router, Server Components)
 - **Supabase** — banco de dados PostgreSQL, autenticação e storage de arquivos
-- **Mercado Pago** — assinaturas recorrentes via PreApproval
+- **Stripe** — assinaturas recorrentes, cobrança mensal e anual, portal do cliente
 - **Vercel** — deploy e gerenciamento de domínios customizados
 - **TypeScript 5**, **Tailwind CSS**, **Tiptap**
+
+## Planos
+
+| Recurso | Starter | Pro | Agency |
+|---|---|---|---|
+| Categorias | 2 | Ilimitadas | Ilimitadas |
+| Projetos | 6 | Ilimitados | Ilimitados |
+| Fotos por projeto | 2 | 6 | Ilimitadas |
+| Temas por seção | — | ✓ | ✓ |
+| Domínio customizado | — | ✓ | ✓ |
+| Analytics | — | — | ✓ |
+| Membros na conta | 1 | 1 | até 3 |
+| Suporte WhatsApp | — | — | ✓ |
+| Chamada privada de onboarding | — | — | ✓ |
+| Preço mensal | Grátis | R$130/mês | R$250/mês |
+| Preço anual | — | R$99/mês (−24%) | R$170/mês (−32%) |
 
 ## Funcionalidades
 
 ### Identidade Visual
 - Logo em texto com dois níveis (nome principal + sub-nome)
 - Logo em imagem (upload PNG/SVG)
-- Seleção de fonte tipográfica com preview em tempo real (modo claro e escuro)
+- Seleção de fonte tipográfica com preview em tempo real
+- Cores primária e secundária do site
+
+### Temas (Pro/Agency)
+- Variantes de layout por seção: Hero, Projetos, CTA, Depoimentos, FAQ, Contato
+- Cada seção tem opções numeradas (1, 2, 3) com preview visual
+- Persistido por tenant em `settings`
 
 ### Categorias
 - Criação, edição e reordenação de categorias de portfólio
 - Slug gerado automaticamente a partir do nome
-- Limite por plano: 2 categorias (Starter) ou ilimitadas (Pro/Agency)
+- Limite por plano: 2 (Starter) ou ilimitadas (Pro/Agency)
 
 ### Projetos
-- Editor de texto rico (Tiptap) para descrição do projeto
-- Imagem principal + galeria de fotos por projeto
-- Marcação de "destaque" para exibição na página inicial
+- Editor de texto rico (Tiptap) para descrição
+- Imagem principal + galeria de fotos
+- Marcação de destaque para exibição na home
 - Meta descrição para SEO
-- Limite por plano: 6 projetos totais e 2 fotos (Starter) | 6 fotos (Pro) | fotos ilimitadas (Agency)
+- Limite de fotos por plano: 2 (Starter) | 6 (Pro) | ilimitadas (Agency)
 
 ### Depoimentos
-- Cadastro de depoimentos de clientes com nome, cargo/empresa e texto
-- Suporte a foto do cliente (link) — exibe iniciais como fallback
-- Exibidos em cards na página inicial do site
+- Cadastro com nome, cargo/empresa e texto
+- Foto via link — fallback com iniciais
+- Exibidos em cards na home do site
 
 ### FAQs
-- Lista de perguntas e respostas frequentes
+- Lista de perguntas e respostas
 - Reordenação por drag-and-drop
 - Primeira pergunta expandida por padrão no site
 
 ### Contato
-- Configuração de número WhatsApp com botão flutuante ativo em todas as páginas
+- Número WhatsApp com botão flutuante ativo em todas as páginas
 - Mensagem padrão pré-preenchida no WhatsApp
-- Instagram (@username) com ícone no menu e rodapé
-- Formulário de contato com envio de e-mail via Gmail SMTP (Senha de App)
+- Instagram (`@username`) com ícone no menu e rodapé
+- Formulário de contato via Gmail SMTP (Senha de App)
 
 ### Configurações
 - Nome do escritório, slug (URL do site)
-- Domínio customizado próprio (Pro/Agency) — integração com Vercel API, SSL automático
+- Domínio customizado próprio (Pro/Agency) — integração Vercel API, SSL automático
 
 ### Analytics (Agency)
 - Rastreamento de visitas por página sem cookies de terceiros
@@ -60,22 +82,104 @@ SaaS multi-tenant de portfólio para escritórios de arquitetura. Cada cliente t
 - Até 3 usuários por conta
 - Remoção imediata de membros
 
-### Plano & Cobrança
-- Três planos: **Starter** (grátis), **Pro** (R$99/mês), **Agency** (R$167/mês)
-- Checkout via Mercado Pago PreApproval
-- Webhook HMAC para ativação automática de plano após pagamento
-- Cancelamento de assinatura pelo próprio painel
-- Reembolso via painel superadmin (`/admin/tenants`)
-- Banner de confirmação ao retornar do checkout
+## Sistema de Pagamentos (Stripe)
+
+### Checkout
+- Planos Pro e Agency com opção mensal ou anual
+- Sessão criada em `/api/billing/checkout` via `stripe.checkout.sessions.create`
+- `metadata` inclui `tenantId` e `plan` para ativação no webhook
+- Reutiliza `stripe_customer_id` se o tenant já foi cliente
+
+### Webhook
+Endpoint: `/api/billing/webhook`
+
+Eventos tratados:
+
+| Evento | Ação |
+|---|---|
+| `checkout.session.completed` | Ativa plano, salva `stripe_subscription_id` e `stripe_customer_id` |
+| `customer.subscription.updated` | Atualiza plano conforme novo `price_id` |
+| `customer.subscription.deleted` | Rebaixa para `starter`, limpa subscription |
+
+Verificação de assinatura via `stripe-signature` header + `STRIPE_WEBHOOK_SECRET`.
+
+### Portal do Cliente
+- Acesso em `/api/billing/portal` — redireciona para Stripe Billing Portal
+- Permite cancelar, trocar método de pagamento e ver histórico
+
+### Upgrade Pro → Agency
+- Endpoint `/api/billing/upgrade` — atualiza subscription inline via `flow_data: subscription_update_confirm`
+- Não exige cancelamento e nova assinatura
+
+### Configuração no Stripe
+Criar 4 preços (recorrentes):
+
+```
+Pro mensal   → STRIPE_PRICE_PRO_MONTHLY
+Pro anual    → STRIPE_PRICE_PRO_ANNUAL
+Agency mensal → STRIPE_PRICE_AGENCY_MONTHLY
+Agency anual  → STRIPE_PRICE_AGENCY_ANNUAL
+```
+
+Registrar webhook após deploy:
+```
+URL: https://arquiteturaorganizada.com.br/api/billing/webhook
+Eventos: checkout.session.completed, customer.subscription.updated, customer.subscription.deleted
+```
 
 ## Roteamento multi-tenant
 
-O middleware Next.js detecta o subdomínio (ou domínio customizado) e reescreve a requisição para `app/[tenant]/`:
+Middleware Next.js detecta subdomínio ou domínio customizado e reescreve para `app/[tenant]/`:
 
 ```
 brunomoura.arquiteturaorganizada.com.br  →  /[tenant]/
 meuescritorio.com.br                     →  /[tenant]/  (domínio customizado)
 arquiteturaorganizada.com.br/dashboard   →  painel administrativo
+```
+
+## Estrutura de pastas
+
+```
+app/
+  (auth)/                   — login, signup, onboarding, reset-password
+  (marketing)/              — home, pricing, como-usar, termos, return-policy
+  (app)/dashboard/          — painel admin do tenant
+    billing/                — plano atual + checkout + portal
+    temas/                  — variantes de layout por seção
+    identidade/             — logo, fontes, cores
+    categories/             — CRUD de categorias
+    projects/               — CRUD de projetos
+    testimonials/           — depoimentos
+    faqs/                   — perguntas frequentes
+    contact/                — WhatsApp, Instagram, email
+    settings/               — slug, domínio customizado
+    analytics/              — gráfico de visitas (Agency)
+    team/                   — membros e convites (Agency)
+  (superadmin)/admin/       — gestão interna
+    tenants/                — lista de clientes por plano
+    billing/                — contadores por plano + tabela
+    stats/                  — métricas Supabase (storage, DB, auth)
+  [tenant]/                 — site público do cliente
+  api/
+    billing/                — checkout, portal, upgrade, webhook
+    upload/                 — upload para Supabase Storage
+    analytics/              — rastreamento de visitas
+    contact/                — envio de e-mail
+    onboarding/             — setup inicial do tenant
+    admin/                  — CRUD interno (categories, projects, etc.)
+    cron/reset/             — reset de demo
+
+components/
+  admin/                    — BillingPanel, ProjectForm, GalleryUpload, IdentidadePanel, TemasClient, etc.
+  site/                     — GalleryLightbox, WhatsAppFloat
+  marketing/                — Hero, Pricing, Features, Contact, Testimonials, Navbar, Footer
+
+lib/
+  stripe.ts                 — cliente Stripe
+  plans.ts                  — definição de planos, limites e preços
+  supabase/                 — server, client, admin
+  vercel/                   — domains API
+  tenant/                   — guard (requireTenant, requireSuperAdmin)
 ```
 
 ## Variáveis de ambiente
@@ -94,9 +198,13 @@ NEXT_PUBLIC_SITE_URL=https://arquiteturaorganizada.com.br
 VERCEL_TOKEN=
 VERCEL_PROJECT_ID=
 
-# Mercado Pago
-MP_ACCESS_TOKEN=
-MP_WEBHOOK_SECRET=
+# Stripe
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRICE_PRO_MONTHLY=
+STRIPE_PRICE_PRO_ANNUAL=
+STRIPE_PRICE_AGENCY_MONTHLY=
+STRIPE_PRICE_AGENCY_ANNUAL=
 
 # Email (formulário de contato)
 GMAIL_USER=
@@ -109,47 +217,6 @@ CRON_SECRET=
 SUPERADMIN_EMAILS=email@exemplo.com
 ```
 
-## Planos
-
-| Recurso | Starter | Pro | Agency |
-|---|---|---|---|
-| Categorias | 2 | Ilimitadas | Ilimitadas |
-| Projetos | 6 | Ilimitados | Ilimitados |
-| Fotos por projeto | 2 | 6 | Ilimitadas |
-| Domínio customizado | — | ✓ | ✓ |
-| Analytics | — | — | ✓ |
-| Membros na conta | 1 | 1 | até 3 |
-| Suporte WhatsApp | — | — | ✓ |
-| Chamada privada de onboarding | — | — | ✓ |
-| Preço | Grátis | R$99/mês | R$167/mês |
-
-## Estrutura de pastas relevante
-
-```
-app/
-  (auth)/           — login, signup, onboarding
-  (marketing)/      — index, pricing, como-usar
-  (app)/dashboard/  — painel admin do tenant
-  (superadmin)/admin/ — gestão interna (tenants, billing, stats)
-  [tenant]/         — site público do cliente
-  api/
-    billing/        — checkout, webhook, portal, refund
-    upload/         — upload para Supabase Storage
-    analytics/      — rastreamento de visitas
-    contact/        — envio de e-mail
-
-components/
-  admin/            — BillingPanel, ProjectForm, GalleryUpload, etc.
-  site/             — componentes do site público do cliente
-  marketing/        — Hero, Pricing, Features, Contact, etc.
-
-lib/
-  mercadopago/      — client, plans, webhooks
-  supabase/         — server, client, admin
-  vercel/           — domains API
-  tenant/           — guard (requireTenant, requireSuperAdmin)
-```
-
 ## Setup local
 
 ```bash
@@ -159,20 +226,19 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Para testar o multi-tenant local, acesse `http://brunomoura.localhost:3000`.
+Para testar multi-tenant local: `http://brunomoura.localhost:3000`
 
-## Webhook Mercado Pago
-
-Após o deploy, registre o webhook no painel do Mercado Pago:
-
-```
-URL: https://arquiteturaorganizada.com.br/api/billing/webhook
-Evento: subscription_preapproval
+Para testar webhooks Stripe local:
+```bash
+stripe listen --forward-to localhost:3000/api/billing/webhook
 ```
 
 ## Superadmin
 
-Acesse `/admin` com o e-mail listado em `SUPERADMIN_EMAILS`. Disponível:
-- `/admin/tenants` — lista de clientes, reembolso
-- `/admin/billing` — visão geral de receita por plano
-- `/admin/stats` — métricas de uso e indicador de consumo do Supabase free tier (storage, DB, auth)
+Acesse `/admin` com e-mail listado em `SUPERADMIN_EMAILS`.
+
+| Rota | Descrição |
+|---|---|
+| `/admin/tenants` | Lista de todos os clientes com plano e data de cadastro |
+| `/admin/billing` | Contadores por plano (Starter / Pro / Agency) + tabela completa |
+| `/admin/stats` | Métricas de uso e consumo do Supabase free tier (storage, DB, auth) |

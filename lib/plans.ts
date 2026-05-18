@@ -19,9 +19,9 @@ export const PLANS = {
   pro: {
     id: 'pro',
     name: 'Pro',
-    price: 13000,
-    priceAnnual: 9900,
-    annualDiscount: 24,
+    price: 4900,
+    priceAnnual: 2900,
+    annualDiscount: 41,
     limits: { categories: Infinity, projects: Infinity },
     galleryLimit: 6,
     features: [
@@ -35,9 +35,9 @@ export const PLANS = {
   agency: {
     id: 'agency',
     name: 'Agency',
-    price: 25000,
-    priceAnnual: 17000,
-    annualDiscount: 32,
+    price: 14900,
+    priceAnnual: 9900,
+    annualDiscount: 34,
     limits: { categories: Infinity, projects: Infinity },
     galleryLimit: Infinity,
     features: [
