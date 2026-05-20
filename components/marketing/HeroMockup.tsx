@@ -232,7 +232,7 @@ function DesktopPage() {
 function MobilePage() {
   return (
     <div style={{ width: 390, background: '#fff' }}>
-      <div style={{ height: 28, background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', borderBottom: '1px solid #f5f5f5' }}>
+      <div style={{ height: 50, background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', borderBottom: '1px solid #f5f5f5' }}>
         <span style={{ fontSize: 13, fontWeight: 600, color: '#171717' }}>9:41</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <svg width="16" height="12" viewBox="0 0 16 12" fill="#171717">
@@ -545,6 +545,7 @@ export default function HeroMockup() {
     if (window.innerWidth < 768) setView('mobile')
   }, [])
   const [desktopZoom, setDesktopZoom] = useState(0.39)
+  const [phoneWidth, setPhoneWidth]   = useState(240)
   const [showHintDesktop, setShowHintDesktop] = useState(true)
   const [showHintMobile, setShowHintMobile]   = useState(true)
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false, active: false })
@@ -553,11 +554,15 @@ export default function HeroMockup() {
   const dragDesktop = useDragScroll(() => setShowHintDesktop(false))
   const dragMobile  = useDragScroll(() => setShowHintMobile(false))
 
-  // dynamic zoom
+  // dynamic zoom + phone width
   useEffect(() => {
     const el = wrapperRef.current
     if (!el) return
-    const update = () => setDesktopZoom(el.clientWidth / 1280)
+    const update = () => {
+      const w = el.clientWidth
+      setDesktopZoom(w / 1280)
+      setPhoneWidth(Math.min(280, Math.max(220, Math.round(w * 0.85))))
+    }
     update()
     const obs = new ResizeObserver(update)
     obs.observe(el)
@@ -577,8 +582,13 @@ export default function HeroMockup() {
   function onMockupLeave() { setCursor(c => ({ ...c, visible: false, active: false })) }
   function onMockupDown()  { setCursor(c => ({ ...c, active: true })) }
 
+  const mobileZoom   = (phoneWidth - 16) / 390
+  const phoneHeight  = Math.round((phoneWidth - 16) * 2.2)
+  const mobileScale  = phoneWidth / 240
+  const hintTop      = Math.round((50 + 64) * mobileZoom + 4)
+
   return (
-    <div className="w-full">
+    <div ref={wrapperRef} className="w-full">
       <TouchCursor {...cursor} />
 
       {/* toggle */}
@@ -599,7 +609,7 @@ export default function HeroMockup() {
       </div>
 
       {view === 'desktop' ? (
-        <div ref={wrapperRef} className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-neutral-200 w-full">
+        <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-neutral-200 w-full">
           {/* chrome */}
           <div className="bg-neutral-100 border-b border-neutral-200 px-3 py-2 flex items-center gap-2.5">
             <div className="flex gap-1.5">
@@ -631,11 +641,12 @@ export default function HeroMockup() {
       ) : (
         <div className="flex justify-center" style={{ isolation: 'isolate' }}
           onMouseEnter={onMockupEnter} onMouseLeave={onMockupLeave} onMouseDown={onMockupDown}>
-          <div style={{ position: 'relative', width: 240 }}>
-            <div style={{ borderRadius: 44, background: '#111', padding: 8, boxShadow: '0 25px 50px rgba(0,0,0,0.5)', outline: '1px solid rgba(255,255,255,0.08)' }}>
-              <div style={{ position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)', width: 80, height: 18, background: '#111', borderRadius: 999, zIndex: 20 }} />
-              <div style={{ borderRadius: 36, overflow: 'hidden', height: 500, position: 'relative' }}>
-                <ScrollHint visible={showHintMobile} top={35} />
+          <div style={{ position: 'relative', width: phoneWidth }}>
+            <div style={{ borderRadius: Math.round(44 * mobileScale), background: '#111', padding: 8, boxShadow: '0 25px 50px rgba(0,0,0,0.5)', outline: '1px solid rgba(255,255,255,0.08)' }}>
+              {/* dynamic island pill — centered, stays above status bar */}
+              <div style={{ position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)', width: Math.round(80 * mobileScale), height: Math.round(18 * mobileScale), background: '#111', borderRadius: 999, zIndex: 20 }} />
+              <div style={{ borderRadius: Math.round(36 * mobileScale), overflow: 'hidden', height: phoneHeight, position: 'relative' }}>
+                <ScrollHint visible={showHintMobile} top={hintTop} />
                 <div
                   ref={dragMobile.ref}
                   onMouseDown={dragMobile.onMouseDown}
@@ -645,14 +656,15 @@ export default function HeroMockup() {
                   onWheel={() => setShowHintMobile(false)}
                   style={{ height: '100%', overflowY: 'scroll', overflowX: 'hidden', scrollbarWidth: 'none', cursor: 'none', userSelect: 'none' }}
                 >
-                  <div style={{ zoom: 0.574 }}><MobilePage /></div>
+                  <div style={{ zoom: mobileZoom }}><MobilePage /></div>
                 </div>
               </div>
             </div>
-            <div style={{ position: 'absolute', right: -4, top: 100, width: 4, height: 32, background: '#333', borderRadius: '0 2px 2px 0' }} />
-            <div style={{ position: 'absolute', left: -4, top: 80,  width: 4, height: 24, background: '#333', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', left: -4, top: 116, width: 4, height: 40, background: '#333', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', left: -4, top: 168, width: 4, height: 40, background: '#333', borderRadius: '2px 0 0 2px' }} />
+            {/* side buttons scale with phone */}
+            <div style={{ position: 'absolute', right: -4, top: Math.round(100 * mobileScale), width: 4, height: Math.round(32 * mobileScale), background: '#333', borderRadius: '0 2px 2px 0' }} />
+            <div style={{ position: 'absolute', left: -4, top: Math.round(80 * mobileScale),  width: 4, height: Math.round(24 * mobileScale), background: '#333', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', left: -4, top: Math.round(116 * mobileScale), width: 4, height: Math.round(40 * mobileScale), background: '#333', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', left: -4, top: Math.round(168 * mobileScale), width: 4, height: Math.round(40 * mobileScale), background: '#333', borderRadius: '2px 0 0 2px' }} />
           </div>
         </div>
       )}
