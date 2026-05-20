@@ -584,10 +584,12 @@ export default function HeroMockup() {
   function onMockupLeave() { setCursor(c => ({ ...c, visible: false, active: false })) }
   function onMockupDown()  { setCursor(c => ({ ...c, active: true })) }
 
-  const mobileZoom   = (phoneWidth - 16) / 390
-  const phoneHeight  = Math.round((phoneWidth - 16) * 2.2)
-  const mobileScale  = phoneWidth / 240
-  const hintTop      = Math.round((50 + 64) * mobileZoom + 4)
+  const mobileZoom        = (phoneWidth - 16) / 390
+  const phoneHeight       = Math.round((phoneWidth - 16) * 2.2)
+  const mobileScale       = phoneWidth / 240
+  const statusBarPx       = Math.round(50 * mobileZoom)
+  const hintTop           = statusBarPx
+  const hintContentOffset = Math.round(64 * mobileZoom) + 8
 
   return (
     <div ref={wrapperRef} className="w-full">
@@ -648,7 +650,7 @@ export default function HeroMockup() {
               {/* dynamic island pill — centered, stays above status bar */}
               <div style={{ position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)', width: Math.round(80 * mobileScale), height: Math.round(18 * mobileScale), background: '#111', borderRadius: 999, zIndex: 20 }} />
               <div style={{ borderRadius: Math.round(36 * mobileScale), overflow: 'hidden', height: phoneHeight, position: 'relative' }}>
-                <ScrollHint visible={showHintMobile} top={0} contentOffset={hintTop} />
+                <ScrollHint visible={showHintMobile} top={hintTop} contentOffset={hintContentOffset} />
                 <div
                   ref={dragMobile.ref}
                   onMouseDown={dragMobile.onMouseDown}
