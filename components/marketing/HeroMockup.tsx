@@ -489,7 +489,7 @@ function useDragScroll(onFirstDrag: () => void) {
 /* ══════════════════════════════════════════════════════════════════════════
    SCROLL INDICATOR
 ══════════════════════════════════════════════════════════════════════════ */
-function ScrollHint({ visible, top = 13 }: { visible: boolean; top?: number }) {
+function ScrollHint({ visible, top = 13, contentOffset = 16 }: { visible: boolean; top?: number; contentOffset?: number }) {
   return (
     <div
       style={{
@@ -498,7 +498,7 @@ function ScrollHint({ visible, top = 13 }: { visible: boolean; top?: number }) {
         opacity: visible ? 1 : 0,
         transition: 'opacity 0.4s ease',
         display: 'flex', justifyContent: 'center',
-        paddingTop: 16,
+        paddingTop: contentOffset,
         background: 'linear-gradient(to bottom, rgba(255,255,255,0.97) 55%, transparent)',
       }}
     >
@@ -547,12 +547,14 @@ export default function HeroMockup() {
   const [desktopZoom, setDesktopZoom] = useState(0.39)
   const [phoneWidth, setPhoneWidth]   = useState(240)
   const [showHintDesktop, setShowHintDesktop] = useState(true)
-  const [showHintMobile, setShowHintMobile]   = useState(true)
+  const [mobileScrollTop, setMobileScrollTop] = useState(0)
   const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false, active: false })
 
   const wrapperRef = useRef<HTMLDivElement>(null)
   const dragDesktop = useDragScroll(() => setShowHintDesktop(false))
-  const dragMobile  = useDragScroll(() => setShowHintMobile(false))
+  const dragMobile  = useDragScroll(() => {})
+
+  const showHintMobile = mobileScrollTop < 30
 
   // dynamic zoom + phone width
   useEffect(() => {
@@ -646,14 +648,14 @@ export default function HeroMockup() {
               {/* dynamic island pill — centered, stays above status bar */}
               <div style={{ position: 'absolute', top: 14, left: '50%', transform: 'translateX(-50%)', width: Math.round(80 * mobileScale), height: Math.round(18 * mobileScale), background: '#111', borderRadius: 999, zIndex: 20 }} />
               <div style={{ borderRadius: Math.round(36 * mobileScale), overflow: 'hidden', height: phoneHeight, position: 'relative' }}>
-                <ScrollHint visible={showHintMobile} top={hintTop} />
+                <ScrollHint visible={showHintMobile} top={0} contentOffset={hintTop} />
                 <div
                   ref={dragMobile.ref}
                   onMouseDown={dragMobile.onMouseDown}
                   onMouseMove={dragMobile.onMouseMove}
                   onMouseUp={dragMobile.onMouseUp}
                   onMouseLeave={dragMobile.onMouseLeave}
-                  onWheel={() => setShowHintMobile(false)}
+                  onScroll={(e) => setMobileScrollTop(e.currentTarget.scrollTop)}
                   style={{ height: '100%', overflowY: 'scroll', overflowX: 'hidden', scrollbarWidth: 'none', cursor: 'none', userSelect: 'none' }}
                 >
                   <div style={{ zoom: mobileZoom }}><MobilePage /></div>
