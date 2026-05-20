@@ -46,14 +46,14 @@ function DesktopPage() {
       <div style={{ height: 780, display: 'flex', position: 'relative', overflow: 'hidden' }}>
         <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={IMG.r1} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={IMG.r1} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.05) 50%, transparent 100%)' }} />
         </div>
         <div style={{ width: 208, display: 'flex', flexDirection: 'column' }}>
           {[IMG.r1,IMG.r2,IMG.r3,IMG.r4,IMG.r5].map((src, i) => (
             <div key={i} style={{ flex: 1, position: 'relative', overflow: 'hidden', opacity: i === 0 ? 1 : 0.35 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={src} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)' }} />
               {i === 0 && <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: 'white' }} />}
               <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '8px 10px', background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)' }}>
@@ -93,7 +93,7 @@ function DesktopPage() {
             <div key={cat.label} style={{ marginBottom: 80 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={cat.img} alt="" style={{ width: 80, height: 80, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
+                <img src={cat.img} alt="" loading="lazy" style={{ width: 80, height: 80, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
                 <div>
                   <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                     <h3 className="text-2xl font-semibold text-neutral-900">{cat.label}</h3>
@@ -108,7 +108,7 @@ function DesktopPage() {
                   <div key={i} style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid #e5e7eb' }}>
                     <div style={{ aspectRatio: '16/9', overflow: 'hidden' }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={p.src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={p.src} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                     <div style={{ padding: '14px 16px' }}>
                       <p className="font-medium text-neutral-900 text-sm" style={{ marginBottom: 4 }}>{p.t}</p>
@@ -155,7 +155,7 @@ function DesktopPage() {
                 <p className="text-sm text-neutral-600 leading-relaxed" style={{ marginBottom: 24 }}>{t.text}</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={t.av} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '1px solid #e5e7eb' }} />
+                  <img src={t.av} alt="" loading="lazy" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '1px solid #e5e7eb' }} />
                   <div>
                     <p className="font-medium text-neutral-900 text-sm">{t.name}</p>
                     <p className="text-xs text-neutral-400">{t.role}</p>
@@ -257,7 +257,7 @@ function MobilePage() {
       </nav>
       <div style={{ height: 680, position: 'relative', overflow: 'hidden' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={IMG.r1} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img src={IMG.r1} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }} />
         <div style={{ position: 'absolute', bottom: 80, left: 0, right: 0, padding: '0 32px' }}>
           <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 12 }}>Residencial</p>
@@ -284,7 +284,7 @@ function MobilePage() {
           <div key={cat.label} style={{ marginBottom: 56 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={cat.img} alt="" style={{ width: 64, height: 64, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }} />
+              <img src={cat.img} alt="" loading="lazy" style={{ width: 64, height: 64, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }} />
               <div>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontSize: 18, fontWeight: 600, color: '#171717' }}>{cat.label}</span>
@@ -299,7 +299,7 @@ function MobilePage() {
                 <div key={i} style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid #e5e7eb' }}>
                   <div style={{ aspectRatio: '16/9', overflow: 'hidden' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={p.src} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <div style={{ padding: '12px 14px' }}>
                     <p style={{ fontWeight: 500, color: '#171717', fontSize: 14, marginBottom: 3 }}>{p.t}</p>
@@ -342,7 +342,7 @@ function MobilePage() {
               <p className="text-sm text-neutral-600 leading-relaxed" style={{ marginBottom: 16 }}>{t.text}</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={t.av} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
+                <img src={t.av} alt="" loading="lazy" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
                 <div>
                   <p className="text-sm font-medium text-neutral-900">{t.name}</p>
                   <p className="text-xs text-neutral-400">{t.role}</p>
@@ -540,6 +540,10 @@ function TouchCursor({ x, y, visible, active }: { x: number; y: number; visible:
 ══════════════════════════════════════════════════════════════════════════ */
 export default function HeroMockup() {
   const [view, setView] = useState<'desktop' | 'mobile'>('desktop')
+
+  useEffect(() => {
+    if (window.innerWidth < 768) setView('mobile')
+  }, [])
   const [desktopZoom, setDesktopZoom] = useState(0.39)
   const [showHintDesktop, setShowHintDesktop] = useState(true)
   const [showHintMobile, setShowHintMobile]   = useState(true)
