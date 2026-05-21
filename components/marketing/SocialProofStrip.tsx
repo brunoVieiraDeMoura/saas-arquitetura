@@ -1,6 +1,6 @@
 const STATS = [
   { value: '+200', label: 'escritórios ativos' },
-  { value: '4.9★', label: 'avaliação média' },
+  { value: 'Grátis', label: 'para começar' },
   { value: '10min', label: 'para criar seu site' },
   { value: '100%', label: 'responsivo mobile' },
 ]
