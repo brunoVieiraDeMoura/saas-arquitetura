@@ -102,27 +102,29 @@ function SignupPage() {
           Voltar para home
         </Link>
 
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="text-2xl sm:text-xl font-semibold text-neutral-900">Criar conta</h1>
           <p className="text-sm text-neutral-500 mt-1">Comece gratuitamente, sem cartão</p>
         </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full py-3 sm:py-2 flex items-center justify-center gap-2"
-          onClick={handleGoogleSignup}
-          disabled={googleLoading}
-        >
-          <GoogleIcon />
-          {googleLoading ? 'Redirecionando...' : 'Entrar com Google'}
-        </Button>
+        <div className="mb-6">
+          <button
+            type="button"
+            onClick={handleGoogleSignup}
+            disabled={googleLoading}
+            className="w-full py-4 sm:py-3.5 flex items-center justify-center gap-3 rounded-xl border-2 border-neutral-900 bg-white text-neutral-900 font-semibold text-base hover:bg-neutral-50 active:bg-neutral-100 transition-colors shadow-sm disabled:opacity-60"
+          >
+            <GoogleIcon />
+            {googleLoading ? 'Redirecionando...' : 'Continuar com Google'}
+          </button>
+          <p className="mt-2 text-center text-xs text-neutral-400">Recomendado · mais rápido</p>
+        </div>
 
-        <div className="relative my-3">
+        <div className="relative my-4">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-neutral-200" />
           </div>
-          <div className="relative flex justify-center text-xs text-neutral-400 bg-white px-2">ou</div>
+          <div className="relative flex justify-center text-xs text-neutral-400 bg-white px-2">ou cadastre com email</div>
         </div>
 
         <form onSubmit={handleSignup} className="space-y-5">

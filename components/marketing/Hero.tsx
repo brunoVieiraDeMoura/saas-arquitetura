@@ -40,7 +40,7 @@ export default function MarketingHero() {
 
           <div className="flex flex-col sm:flex-row items-center md:items-start gap-3">
             <Link
-              href="/signup"
+              href="https://www.arquiteturaorganizada.com/login"
               className="w-full sm:w-auto px-8 py-4 rounded-xl bg-neutral-900 text-white font-semibold text-base hover:bg-neutral-800 transition-colors text-center"
             >
               Criar meu site grátis →
