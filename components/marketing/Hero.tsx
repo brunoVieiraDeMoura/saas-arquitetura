@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import HeroPreview from './HeroPreview'
 
 const AVATARS = [
   { initials: 'MC', color: '#c4956a' },
@@ -9,9 +10,9 @@ const AVATARS = [
 export default function MarketingHero() {
   return (
     <section className="pt-20 pb-12 md:pt-32 md:pb-24 px-6 bg-white overflow-hidden">
-      <div className="max-w-6xl mx-auto flex justify-center">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
 
-        <div className="md:pt-8 text-center md:text-left max-w-2xl">
+        <div className="md:pt-8 text-center md:text-left">
           <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-neutral-100 text-neutral-600 text-xs font-medium mb-6">
             <div className="flex -space-x-1.5">
               {AVATARS.map((av) => (
@@ -71,6 +72,11 @@ export default function MarketingHero() {
           <p className="mt-3 text-xs text-neutral-400 text-center md:text-left">
             Sem cartão de crédito · Pronto em 10 minutos
           </p>
+        </div>
+
+        {/* Preview — desktop only */}
+        <div className="hidden md:block md:pt-8">
+          <HeroPreview />
         </div>
 
       </div>
