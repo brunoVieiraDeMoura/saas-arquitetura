@@ -103,7 +103,7 @@ function LoginPage() {
         <Button
           type="button"
           variant="outline"
-          className="w-full py-3 sm:py-2 flex items-center justify-center gap-2"
+          className="w-full py-3.5 sm:py-3 flex items-center justify-center gap-2.5 border-neutral-300 hover:border-neutral-400 font-medium text-sm"
           onClick={handleGoogleLogin}
           disabled={googleLoading}
         >
