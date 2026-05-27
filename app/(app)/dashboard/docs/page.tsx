@@ -11,7 +11,7 @@ const SECTIONS = [
       { label: 'Logo em texto', desc: 'Configure o nome principal e sub-nome que aparecem no topo do site. Ex: "Bruno Moura" + "Arquitetura" como sub-nome.' },
       { label: 'Logo em imagem', desc: 'Prefere usar sua própria logo? Selecione "Imagem" e faça upload de um PNG ou SVG.' },
       { label: 'Fonte do logo', desc: 'Escolha entre as fontes disponíveis para personalizar o estilo tipográfico do nome.' },
-      { label: 'Preview em tempo real', desc: 'A prévia mostra como o logo ficará no topo do site (claro e escuro) antes de salvar.' },
+      { label: 'Preview em tempo real', desc: 'A prévia mostra como o logo ficará no topo do site antes de salvar.' },
     ],
   },
   {
@@ -22,7 +22,7 @@ const SECTIONS = [
     items: [
       { label: 'O que são', desc: 'Categorias organizam seu portfólio. Ex: Residencial, Comercial, Interiores. Cada uma vira uma seção no site.' },
       { label: 'Criar uma categoria', desc: 'Clique em "+ Nova categoria". Preencha nome e slug (URL). O slug é gerado automaticamente mas pode ser editado.' },
-      { label: 'Limite por plano', desc: 'Starter: 2 categorias. Pro e Agency: ilimitadas. Um aviso aparece quando você atingir o limite do seu plano.' },
+      { label: 'Reordenar', desc: 'A ordem das categorias define a ordem no menu do site. Reordene pela página de gerenciamento de cada categoria.' },
     ],
   },
   {
@@ -32,10 +32,9 @@ const SECTIONS = [
     route: '/dashboard/projects',
     items: [
       { label: 'Criar um projeto', desc: 'Clique em "+ Novo projeto". Escolha a categoria, adicione título, data, imagem principal e descreva o projeto com o editor de texto.' },
-      { label: 'Galeria de fotos', desc: 'Arraste ou clique para adicionar fotos ao projeto. Starter: até 2 fotos. Pro: até 6. Agency: ilimitadas.' },
+      { label: 'Galeria de fotos', desc: 'Arraste ou clique para adicionar fotos à galeria do projeto. Sem limite de quantidade.' },
       { label: 'Projeto em destaque', desc: 'Marque projetos como "destaque" para que apareçam na seção principal da página inicial do site.' },
       { label: 'Meta descrição', desc: 'Preencha a meta descrição para melhorar como o projeto aparece no Google.' },
-      { label: 'Limite por plano', desc: 'Starter: 6 projetos no total (3 por categoria). Pro e Agency: ilimitados. O indicador X/6 aparece no topo da lista.' },
     ],
   },
   {
@@ -65,11 +64,11 @@ const SECTIONS = [
     title: 'Contato',
     route: '/dashboard/contact',
     items: [
-      { label: 'WhatsApp', desc: 'Informe o número com código do país e DDD, sem espaços. Ex: 5511999999999. Use o link de teste para verificar se está correto.' },
-      { label: 'Botão flutuante', desc: 'Ative o toggle "Exibir botão flutuante" para mostrar um botão verde fixo no canto inferior direito em todas as páginas do seu site.' },
-      { label: 'Mensagem padrão', desc: 'Personalize o texto que aparece pré-preenchido quando o cliente clicar no botão do WhatsApp.' },
+      { label: 'WhatsApp', desc: 'Informe o número com código do país e DDD, sem espaços. Ex: 5521999999999. Use o link de teste para verificar.' },
+      { label: 'Botão flutuante', desc: 'Ative o toggle "Exibir botão flutuante" para mostrar um botão verde fixo em todas as páginas do site.' },
+      { label: 'Mensagem padrão', desc: 'Personalize o texto pré-preenchido quando o visitante clicar no WhatsApp.' },
       { label: 'Instagram', desc: 'Digite só o @username, sem o link completo. Um ícone aparecerá no menu e rodapé do site.' },
-      { label: 'Email de contato', desc: 'Informe o email que receberá as mensagens enviadas pelo formulário do site. Requer uma Senha de App do Gmail (não a senha normal da conta).' },
+      { label: 'Email de contato', desc: 'Informe o email que receberá as mensagens do formulário do site. Requer uma Senha de App do Gmail.' },
     ],
   },
   {
@@ -78,9 +77,8 @@ const SECTIONS = [
     title: 'Configurações',
     route: '/dashboard/settings',
     items: [
-      { label: 'Nome do site', desc: 'O nome da empresa que aparece no título do site, no rodapé e nas mensagens automáticas.' },
-      { label: 'Slug (URL)', desc: 'Seu endereço padrão é arquiteturaorganizada.com.br/seu-slug. Só pode ser alterado com cuidado pois muda o link do site.' },
-      { label: 'Domínio customizado', desc: 'Disponível no plano Pro e Agency. Compre um domínio em Registro.br, GoDaddy ou Hostinger e configure o DNS apontando um CNAME para cname.vercel-dns.com. A configuração SSL é automática.' },
+      { label: 'Slug (URL)', desc: 'Seu endereço padrão é arquiteturaorganizada.com.br/seu-slug. Altere com cuidado pois muda o link do site.' },
+      { label: 'Domínio customizado', desc: 'Compre um domínio em Registro.br, GoDaddy ou Hostinger e configure o DNS com um CNAME apontando para cname.vercel-dns.com. O SSL é automático.' },
     ],
   },
   {
@@ -88,11 +86,9 @@ const SECTIONS = [
     icon: '📊',
     title: 'Analytics',
     route: '/dashboard/analytics',
-    badge: 'Agency',
     items: [
       { label: 'Visitas por período', desc: 'Veja quantas visitas seu site recebeu nos últimos 7 e 30 dias. O gráfico mostra a evolução diária.' },
-      { label: 'Projetos mais vistos', desc: 'Ranking dos 5 projetos com mais acessos nos últimos 30 dias. Útil para saber o que mais atrai clientes.' },
-      { label: 'Disponibilidade', desc: 'Recurso exclusivo do plano Agency. Faça upgrade em Plano & Cobrança para desbloquear.' },
+      { label: 'Projetos mais vistos', desc: 'Ranking dos 5 projetos com mais acessos nos últimos 30 dias. Útil para saber o que mais atrai visitantes.' },
     ],
   },
   {
@@ -100,24 +96,10 @@ const SECTIONS = [
     icon: '👥',
     title: 'Equipe',
     route: '/dashboard/team',
-    badge: 'Agency',
     items: [
       { label: 'Convidar membros', desc: 'Gere um link de convite e compartilhe com quem vai ajudar a gerenciar o site. O link expira em 10 dias.' },
-      { label: 'Copiar o link', desc: 'Clique em "Copiar link" para copiar o endereço de convite. O convidado não precisa ter conta ainda — cria na hora de aceitar.' },
-      { label: 'Limite de usuários', desc: 'O plano Agency suporta até 3 usuários por conta. Membros removidos perdem o acesso imediatamente.' },
-      { label: 'Disponibilidade', desc: 'Recurso exclusivo do plano Agency. Faça upgrade em Plano & Cobrança para desbloquear.' },
-    ],
-  },
-  {
-    id: 'plano',
-    icon: '💳',
-    title: 'Plano & Cobrança',
-    route: '/dashboard/billing',
-    items: [
-      { label: 'Starter (Grátis)', desc: '2 categorias, 6 projetos no total, até 2 fotos por projeto. Subdomínio padrão incluído. Ideal para começar.' },
-      { label: 'Pro — R$99/mês', desc: 'Categorias e projetos ilimitados, domínio customizado, até 6 fotos por projeto, email prioritário.' },
-      { label: 'Agency — R$167/mês', desc: 'Tudo do Pro + fotos ilimitadas por projeto, analytics, até 3 usuários na conta, suporte ativo WhatsApp e call de onboarding.' },
-      { label: 'Assinar ou cancelar', desc: 'Clique em "Assinar" no card do plano desejado. O pagamento é processado pelo Mercado Pago. Para cancelar, use o botão "Cancelar assinatura" na mesma página.' },
+      { label: 'Copiar o link', desc: 'Clique em "Copiar link". O convidado não precisa ter conta — cria na hora de aceitar.' },
+      { label: 'Remover membros', desc: 'Membros removidos perdem o acesso imediatamente.' },
     ],
   },
 ]
@@ -126,26 +108,9 @@ export default function DocsPage() {
   return (
     <div className="max-w-3xl">
 
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-neutral-900 mb-1">Documentação</h1>
-        <p className="text-sm text-neutral-500">Tudo que você precisa para configurar e publicar seu portfólio.</p>
-      </div>
-
-      {/* Video */}
-      <div className="mb-8 bg-white rounded-2xl border border-neutral-200 overflow-hidden">
-        <div className="px-6 pt-6 pb-3">
-          <p className="text-sm font-semibold text-neutral-900 mb-1">Vídeo explicativo</p>
-          <p className="text-xs text-neutral-500">Assista ao tutorial completo antes de começar — leva menos de 10 minutos.</p>
-        </div>
-        <div className="relative aspect-video mx-6 mb-6 rounded-xl overflow-hidden">
-          <iframe
-            src="https://www.youtube.com/embed/--TTnKPEjlc?vq=hd1080"
-            className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
+        <p className="text-sm text-neutral-500">Guia completo para configurar e publicar seu portfólio.</p>
       </div>
 
       {/* Quick nav */}
@@ -172,11 +137,6 @@ export default function DocsPage() {
               <div className="flex items-center gap-2">
                 <span className="text-lg">{section.icon}</span>
                 <h2 className="text-sm font-semibold text-neutral-900">{section.title}</h2>
-                {section.badge && (
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-neutral-900 text-white">
-                    {section.badge}
-                  </span>
-                )}
               </div>
               <Link
                 href={section.route}
@@ -207,12 +167,12 @@ export default function DocsPage() {
         <p className="text-sm font-semibold text-neutral-900 mb-4">💡 Dicas rápidas</p>
         <ul className="space-y-2.5">
           {[
-            'Seu site já está no ar desde o momento do cadastro — clique em "Ver site" no menu lateral para conferir.',
-            'Crie as categorias antes dos projetos. Todo projeto precisa pertencer a uma categoria.',
-            'Use imagens com boa resolução (mínimo 1200px de largura) para melhor qualidade no site.',
+            'Crie as categorias antes dos projetos — todo projeto precisa pertencer a uma categoria.',
+            'Use imagens com boa resolução (mínimo 1200px de largura) para melhor qualidade.',
             'Ative o botão flutuante do WhatsApp em Contato — aumenta muito o contato de novos clientes.',
-            'Projetos marcados como "destaque" aparecem na página inicial. Escolha os melhores.',
-            'No plano Agency, use o Analytics para descobrir quais projetos atraem mais visitantes.',
+            'Projetos marcados como "destaque" aparecem na página inicial. Escolha os melhores trabalhos.',
+            'Preencha a meta descrição de cada projeto para melhorar o posicionamento no Google.',
+            'Clique em "Ver site" no menu lateral para conferir como o site está ficando em tempo real.',
           ].map((tip, i) => (
             <li key={i} className="flex gap-2.5 text-sm text-neutral-600 leading-relaxed">
               <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-neutral-300 shrink-0" />
@@ -225,7 +185,7 @@ export default function DocsPage() {
       {/* Support */}
       <div className="mt-6 rounded-2xl bg-neutral-900 text-white p-6">
         <p className="font-semibold text-sm mb-1">Ainda com dúvidas?</p>
-        <p className="text-neutral-400 text-sm mb-4">Nossa equipe responde em até 24h.</p>
+        <p className="text-neutral-400 text-sm mb-4">Respondo em até 24h.</p>
         <CopyEmailButton variant="dark" />
       </div>
 

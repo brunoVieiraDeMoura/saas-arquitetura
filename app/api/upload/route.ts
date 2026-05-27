@@ -4,12 +4,7 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 const ALLOWED_BUCKETS = ['projects', 'categories', 'logo']
-
-const MAX_SIZE: Record<string, number> = {
-  agency:  15 * 1024 * 1024,
-  pro:     10 * 1024 * 1024,
-  starter:  5 * 1024 * 1024,
-}
+const MAX_SIZE = 15 * 1024 * 1024
 
 async function getAuthenticatedUser() {
   const cookieStore = await cookies()
@@ -40,27 +35,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: err.message }, { status: 500 })
   }
 
-  const { data: profile } = await admin
-    .from('profiles')
-    .select('tenant_id')
-    .eq('id', user.id)
-    .single()
-
-  const { data: tenant } = profile
-    ? await admin.from('tenants').select('plan').eq('id', profile.tenant_id).single()
-    : { data: null }
-
-  const plan = tenant?.plan ?? 'starter'
-  const maxSize = MAX_SIZE[plan] ?? MAX_SIZE.starter
-
   const formData = await request.formData()
   const file = formData.get('file') as File | null
   const bucket = (formData.get('bucket') as string) || 'projects'
 
   if (!file) return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
-  if (file.size > maxSize) {
-    const mb = maxSize / 1024 / 1024
-    return NextResponse.json({ error: `Imagem deve ter no máximo ${mb}MB` }, { status: 400 })
+  if (file.size > MAX_SIZE) {
+    return NextResponse.json({ error: 'Imagem deve ter no máximo 15MB' }, { status: 400 })
   }
   if (!ALLOWED_BUCKETS.includes(bucket)) return NextResponse.json({ error: 'Bucket inválido' }, { status: 400 })
 

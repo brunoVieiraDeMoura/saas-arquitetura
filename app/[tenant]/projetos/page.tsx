@@ -44,8 +44,7 @@ export default async function TenantProjetosPage({
   const allCats = ((categories as any[]) ?? []).filter((c: any) => c.projects?.length > 0)
   const companyName = tenant.settings.find((r) => r.key === 'company_name')?.value ?? tenant.name
 
-  const isFree = tenant.plan === 'starter'
-  const cats = isFree ? allCats.slice(0, 2) : allCats
+  const cats = allCats
   const base = await getSiteBase(slug)
 
   return (

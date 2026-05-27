@@ -43,11 +43,9 @@ export async function updateCustomDomain(formData: FormData) {
 
   const { data: tenant } = await admin
     .from('tenants')
-    .select('plan, custom_domain')
+    .select('custom_domain')
     .eq('id', tenantId)
     .single()
-
-  if (tenant?.plan === 'starter') return { error: 'Domínio customizado requer plano Pro ou Agency.' }
 
   const domain = (formData.get('domain') as string | null)?.trim().toLowerCase() ?? ''
 

@@ -6,10 +6,11 @@ import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import LogoBrand from '@/components/LogoBrand'
 
+const WA_URL = `https://wa.me/5521999433890?text=${encodeURIComponent('Olá! Gostaria de solicitar um orçamento para o meu site de portfólio de arquitetura.')}`
+
 const NAV_LINKS = [
   { href: '/#features', label: 'O que inclui' },
   { href: '/#pricing', label: 'Preços' },
-  { href: '/como-usar', label: 'Como funciona' },
 ]
 
 export default function MarketingNavbar() {
@@ -50,12 +51,14 @@ export default function MarketingNavbar() {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-2">
-            <Link
-              href="/#contact"
+            <a
+              href={WA_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-sm px-5 py-2.5 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 transition-colors font-medium"
             >
               Solicitar orçamento
-            </Link>
+            </a>
           </div>
 
           {/* Mobile hamburger */}
@@ -82,13 +85,15 @@ export default function MarketingNavbar() {
               </Link>
             ))}
             <div className="flex flex-col gap-2 pt-3">
-              <Link
-                href="/#contact"
+              <a
+                href={WA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setOpen(false)}
                 className="w-full text-center py-2.5 text-sm font-medium bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors"
               >
                 Solicitar orçamento
-              </Link>
+              </a>
             </div>
           </div>
         )}

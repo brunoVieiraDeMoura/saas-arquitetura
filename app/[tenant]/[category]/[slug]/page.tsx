@@ -1,8 +1,6 @@
 import { getTenantBySlug } from '@/lib/tenant/resolver'
 import { getSiteBase } from '@/lib/tenant/site-base'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { PLANS } from '@/lib/plans'
-import type { Plan } from '@/lib/plans'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
@@ -66,10 +64,7 @@ export default async function TenantProjectPage({
   const companyName = tenant.settings.find((r) => r.key === 'company_name')?.value ?? tenant.name
 
   const base = await getSiteBase(tenantSlug)
-  const galleryLimit = PLANS[(tenant.plan as Plan) ?? 'starter'].galleryLimit
-  const rawGallery: string[] = project.gallery ?? []
-  const limitedGallery = galleryLimit === Infinity ? rawGallery : rawGallery.slice(0, galleryLimit)
-  const galleryImages = limitedGallery.map((url: string, i: number) => ({
+  const galleryImages = ((project.gallery ?? []) as string[]).map((url: string, i: number) => ({
     url,
     alt: `${project.title} - foto ${i + 1}`,
   }))

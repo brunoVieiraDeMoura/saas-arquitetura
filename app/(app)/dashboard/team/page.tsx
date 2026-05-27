@@ -1,6 +1,5 @@
 import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { redirect } from 'next/navigation'
 import { removeMember } from './actions'
 import InviteForm from './_components/InviteForm'
 import PendingInviteRow from './_components/PendingInviteRow'
@@ -8,9 +7,6 @@ import PendingInviteRow from './_components/PendingInviteRow'
 export default async function TeamPage() {
   const { tenantId, userId } = await requireTenant()
   const admin = createAdminClient()
-
-  const { data: tenant } = await admin.from('tenants').select('plan').eq('id', tenantId).single()
-  if (tenant?.plan !== 'agency') redirect('/dashboard/billing')
 
   const { data: profiles } = await admin
     .from('profiles')
@@ -34,18 +30,16 @@ export default async function TeamPage() {
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://arquiteturaorganizada.com.br'
 
-  const canInvite = members.length < 3
-
   return (
     <div className="max-w-2xl">
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-neutral-900">Equipe</h1>
-        <p className="text-sm text-neutral-500 mt-1">Gerencie os membros da sua equipe. Máximo 3 usuários.</p>
+        <p className="text-sm text-neutral-500 mt-1">Gerencie os membros da sua equipe.</p>
       </div>
 
       <div className="bg-white rounded-2xl border border-neutral-200 p-6 mb-5">
         <h2 className="text-sm font-semibold text-neutral-900 mb-4">
-          Membros ativos <span className="text-neutral-400 font-normal">({members.length}/3)</span>
+          Membros ativos <span className="text-neutral-400 font-normal">({members.length})</span>
         </h2>
         <div className="divide-y divide-neutral-100">
           {members.map((m) => (
@@ -58,10 +52,7 @@ export default async function TeamPage() {
               </div>
               {m.role !== 'owner' && m.id !== userId && (
                 <form action={removeMember.bind(null, m.id)}>
-                  <button
-                    type="submit"
-                    className="text-xs text-red-500 hover:underline"
-                  >
+                  <button type="submit" className="text-xs text-red-500 hover:underline">
                     Remover
                   </button>
                 </form>
@@ -91,18 +82,10 @@ export default async function TeamPage() {
 
       <div className="bg-white rounded-2xl border border-neutral-200 p-6">
         <h2 className="text-sm font-semibold text-neutral-900 mb-1">Convidar membro</h2>
-        {canInvite ? (
-          <>
-            <p className="text-xs text-neutral-400 mb-4">
-              Gere um link de convite e compartilhe com o colaborador.
-            </p>
-            <InviteForm />
-          </>
-        ) : (
-          <p className="text-sm text-neutral-500 mt-2">
-            Limite de 3 membros atingido.
-          </p>
-        )}
+        <p className="text-xs text-neutral-400 mb-4">
+          Gere um link de convite e compartilhe com o colaborador.
+        </p>
+        <InviteForm />
       </div>
     </div>
   )

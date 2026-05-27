@@ -1,6 +1,5 @@
 import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { redirect } from 'next/navigation'
 
 function AreaChart({ data }: { data: [string, number][] }) {
   const W = 560
@@ -67,9 +66,6 @@ export default async function AnalyticsPage() {
   const { tenantId } = await requireTenant()
   const admin = createAdminClient()
 
-  const { data: tenant } = await admin.from('tenants').select('plan').eq('id', tenantId).single()
-  if (tenant?.plan !== 'agency') redirect('/dashboard/billing')
-
   const since30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
   const since7  = new Date(Date.now() -  7 * 24 * 60 * 60 * 1000).toISOString()
 
@@ -97,7 +93,6 @@ export default async function AnalyticsPage() {
     )
   }
 
-  // Views per day (last 7)
   const dayMap: Record<string, number> = {}
   for (let i = 6; i >= 0; i--) {
     const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000)
@@ -109,7 +104,6 @@ export default async function AnalyticsPage() {
   }
   const days = Object.entries(dayMap)
 
-  // Top projects
   const projCount: Record<string, number> = {}
   for (const v of (projViews ?? [])) {
     const pid = v.project_id as string

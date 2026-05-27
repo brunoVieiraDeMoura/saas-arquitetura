@@ -1,16 +1,10 @@
 import { requireTenant } from '@/lib/tenant/guard'
 import { createAdminClient } from '@/lib/supabase/admin'
-import Link from 'next/link'
-import { ExternalLink, Palette, Phone, CreditCard } from 'lucide-react'
+import { ExternalLink, Palette, Phone } from 'lucide-react'
 import CopyButton from './_components/CopyButton'
 import SettingsForm from './_components/SettingsForm'
 import CustomDomainForm from './_components/CustomDomainForm'
-
-const PLAN_BADGE: Record<string, { label: string; className: string }> = {
-  starter: { label: 'Starter',  className: 'bg-neutral-100 text-neutral-600' },
-  pro:     { label: 'Pro',      className: 'bg-blue-50 text-blue-700' },
-  agency:  { label: 'Agency',   className: 'bg-amber-50 text-amber-700' },
-}
+import Link from 'next/link'
 
 const QUICK_ACTIONS = [
   {
@@ -25,12 +19,6 @@ const QUICK_ACTIONS = [
     title: 'Contato',
     desc:  'WhatsApp e Instagram',
   },
-  {
-    href:  '/dashboard/billing',
-    icon:  CreditCard,
-    title: 'Plano & Cobrança',
-    desc:  'Assinatura e pagamento',
-  },
 ]
 
 export default async function SettingsPage() {
@@ -39,14 +27,12 @@ export default async function SettingsPage() {
 
   const { data: tenant } = await admin
     .from('tenants')
-    .select('name, slug, plan, custom_domain')
+    .select('name, slug, custom_domain')
     .eq('id', tenantId)
     .single()
 
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'arquiteturaorganizada.com.br'
   const siteUrl = `${tenantSlug}.${rootDomain}`
-  const plan = tenant?.plan ?? 'starter'
-  const badge = PLAN_BADGE[plan] ?? PLAN_BADGE.starter
 
   return (
     <div className="max-w-2xl">
@@ -80,44 +66,18 @@ export default async function SettingsPage() {
           initialSlug={tenantSlug}
           rootDomain={rootDomain}
         />
-        <div className="flex items-center justify-between pt-5 mt-5 border-t border-neutral-100">
-          <div>
-            <p className="text-xs text-neutral-400 mb-1">Plano atual</p>
-            <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full ${badge.className}`}>
-              {badge.label}
-            </span>
-          </div>
-          <Link
-            href="/dashboard/billing"
-            className="text-xs text-neutral-500 hover:text-neutral-900 border border-neutral-200 px-3 py-1.5 rounded-lg hover:border-neutral-400 transition-colors"
-          >
-            Gerenciar plano →
-          </Link>
-        </div>
       </div>
 
-      {/* Custom domain — Pro/Agency only */}
-      {plan !== 'starter' ? (
-        <div className="bg-white rounded-2xl border border-neutral-200 p-6 mb-5">
-          <h2 className="text-sm font-semibold text-neutral-900 mb-1">Domínio customizado</h2>
-          <p className="text-xs text-neutral-400 mb-5">Aponte seu domínio próprio para o seu site.</p>
-          <CustomDomainForm initialDomain={tenant?.custom_domain ?? null} />
-        </div>
-      ) : (
-        <div className="bg-neutral-50 rounded-2xl border border-dashed border-neutral-200 p-6 mb-5 flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-neutral-700">Domínio customizado</p>
-            <p className="text-xs text-neutral-400 mt-0.5">Disponível nos planos Pro e Agency.</p>
-          </div>
-          <Link href="/dashboard/billing" className="text-xs font-medium bg-neutral-900 text-white px-4 py-2 rounded-lg hover:bg-neutral-700 transition-colors">
-            Fazer upgrade
-          </Link>
-        </div>
-      )}
+      {/* Custom domain */}
+      <div className="bg-white rounded-2xl border border-neutral-200 p-6 mb-5">
+        <h2 className="text-sm font-semibold text-neutral-900 mb-1">Domínio customizado</h2>
+        <p className="text-xs text-neutral-400 mb-5">Aponte seu domínio próprio para o seu site.</p>
+        <CustomDomainForm initialDomain={tenant?.custom_domain ?? null} />
+      </div>
 
       {/* Quick actions */}
       <h2 className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">Acesso rápido</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {QUICK_ACTIONS.map(({ href, icon: Icon, title, desc }) => (
           <Link
             key={href}

@@ -1,7 +1,5 @@
 import { getTenantBySlug } from '@/lib/tenant/resolver'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { PLANS } from '@/lib/plans'
-import type { Plan } from '@/lib/plans'
 import { notFound } from 'next/navigation'
 import Hero from '@/components/site/Hero'
 import Features from '@/components/site/Features'
@@ -44,24 +42,13 @@ export default async function TenantHomePage({
   const get = (key: string, fallback = '') =>
     tenant.settings.find((r) => r.key === key)?.value ?? fallback
 
-  const plan = (tenant.plan ?? 'starter') as Plan
-  const isFree = plan === 'starter'
-  const projectLimit = PLANS[plan].limits.projects
-
-  const featuredQuery = isFree
-    ? admin
-        .from('projects')
-        .select('id, title, slug, main_image, date, is_featured, categories(name, slug)')
-        .eq('tenant_id', tenant.id)
-        .order('created_at', { ascending: true })
-        .limit(projectLimit)
-    : admin
-        .from('projects')
-        .select('id, title, slug, main_image, date, categories(name, slug)')
-        .eq('tenant_id', tenant.id)
-        .eq('is_featured', true)
-        .order('created_at', { ascending: false })
-        .limit(6)
+  const featuredQuery = admin
+    .from('projects')
+    .select('id, title, slug, main_image, date, categories(name, slug)')
+    .eq('tenant_id', tenant.id)
+    .eq('is_featured', true)
+    .order('created_at', { ascending: false })
+    .limit(6)
 
   const [
     { data: featuredRaw },
@@ -87,9 +74,7 @@ export default async function TenantHomePage({
       .order('order_index', { ascending: true }),
   ])
 
-  const featuredProjects = isFree
-    ? (featuredRaw ?? []).filter((p: any) => p.is_featured)
-    : (featuredRaw ?? [])
+  const featuredProjects = featuredRaw ?? []
 
   const companyName = get('company_name', tenant.name)
   const getTheme = (key: string) => (Number(get(key, '1')) || 1) as 1 | 2 | 3
