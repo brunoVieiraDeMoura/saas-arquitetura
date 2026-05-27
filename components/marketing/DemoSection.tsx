@@ -21,7 +21,7 @@ export default function DemoSection() {
 
         {/* Browser mockup */}
         <Link
-          href="https://demonstracao.arquiteturaorganizada.com.br/"
+          href="https://www.arquiteturaorganizada.com/"
           target="_blank"
           rel="noopener noreferrer"
           className="group block rounded-2xl overflow-hidden ring-1 ring-white/10 hover:ring-white/20 transition-all shadow-2xl"
@@ -34,7 +34,7 @@ export default function DemoSection() {
               <div className="w-3 h-3 rounded-full bg-neutral-600" />
             </div>
             <div className="flex-1 bg-neutral-700 rounded-md px-3 py-1.5 text-xs text-neutral-400 text-center truncate">
-              demonstracao.arquiteturaorganizada.com.br
+              arquiteturaorganizada.com
             </div>
             <div className="shrink-0 flex items-center gap-1.5 text-xs text-neutral-500 group-hover:text-neutral-300 transition">
               <ExternalLink size={12} />

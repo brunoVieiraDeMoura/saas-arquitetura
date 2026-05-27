@@ -23,14 +23,14 @@ export default async function Footer({
   return (
     <footer style={{ backgroundColor: 'var(--site-primary)' }} className="text-white py-12 px-6">
       <div className="max-w-[1000px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="text-center md:text-left">
+        <a href={base || '/'} className="text-center md:text-left hover:opacity-80 transition-opacity">
           {logoSettings ? (
             <LogoBrand {...logoSettings} />
           ) : (
             <p className="font-semibold text-sm tracking-wide uppercase mb-1">{companyName}</p>
           )}
           <p className="text-xs text-white/60 mt-2">Design de interiores e arquitetura</p>
-        </div>
+        </a>
 
         <div className="flex items-center gap-6">
           <a href={`${base}/projetos`} className="text-xs text-white/60 hover:text-white transition-colors">Projetos</a>

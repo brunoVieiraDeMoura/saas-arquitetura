@@ -39,7 +39,7 @@ export default function MarketingHero() {
             Ver preços →
           </Link>
           <Link
-            href="https://demonstracao.arquiteturaorganizada.com.br/"
+            href="https://www.arquiteturaorganizada.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto px-8 py-4 rounded-xl border border-neutral-200 text-neutral-700 font-medium text-base hover:border-neutral-300 hover:bg-neutral-50 transition-colors text-center"
