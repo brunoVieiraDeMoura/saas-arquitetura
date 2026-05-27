@@ -112,7 +112,6 @@ export default async function TenantCategoryPage({
         )}
         <p className="text-sm text-neutral-400 mt-2">
           {projects.length} projeto{projects.length !== 1 ? 's' : ''}
-          {q && visibleProjects.length !== projects.length && ` de ${visibleProjects.length}`}
         </p>
         <div className="mt-6 max-w-sm">
           <CategorySearch defaultValue={q ?? ''} />
