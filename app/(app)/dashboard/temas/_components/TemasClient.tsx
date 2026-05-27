@@ -1,10 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import Link from 'next/link'
-import { Lock } from 'lucide-react'
 import { saveTheme } from '../actions'
-import type { Plan } from '@/lib/plans'
 
 type ThemeValue = 1 | 2 | 3
 type Themes = {
@@ -503,130 +500,72 @@ const SECTIONS = [
   },
 ]
 
-// ── Upgrade modal ──────────────────────────────────────────────────────────────
-
-function UpgradeModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center px-4 pb-4 sm:pb-0" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/40" />
-      <div
-        className="relative bg-white rounded-2xl shadow-xl border border-neutral-200 p-6 sm:p-8 w-full max-w-sm text-center"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-neutral-100 mx-auto mb-4">
-          <Lock size={20} className="text-neutral-700" />
-        </div>
-        <h2 className="text-base font-semibold text-neutral-900 mb-2">Plano necessário</h2>
-        <p className="text-sm text-neutral-500 mb-6">
-          Para alterar os temas do site é necessário ter algum dos planos ativos.
-        </p>
-        <div className="flex flex-col gap-2">
-          <Link
-            href="/dashboard/billing"
-            className="w-full inline-flex items-center justify-center rounded-lg bg-neutral-900 text-white text-sm font-medium px-4 py-2.5 hover:bg-neutral-800 transition-colors"
-            onClick={onClose}
-          >
-            Ver planos
-          </Link>
-          <button
-            className="w-full text-sm text-neutral-500 hover:text-neutral-700 py-2 transition-colors"
-            onClick={onClose}
-          >
-            Agora não
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export default function TemasClient({ plan, themes }: { plan: Plan; themes: Themes }) {
+export default function TemasClient({ themes }: { themes: Themes }) {
   const [current, setCurrent] = useState<Themes>(themes)
-  const [showUpgrade, setShowUpgrade] = useState(false)
   const [, startTransition] = useTransition()
 
-  const canEdit = plan === 'pro' || plan === 'agency'
-
-  function handleSelect(section: keyof Themes, value: ThemeValue, locked: boolean) {
-    if (locked) { setShowUpgrade(true); return }
+  function handleSelect(section: keyof Themes, value: ThemeValue) {
     setCurrent((prev) => ({ ...prev, [section]: value }))
     startTransition(() => { saveTheme(section, String(value)) })
   }
 
   return (
-    <>
-      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {SECTIONS.map((section) => {
+        const active = current[section.key]
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {SECTIONS.map((section) => {
-          const active = current[section.key]
-
-          return (
-            <div key={section.key} className="bg-white rounded-xl border border-neutral-200 p-5">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-sm font-semibold text-neutral-900">{section.label}</h3>
-                  <p className="text-xs text-neutral-400 mt-0.5">{section.description}</p>
-                </div>
-                <span className="text-xs text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded-full">
-                  {section.options.find(o => o.value === active)?.label}
-                </span>
+        return (
+          <div key={section.key} className="bg-white rounded-xl border border-neutral-200 p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-sm font-semibold text-neutral-900">{section.label}</h3>
+                <p className="text-xs text-neutral-400 mt-0.5">{section.description}</p>
               </div>
-
-              {/* 3 thumbnail options */}
-              <div className="grid grid-cols-3 gap-2.5">
-                {section.options.map((opt) => {
-                  const locked = !canEdit && opt.value !== 1
-                  const selected = active === opt.value
-
-                  return (
-                    <button
-                      key={opt.value}
-                      onClick={() => handleSelect(section.key, opt.value, locked)}
-                      className="group relative flex flex-col items-center gap-1.5 focus:outline-none"
-                    >
-                      {/* Thumbnail */}
-                      <div className={`relative w-full overflow-hidden rounded-lg border-2 transition-all duration-150 ${
-                        selected
-                          ? 'border-neutral-900'
-                          : 'border-neutral-200 group-hover:border-neutral-400'
-                      }`}>
-                        <div className="aspect-video">
-                          <opt.Preview />
-                        </div>
-                        {locked && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
-                            <div className="flex flex-col items-center gap-1">
-                              <Lock size={13} className="text-neutral-600" />
-                            </div>
-                          </div>
-                        )}
-                        {selected && (
-                          <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-neutral-900 rounded-full flex items-center justify-center">
-                            <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                              <path d="M1.5 4L3 5.5L6.5 2" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Label */}
-                      <span className={`text-[11px] font-medium leading-none ${
-                        selected ? 'text-neutral-900' : locked ? 'text-neutral-300' : 'text-neutral-500'
-                      }`}>
-                        {opt.label}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
+              <span className="text-xs text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded-full">
+                {section.options.find(o => o.value === active)?.label}
+              </span>
             </div>
-          )
-        })}
-      </div>
-    </>
+
+            <div className="grid grid-cols-3 gap-2.5">
+              {section.options.map((opt) => {
+                const selected = active === opt.value
+
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => handleSelect(section.key, opt.value)}
+                    className="group relative flex flex-col items-center gap-1.5 focus:outline-none"
+                  >
+                    <div className={`relative w-full overflow-hidden rounded-lg border-2 transition-all duration-150 ${
+                      selected
+                        ? 'border-neutral-900'
+                        : 'border-neutral-200 group-hover:border-neutral-400'
+                    }`}>
+                      <div className="aspect-video">
+                        <opt.Preview />
+                      </div>
+                      {selected && (
+                        <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-neutral-900 rounded-full flex items-center justify-center">
+                          <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                            <path d="M1.5 4L3 5.5L6.5 2" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    <span className={`text-[11px] font-medium leading-none ${
+                      selected ? 'text-neutral-900' : 'text-neutral-500'
+                    }`}>
+                      {opt.label}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })}
+    </div>
   )
 }
