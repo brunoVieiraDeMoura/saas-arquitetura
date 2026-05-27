@@ -1,8 +1,8 @@
 const STATS = [
   { value: '+200', label: 'escritórios ativos' },
-  { value: 'Grátis', label: 'para começar' },
-  { value: '10min', label: 'para criar seu site' },
+  { value: '3 dias', label: 'prazo de entrega' },
   { value: '100%', label: 'responsivo mobile' },
+  { value: '100', label: 'nota no PageSpeed' },
 ]
 
 export default function SocialProofStrip() {

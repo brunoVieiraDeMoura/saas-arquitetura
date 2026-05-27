@@ -19,10 +19,10 @@ export default function MobileFloatingCTA() {
       }`}
     >
       <Link
-        href="https://www.arquiteturaorganizada.com/login"
+        href="/#contact"
         className="block w-full py-3.5 rounded-xl bg-neutral-900 text-white font-semibold text-center text-sm"
       >
-        Criar meu site grátis →
+        Solicitar orçamento →
       </Link>
     </div>
   )

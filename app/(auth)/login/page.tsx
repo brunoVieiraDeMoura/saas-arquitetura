@@ -7,8 +7,6 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
-const ADMIN_EMAIL = 'bruno.moura.code@gmail.com'
-
 function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -22,12 +20,6 @@ function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-
-    if (email.trim().toLowerCase() !== ADMIN_EMAIL) {
-      setError('Acesso restrito.')
-      setLoading(false)
-      return
-    }
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
@@ -51,7 +43,7 @@ function LoginPage() {
 
         <div className="mb-8">
           <h1 className="text-2xl sm:text-xl font-semibold text-neutral-900">Entrar</h1>
-          <p className="text-sm text-neutral-500 mt-1">Acesso restrito</p>
+          <p className="text-sm text-neutral-500 mt-1">Acesse seu painel</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">

@@ -67,7 +67,8 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\" -Recurse -Directory)",
       "Bash(Select-Object -ExpandProperty FullName)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Bruno\\\\desktop\\\\saas-arquitetura-main\" -Recurse -Directory | Where-Object { $_.Name -match \"\\(dashboard|tema|identidade|theme|color\\)\" } | Select-Object -ExpandProperty FullName)",
-      "Bash(Select-String -Pattern \"organiza\")"
+      "Bash(Select-String -Pattern \"organiza\")",
+      "Bash(npx tsx *)"
     ]
   }
 }

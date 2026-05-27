@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import PlanBadge from '@/components/admin/PlanBadge'
+import CreateAccountForm from './_components/CreateAccountForm'
 
 export default async function AdminTenantsPage() {
   const admin = createAdminClient()
@@ -10,12 +11,16 @@ export default async function AdminTenantsPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-neutral-900">Tenants</h1>
-        <p className="text-sm text-neutral-500 mt-1">{tenants?.length ?? 0} escritórios cadastrados</p>
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-neutral-900">Tenants</h1>
+          <p className="text-sm text-neutral-500 mt-1">{tenants?.length ?? 0} escritórios cadastrados</p>
+        </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-neutral-200">
+      <CreateAccountForm />
+
+      <div className="mt-6 bg-white rounded-xl border border-neutral-200">
         {tenants?.length ? (
           <ul className="divide-y divide-neutral-100">
             {tenants.map((t) => (
