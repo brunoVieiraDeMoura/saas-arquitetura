@@ -59,7 +59,7 @@ export default function Hero({ projects, tenantSlug, theme = 1 }: Props) {
   if (theme === 2) {
     return (
       <section
-        className="relative mt-16 h-[calc(100dvh-4rem)] md:mt-0 md:h-[100svh] overflow-hidden"
+        className="relative h-[calc(100dvh-4rem)] md:h-[100svh] overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -178,7 +178,7 @@ export default function Hero({ projects, tenantSlug, theme = 1 }: Props) {
 
   // ── Style 1 (default): Split ──────────────────────────────────────────────
   return (
-    <section className="relative mt-16 h-[calc(100dvh-4rem)] md:mt-0 md:h-[100svh] overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+    <section className="relative h-[calc(100dvh-4rem)] md:h-[100svh] overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       {/* Mobile */}
       <div className="md:hidden absolute inset-0">
         {projects.map((p, i) => (

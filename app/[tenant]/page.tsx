@@ -74,10 +74,12 @@ export default async function TenantHomePage({
       .order('order_index', { ascending: true }),
   ])
 
-  const featuredProjects = (featuredRaw ?? []).sort((a: any, b: any) => {
-    const rank = (p: any) => (p.categories?.slug === 'residencial' ? 0 : 1)
-    return rank(a) - rank(b)
-  })
+  const _featured = featuredRaw ?? []
+  const _res = _featured.filter((p: any) => p.categories?.slug === 'residencial')
+  const _com = _featured.filter((p: any) => p.categories?.slug !== 'residencial')
+  const featuredProjects = _res.flatMap((r: any, i: number) =>
+    _com[i] ? [r, _com[i]] : [r]
+  ).concat(_com.slice(_res.length))
 
   const companyName = get('company_name', tenant.name)
   const getTheme = (key: string) => (Number(get(key, '1')) || 1) as 1 | 2 | 3
