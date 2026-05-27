@@ -7,14 +7,19 @@ export default function MarketingFooter() {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-white">
           <LogoBrand name="Arquitetura" subname="organizada" subnameAlign="end" />
-          <p className="text-xs text-neutral-500 mt-2">Portfólios profissionais para escritórios de arquitetura</p>
+          <p className="text-xs text-neutral-500 mt-2">Sites profissionais para escritórios de arquitetura</p>
         </div>
         <nav className="flex items-center gap-6 text-sm">
           <Link href="/pricing" className="hover:text-white transition-colors">Preços</Link>
-          <Link href="/login" className="hover:text-white transition-colors">Entrar</Link>
-          <Link href="/signup" className="hover:text-white transition-colors">Criar conta</Link>
+          <Link href="/termos" className="hover:text-white transition-colors">Termos</Link>
+          <Link href="/return-policy" className="hover:text-white transition-colors">Reembolso</Link>
         </nav>
-        <p className="text-xs">© {new Date().getFullYear()} Arquitetura Organizada</p>
+        <div className="flex flex-col items-end gap-1">
+          <p className="text-xs">© {new Date().getFullYear()} Arquitetura Organizada</p>
+          <Link href="/login" className="text-[10px] text-neutral-700 hover:text-neutral-500 transition-colors">
+            acesso restrito
+          </Link>
+        </div>
       </div>
     </footer>
   )

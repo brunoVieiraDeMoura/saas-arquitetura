@@ -7,9 +7,9 @@ import { Menu, X } from 'lucide-react'
 import LogoBrand from '@/components/LogoBrand'
 
 const NAV_LINKS = [
-  { href: '/#features', label: 'Funcionalidades' },
-  { href: '/pricing', label: 'Preços' },
-  { href: '/como-usar', label: 'Como usar' },
+  { href: '/#features', label: 'O que inclui' },
+  { href: '/#pricing', label: 'Preços' },
+  { href: '/como-usar', label: 'Como funciona' },
 ]
 
 export default function MarketingNavbar() {
@@ -26,7 +26,6 @@ export default function MarketingNavbar() {
 
   return (
     <>
-      {/* Backdrop — outside header so backdrop-blur doesn't trap fixed positioning */}
       {open && (
         <div
           className="md:hidden fixed inset-0 top-16 bg-black/50 z-40"
@@ -49,13 +48,13 @@ export default function MarketingNavbar() {
             ))}
           </nav>
 
-          {/* Desktop CTAs */}
+          {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-2">
-            <Link href="/login" className="text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors px-4 py-2 rounded-lg hover:bg-neutral-100">
-              Entrar
-            </Link>
-            <Link href="/signup" className="text-sm px-5 py-2.5 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 transition-colors font-medium">
-              Começar grátis
+            <Link
+              href="/#contact"
+              className="text-sm px-5 py-2.5 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 transition-colors font-medium"
+            >
+              Solicitar orçamento
             </Link>
           </div>
 
@@ -69,7 +68,7 @@ export default function MarketingNavbar() {
           </button>
         </div>
 
-        {/* Mobile menu panel — inside header so it stays below the bar */}
+        {/* Mobile menu panel */}
         {open && (
           <div className="md:hidden bg-white border-t border-neutral-100 px-6 py-4 flex flex-col gap-1">
             {NAV_LINKS.map((l) => (
@@ -84,18 +83,11 @@ export default function MarketingNavbar() {
             ))}
             <div className="flex flex-col gap-2 pt-3">
               <Link
-                href="/login"
-                onClick={() => setOpen(false)}
-                className="w-full text-center py-2.5 text-sm font-medium text-neutral-700 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors"
-              >
-                Entrar
-              </Link>
-              <Link
-                href="/signup"
+                href="/#contact"
                 onClick={() => setOpen(false)}
                 className="w-full text-center py-2.5 text-sm font-medium bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors"
               >
-                Começar grátis
+                Solicitar orçamento
               </Link>
             </div>
           </div>
