@@ -1,13 +1,23 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import PlanBadge from '@/components/admin/PlanBadge'
 import CreateAccountForm from './_components/CreateAccountForm'
+import DeleteTenantButton from './_components/DeleteTenantButton'
+
+const PROTECTED_EMAIL = 'bruno.moura.code@gmail.com'
 
 export default async function AdminTenantsPage() {
   const admin = createAdminClient()
-  const { data: tenants } = await admin
-    .from('tenants')
-    .select('id, name, slug, plan, created_at')
-    .order('created_at', { ascending: false })
+
+  const [{ data: tenants }, { data: profiles }, { data: { users } }] = await Promise.all([
+    admin.from('tenants').select('id, name, slug, plan, created_at').order('created_at', { ascending: false }),
+    admin.from('profiles').select('id, tenant_id'),
+    admin.auth.admin.listUsers({ perPage: 1000 }),
+  ])
+
+  const emailByUserId = new Map(users.map((u) => [u.id, u.email]))
+  const protectedTenantIds = new Set(
+    profiles?.filter((p) => emailByUserId.get(p.id) === PROTECTED_EMAIL).map((p) => p.tenant_id) ?? []
+  )
 
   return (
     <div>
@@ -34,6 +44,9 @@ export default async function AdminTenantsPage() {
                   <p className="text-xs text-neutral-400">
                     {new Date(t.created_at).toLocaleDateString('pt-BR')}
                   </p>
+                  {!protectedTenantIds.has(t.id) && (
+                    <DeleteTenantButton tenantId={t.id} tenantName={t.name} />
+                  )}
                 </div>
               </li>
             ))}

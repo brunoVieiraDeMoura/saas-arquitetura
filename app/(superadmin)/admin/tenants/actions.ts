@@ -64,3 +64,37 @@ export async function createAccount(formData: FormData) {
 
   return { ok: true, slug }
 }
+
+const PROTECTED_EMAIL = 'bruno.moura.code@gmail.com'
+
+export async function deleteTenant(tenantId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autorizado' }
+
+  const admin = createAdminClient()
+
+  const { data: profiles } = await admin
+    .from('profiles')
+    .select('id')
+    .eq('tenant_id', tenantId)
+
+  if (profiles?.length) {
+    for (const profile of profiles) {
+      const { data: { user: authUser } } = await admin.auth.admin.getUserById(profile.id)
+      if (authUser?.email === PROTECTED_EMAIL) {
+        return { error: 'Essa conta não pode ser deletada.' }
+      }
+    }
+  }
+
+  await admin.from('tenants').delete().eq('id', tenantId)
+
+  if (profiles?.length) {
+    for (const profile of profiles) {
+      await admin.auth.admin.deleteUser(profile.id)
+    }
+  }
+
+  return { ok: true }
+}

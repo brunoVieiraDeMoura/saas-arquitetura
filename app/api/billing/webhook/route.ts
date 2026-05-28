@@ -32,24 +32,40 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session
     const { tenantId, plan } = session.metadata ?? {}
 
-    console.log('[webhook] checkout.session.completed — tenantId:', tenantId, 'plan:', plan, 'customer:', session.customer, 'subscription:', session.subscription)
+    console.log('[webhook] checkout.session.completed — tenantId:', tenantId, 'plan:', plan, 'mode:', session.mode, 'customer:', session.customer)
 
     if (!tenantId || !plan) {
       console.error('[webhook] missing metadata — tenantId or plan null')
       return NextResponse.json({ ok: true })
     }
 
-    const { error } = await admin
-      .from('tenants')
-      .update({
-        plan,
-        stripe_subscription_id:    session.subscription as string,
-        stripe_customer_id: session.customer as string,
-      })
-      .eq('id', tenantId)
+    if (session.mode === 'subscription') {
+      const { error } = await admin
+        .from('tenants')
+        .update({
+          plan,
+          stripe_subscription_id: session.subscription as string,
+          stripe_customer_id: session.customer as string,
+        })
+        .eq('id', tenantId)
 
-    if (error) console.error('[webhook] supabase update failed:', error)
-    else console.log('[webhook] tenant updated successfully')
+      if (error) console.error('[webhook] supabase update failed:', error)
+      else console.log('[webhook] subscription tenant updated')
+    }
+
+    if (session.mode === 'payment') {
+      // Pagamento único parcelado — sem subscription_id
+      const { error } = await admin
+        .from('tenants')
+        .update({
+          plan,
+          stripe_customer_id: session.customer as string,
+        })
+        .eq('id', tenantId)
+
+      if (error) console.error('[webhook] supabase update failed (payment):', error)
+      else console.log('[webhook] installment payment tenant updated')
+    }
   }
 
   if (event.type === 'customer.subscription.updated') {
