@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Check } from 'lucide-react'
+import { useState } from 'react'
 
 const SITE_FEATURES = [
   'Site completo configurado do zero',
@@ -25,6 +26,19 @@ const MANUTENCAO_FEATURES = [
 ]
 
 export default function MarketingPricing() {
+  const [loading, setLoading] = useState(false)
+
+  async function handleCheckout() {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/checkout-site', { method: 'POST' })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <section id="pricing" className="py-24 px-6 bg-white">
       <div className="max-w-4xl mx-auto">
@@ -51,7 +65,7 @@ export default function MarketingPricing() {
                 <span className="text-sm text-white/60 mb-1">R$</span>
                 <span className="text-5xl font-bold text-white">2.500</span>
               </div>
-              <p className="text-xs text-white/50 mt-1">pagamento único</p>
+              <p className="text-xs text-white/50 mt-1">ou em até 12x no cartão</p>
             </div>
 
             <ul className="space-y-3 mb-8 flex-1">
@@ -63,12 +77,21 @@ export default function MarketingPricing() {
               ))}
             </ul>
 
-            <Link
-              href="/#contact"
-              className="block text-center py-3 rounded-xl text-sm font-medium bg-white text-neutral-900 hover:bg-neutral-100 transition-colors"
-            >
-              Solicitar orçamento
-            </Link>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={handleCheckout}
+                disabled={loading}
+                className="block w-full text-center py-3 rounded-xl text-sm font-medium bg-white text-neutral-900 hover:bg-neutral-100 disabled:opacity-60 transition-colors"
+              >
+                {loading ? 'Aguarde...' : 'Pagar agora (parcelado)'}
+              </button>
+              <Link
+                href="/#contact"
+                className="block text-center py-3 rounded-xl text-sm font-medium border border-white/30 text-white/80 hover:bg-white/10 transition-colors"
+              >
+                Solicitar orçamento
+              </Link>
+            </div>
           </div>
 
           {/* Manutenção */}
