@@ -1,5 +1,11 @@
-import Link from 'next/link'
-import { Check } from 'lucide-react'
+import { Check, ShieldCheck, Lock } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Pagamento | Arquitetura Organizada',
+  description: 'Finalize sua compra com segurança.',
+  robots: { index: false, follow: false },
+}
 
 const SITE_FEATURES = [
   'Site completo configurado do zero',
@@ -22,18 +28,21 @@ const MANUTENCAO_FEATURES = [
   'Renovação anual',
 ]
 
-const WA_NUMBER = '5521999433890'
-const WA_MESSAGE = 'Olá! Gostaria de saber mais sobre como comprar o meu site.'
-const WA_HREF = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`
-
-export default function MarketingPricing() {
+export default function PagamentoPage() {
   return (
-    <section id="pricing" className="py-24 px-6 bg-white">
+    <section className="min-h-screen py-24 px-6 bg-neutral-50">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-xs font-semibold tracking-widest uppercase text-neutral-400 mb-3">Investimento</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">Preço único, sem surpresas</h2>
-          <p className="text-neutral-500 text-lg">Pagamento único para criar seu site. Manutenção exclusiva opcional.</p>
+          <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-neutral-400 mb-3">
+            <Lock size={12} />
+            <span>Pagamento seguro</span>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">
+            Finalize sua compra
+          </h1>
+          <p className="text-neutral-500 text-lg">
+            Pagamento processado com segurança pelo Mercado Pago.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -45,7 +54,7 @@ export default function MarketingPricing() {
               </span>
             </div>
 
-            <h3 className="text-lg font-semibold text-white mb-1">Site Completo</h3>
+            <h2 className="text-lg font-semibold text-white mb-1">Site Completo</h2>
             <p className="text-sm text-white/60 mb-6">Pagamento único · Sem mensalidade</p>
 
             <div className="mb-8">
@@ -53,8 +62,7 @@ export default function MarketingPricing() {
                 <span className="text-sm text-white/60 mb-1">R$</span>
                 <span className="text-5xl font-bold text-white">2.500</span>
               </div>
-              <p className="text-xs text-white/50 mt-1">pagamento único</p>
-              <p className="text-xs text-white/50 mt-0.5">
+              <p className="text-xs text-white/50 mt-1">
                 ou <strong className="text-white/70">6x de R$ 416,67</strong> sem juros
               </p>
             </div>
@@ -69,20 +77,20 @@ export default function MarketingPricing() {
             </ul>
 
             <a
-              href={WA_HREF}
+              href="https://mpago.li/26QzuDb"
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-center py-3 rounded-xl text-sm font-medium bg-white text-neutral-900 hover:bg-neutral-100 transition-colors"
+              className="block text-center py-3.5 rounded-xl text-sm font-semibold bg-white text-neutral-900 hover:bg-neutral-100 active:scale-95 transition-all"
             >
-              Solicitar orçamento
+              Comprar agora
             </a>
           </div>
 
           {/* Manutenção */}
-          <div className="rounded-2xl border border-neutral-200 bg-white p-8 flex flex-col">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-8 flex flex-col shadow-sm">
             <div className="mb-4 h-7" />
 
-            <h3 className="text-lg font-semibold text-neutral-900 mb-1">Manutenção Exclusiva</h3>
+            <h2 className="text-lg font-semibold text-neutral-900 mb-1">Manutenção Exclusiva</h2>
             <p className="text-sm text-neutral-400 mb-6">Renovação anual · Suporte 24h</p>
 
             <div className="mb-8">
@@ -91,8 +99,7 @@ export default function MarketingPricing() {
                 <span className="text-5xl font-bold text-neutral-900">400</span>
                 <span className="text-sm text-neutral-400 mb-1">/ano</span>
               </div>
-              <p className="text-xs text-neutral-400 mt-1">cobrado anualmente</p>
-              <p className="text-xs text-neutral-400 mt-0.5">
+              <p className="text-xs text-neutral-400 mt-1">
                 ou <strong className="text-neutral-600">12x de R$ 33,33</strong> sem juros
               </p>
             </div>
@@ -107,22 +114,20 @@ export default function MarketingPricing() {
             </ul>
 
             <a
-              href={WA_HREF}
+              href="https://mpago.li/1qT42MJ"
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-center py-3 rounded-xl text-sm font-medium bg-neutral-900 text-white hover:bg-neutral-800 transition-colors"
+              className="block text-center py-3.5 rounded-xl text-sm font-semibold bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 transition-all"
             >
-              Solicitar orçamento
+              Assinar agora
             </a>
           </div>
         </div>
 
-        <p className="text-center text-xs text-neutral-400 mt-8">
-          Dúvidas sobre o que está incluso?{' '}
-          <Link href="/#contact" className="underline hover:text-neutral-600 transition-colors">
-            Fale comigo
-          </Link>
-        </p>
+        <div className="flex items-center justify-center gap-2 mt-10 text-xs text-neutral-400">
+          <ShieldCheck size={14} />
+          <span>Pagamento 100% seguro via Mercado Pago · Seus dados estão protegidos</span>
+        </div>
       </div>
     </section>
   )

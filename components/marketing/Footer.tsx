@@ -19,6 +19,9 @@ export default function MarketingFooter() {
           <Link href="/login" className="text-[10px] text-neutral-700 hover:text-neutral-500 transition-colors">
             acesso restrito
           </Link>
+          <Link href="/pagamento" className="text-[10px] text-neutral-700 hover:text-neutral-500 transition-colors">
+            pagamento
+          </Link>
         </div>
       </div>
     </footer>
