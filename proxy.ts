@@ -8,12 +8,26 @@ const RESERVED_SLUGS = new Set([
   'api', 'pricing', 'www', 'app', '_next', 'favicon.ico', 'invite',
 ])
 
+// Rotas globais do app — em domínio de tenant, vão para o domínio raiz
+const APP_PATHS = new Set([
+  'dashboard', 'admin', 'login', 'signup', 'onboarding',
+  'forgot-password', 'reset-password', 'invite',
+])
+
 export async function proxy(req: NextRequest) {
   const hostname = req.headers.get('host') || ''
   const url = req.nextUrl.clone()
   const pathname = url.pathname
   const withoutPort = hostname.split(':')[0]
   const isLocalhost = withoutPort === 'localhost' || withoutPort.endsWith('.localhost')
+  const firstSegment = pathname.split('/')[1] ?? ''
+  const isAppPath = APP_PATHS.has(firstSegment)
+
+  // API é global: nunca reescrever para /[tenant] (senão vira 404)
+  if (firstSegment === 'api') return NextResponse.next()
+
+  const redirectToRoot = () =>
+    NextResponse.redirect(new URL(`${pathname}${url.search}`, `https://www.${ROOT_DOMAIN}`))
 
   // ── Subdomain detection ──────────────────────────────────────────────────
   let subdomain: string | null = null
@@ -26,8 +40,12 @@ export async function proxy(req: NextRequest) {
   }
 
   if (subdomain && !RESERVED_SLUGS.has(subdomain)) {
-    url.pathname = `/${subdomain}${pathname === '/' ? '' : pathname}`
-    return NextResponse.rewrite(url)
+    if (isAppPath) {
+      if (!isLocalhost) return redirectToRoot()
+    } else {
+      url.pathname = `/${subdomain}${pathname === '/' ? '' : pathname}`
+      return NextResponse.rewrite(url)
+    }
   }
 
   // ── Custom domain detection ──────────────────────────────────────────────
@@ -46,6 +64,7 @@ export async function proxy(req: NextRequest) {
       )
       const [tenant] = await res.json()
       if (tenant?.slug) {
+        if (isAppPath) return redirectToRoot()
         url.pathname = `/${tenant.slug}${pathname === '/' ? '' : pathname}`
         return NextResponse.rewrite(url)
       }
